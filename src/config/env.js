@@ -1,2 +1,4 @@
-export const API_URL = 'http://15.134.225.104'
-export const API_BASE = 'http://15.134.225.104/api'
+export const API_URL = 'http://16.176.28.96'
+export const API_BASE = 'http://16.176.28.96/api'
+
+// http://16.176.28.96/
