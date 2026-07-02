@@ -1,0 +1,225 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  @apply transition-colors duration-300;
+}
+
+h1, h2, h3, h4, h5, .font-display {
+  font-family: 'Syne', sans-serif;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #6366f1;
+  border-radius: 99px;
+}
+
+/* Sidebar transition */
+.sidebar-enter-active, .sidebar-leave-active {
+  transition: transform 0.3s cubic-bezier(.4,0,.2,1), opacity 0.3s;
+}
+
+.sidebar-enter-from, .sidebar-leave-to {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+/* Chat bubble */
+.chat-widget {
+  transition: all 0.3s cubic-bezier(.4,0,.2,1);
+}
+
+.chat-open {
+  transform: scale(1);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.chat-closed {
+  transform: scale(0.8) translateY(20px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Typing dots */
+@keyframes dot-bounce {
+  0%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-6px);
+  }
+}
+
+.dot {
+  animation: dot-bounce 1.2s infinite;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* Profile dropdown */
+.dropdown {
+  transition: opacity 0.2s, transform 0.2s;
+  transform-origin: top right;
+}
+
+.dropdown-hidden {
+  opacity: 0;
+  transform: scale(0.95);
+  pointer-events: none;
+}
+
+.dropdown-visible {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: all;
+}
+
+/* Active sidebar link */
+.nav-active {
+  background: linear-gradient(90deg, #6366f1 0%, #818cf8 100%);
+  color: #fff !important;
+}
+
+.nav-active svg {
+  color: #fff !important;
+}
+
+/* Glassmorphism */
+.glass {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #6366f1, #f59e0b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Hero gradient */
+.hero-bg {
+  background: radial-gradient(ellipse 80% 60% at 50% -20%, rgba(99,102,241,0.25) 0%, transparent 70%),
+              radial-gradient(ellipse 50% 40% at 80% 80%, rgba(245,158,11,0.12) 0%, transparent 60%);
+}
+
+.dark .hero-bg {
+  background: radial-gradient(ellipse 80% 60% at 50% -20%, rgba(99,102,241,0.35) 0%, transparent 70%),
+              radial-gradient(ellipse 50% 40% at 80% 80%, rgba(245,158,11,0.15) 0%, transparent 60%);
+}
+
+/* Chat messages */
+.chat-messages {
+  scroll-behavior: smooth;
+}
+
+/* Mobile overlay */
+.overlay {
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(2px);
+}
+
+/* Navbar glass */
+.navbar-glass {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(99,102,241,0.12);
+}
+
+.dark .navbar-glass {
+  background: rgba(15,15,25,0.85);
+  border-bottom: 1px solid rgba(99,102,241,0.2);
+}
+
+/* Sidebar glass */
+.sidebar-glass {
+  background: rgba(255,255,255,0.95);
+  border-right: 1px solid rgba(99,102,241,0.1);
+}
+
+.dark .sidebar-glass {
+  background: rgba(13,13,23,0.97);
+  border-right: 1px solid rgba(99,102,241,0.15);
+}
+
+/* Language dropdown */
+.lang-dropdown {
+  transition: opacity 0.2s, transform 0.2s;
+  transform-origin: top right;
+}
+
+.lang-hidden {
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+}
+
+.lang-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+/* App fade transition */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+
+/* Fade transition */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+
+/* Slide transition */
+.slide-enter-active, .slide-leave-active {
+  transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+}
+
+.slide-enter-from, .slide-leave-to {
+  transform: translateX(-100%);
+}
+
+/* Sidebar left glass */
+.sidebar-left-glass {
+  background: rgba(255,255,255,0.95);
+  border-right: 1px solid rgba(99,102,241,0.1);
+}
+
+.dark .sidebar-left-glass {
+  background: rgba(13,13,23,0.97);
+  border-right: 1px solid rgba(99,102,241,0.15);
+}
