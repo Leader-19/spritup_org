@@ -10,7 +10,17 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div> -->
-          <span class="font-display font-800 text-xl tracking-tight">SPRITUP Organization</span>
+          <div class="flex flex-col">
+            <a href="/" class="flex flex-col">
+              <span class="font-display font-extrabold text-xl tracking-tight">
+                SPRITUP
+              </span>
+              <span class="text-sm text-gray-600">
+                Organization
+              </span>
+            </a>
+          </div>
+
         </div>
 
         <div class="hidden lg:flex items-center gap-1 ml-6">
@@ -25,16 +35,16 @@
       </div>
 
       <div class="flex items-center gap-2">
-<div class="relative hidden sm:block">
-           <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
-             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-             <circle cx="11" cy="11" r="8" />
-             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35" />
-           </svg>
-           <input v-model="searchQuery" @keyup.enter="handleSearch" type="text"
-             :placeholder="currentLang === 'en' ? 'Search...' : 'ស្វែងរក...'"
-             class="w-64 pl-9 pr-4 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800/80 text-sm text-gray-700 dark:text-gray-300 placeholder-gray-400 border-none outline-none focus:ring-2 focus:ring-brand-400/50 transition" />
-         </div>
+        <div class="relative hidden sm:block">
+          <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35" />
+          </svg>
+          <input v-model="searchQuery" @keyup.enter="handleSearch" type="text"
+            :placeholder="currentLang === 'en' ? 'Search...' : 'ស្វែងរក...'"
+            class="w-64 pl-9 pr-4 py-2.5 rounded-xl bg-gray-300 border-collapse dark:bg-gray-800/80 text-sm text-gray-700 dark:text-gray-300 placeholder-gray-400 border-none outline-none focus:ring-2 focus:ring-brand-400/50 transition" />
+        </div>
 
         <button @click="$emit('toggle-dark')"
           class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors text-gray-600 dark:text-gray-300">
@@ -106,9 +116,17 @@ const languages = [
 ]
 
 const navItems = [
-  { key: 'home', label: 'Home', labelKh: 'ទំព័រដើម', page: 'home-page' },
-  { key: 'documents', label: 'Documents', labelKh: 'ឯកសារ', page: 'documents-page' },
-  { key: 'ai-chat', label: 'AI Chat', labelKh: 'AI សន្ទនា', page: 'ai-chat-page' },
+  { key: 'home', label: 'All', labelKh: 'ទាំអស់', page: 'home-page' },
+  { key: 'documents', label: 'Documents', labelKh: 'រដ្ឋធម្មនុញ្ញ', page: 'documents-page' },
+  { key: 'documents', label: 'Documents', labelKh: 'សន្ធិសញ្ញា អនុសញ្ញា កតិកាសញ្ញា', page: 'documents-page' },
+  { key: 'documents', label: 'Documents', labelKh: 'ក្រម', page: 'documents-page' },
+  { key: 'documents', label: 'Documents', labelKh: 'ច្បាប់', page: 'documents-page' },
+   { key: 'documents', label: 'Documents', labelKh: 'ព្រះរាជក្រម', page: 'documents-page' },
+   { key: 'documents', label: 'Documents', labelKh: 'ព្រះរាជក្រឹត្យ', page: 'documents-page' },
+   { key: 'documents', label: 'Documents', labelKh: 'អនុក្រឹត្យ', page: 'documents-page' },
+    { key: 'documents', label: 'Documents', labelKh: 'ប្រកាស', page: 'documents-page' },
+    { key: 'documents', label: 'Documents', labelKh: 'ដីកា', page: 'documents-page' },
+  { key: 'ai-chat', label: 'AI Chat', labelKh: 'សេចក្ដីសម្រេច', page: 'ai-chat-page' },
 ]
 
 const selectLang = (code) => {

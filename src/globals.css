@@ -9,12 +9,12 @@
 }
 
 body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Siemreap', 'DM Sans', sans-serif;
   @apply transition-colors duration-300;
 }
 
 h1, h2, h3, h4, h5, .font-display {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Siemreap', 'Syne', sans-serif;
 }
 
 /* Scrollbar */

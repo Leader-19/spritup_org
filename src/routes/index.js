@@ -5,6 +5,12 @@ import DashboardPage from "../views/dashboard/DashboardPage.vue";
 import DocumentsPage from "../views/documents/DocumentsPage.vue";
 import DonatePage from "../views/donates/DonatePage.vue";
 import ContactPage from "../views/contact/ContactPage.vue";
+import SettingsProfile from "../views/settings/SettingsProfile.vue";
+import SettingsPreferences from "../views/settings/SettingsPreferences.vue";
+import SettingsPrivacy from "../views/settings/SettingsPrivacy.vue";
+import HelpFaq from "../views/help/HelpFaq.vue";
+import HelpSupport from "../views/help/HelpSupport.vue";
+import HelpDocumentation from "../views/help/HelpDocumentation.vue";
 import TableComponents from "../components/documents/TableComponents.vue";
 import LawTableComponents from "../components/documents/LawTableComponents.vue";
 import KromTableComponents from "../components/documents/KromTableComponents.vue";
@@ -97,6 +103,36 @@ const routes = [
     path: "/treatyconventionpact-documents",
     name: "treatyconventionpact-documents-page",
     component: TreatyconventionpactTableComponents,
+  },
+  {
+    path: "/settings/profile",
+    name: "settings-profile",
+    component: SettingsProfile,
+  },
+  {
+    path: "/settings/preferences",
+    name: "settings-preferences",
+    component: SettingsPreferences,
+  },
+  {
+    path: "/settings/privacy",
+    name: "settings-privacy",
+    component: SettingsPrivacy,
+  },
+  {
+    path: "/help/faq",
+    name: "help-faq",
+    component: HelpFaq,
+  },
+  {
+    path: "/help/support",
+    name: "help-support",
+    component: HelpSupport,
+  },
+  {
+    path: "/help/documentation",
+    name: "help-documentation",
+    component: HelpDocumentation,
   },
 ];
 

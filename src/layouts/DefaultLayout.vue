@@ -4,7 +4,7 @@
         @menu-click="setActiveSubmenu" @set-lang="setLang" />
 
     <SidebarLeft :sidebar-left-open="sidebarLeftOpen" :current-lang="currentLang" :active-submenu="activeSubmenu"
-        @toggle="sidebarLeftOpen = !sidebarLeftOpen" @close="sidebarLeftOpen = true" />
+        @toggle="sidebarLeftOpen = !sidebarLeftOpen" @close="sidebarLeftOpen = true" @menu-click="setActiveSubmenu" />
 
     <Sidebar :sidebar-open="sidebarOpen" :is-mobile="isMobile" :current-lang="currentLang" @close="sidebarOpen = false"
         @toggle="sidebarOpen = !sidebarOpen" />
@@ -57,18 +57,18 @@ const setLang = (lang) => {
 }
 
 const setActiveSubmenu = (menu) => {
-    activeSubmenu.value = menu
-    if (menu === 'ai-chat') {
-        sidebarOpen.value = true
-        sidebarLeftOpen.value = false
-    } else if (menu === 'home' || menu === 'documents') {
-        sidebarLeftOpen.value = !!menu
-        sidebarOpen.value = false
-    } else {
-        sidebarLeftOpen.value = false
-        sidebarOpen.value = false
-    }
-}
+     activeSubmenu.value = menu
+     if (menu === 'ai-chat') {
+         sidebarOpen.value = true
+         sidebarLeftOpen.value = false
+     } else if (menu === 'home' || menu === 'documents' || menu === 'settings' || menu === 'help') {
+         sidebarLeftOpen.value = !!menu
+         sidebarOpen.value = false
+     } else {
+         sidebarLeftOpen.value = false
+         sidebarOpen.value = false
+     }
+ }
 
 onMounted(() => {
     checkMobile()
