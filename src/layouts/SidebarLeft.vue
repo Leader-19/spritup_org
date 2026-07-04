@@ -1,20 +1,21 @@
 <template>
   <transition name="slide">
-    <aside v-if="sidebarLeftOpen" :class="['sidebar-left-glass flex flex-col fixed left-0 top-16 bottom-0 z-20 w-64 overflow-y-auto transition-transform duration-300',
+    <aside v-if="sidebarLeftOpen" :class="['sidebar-left-glass flex flex-col fixed left-0 top-16 bottom-0 z-20 transition-transform duration-300',
+      props.collapsed ? 'w-16' : 'w-64',
       sidebarLeftOpen ? 'translate-x-0' : '-translate-x-full']">
-      <div class="p-4 space-y-6">
+      <div class="p-4 space-y-6 flex-1 flex flex-col">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500"
-            v-if="activeSubmenu !== 'documents' && activeSubmenu !== 'settings' && activeSubmenu !== 'help'">
+            v-if="!props.collapsed && activeSubmenu !== 'documents' && activeSubmenu !== 'settings' && activeSubmenu !== 'help'">
             {{ sidebarTitle }}
           </h3>
           <h3
             class="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 cursor-pointer hover:text-brand-600"
             @click="goBack"
-            v-if="activeSubmenu === 'documents' || activeSubmenu === 'settings' || activeSubmenu === 'help'">
+            v-if="!props.collapsed && (activeSubmenu === 'documents' || activeSubmenu === 'settings' || activeSubmenu === 'help')">
             ← {{ currentLang === 'en' ? 'Back' : 'ត្រឡប់ក្រោយ' }}
           </h3>
-          <button @click="$emit('toggle')"
+          <button @click="$emit('toggle-collapsed')"
             class="p-1.5 rounded-lg hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-colors text-gray-600 dark:text-gray-300">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
               stroke="currentColor" stroke-width="2">
@@ -25,56 +26,60 @@
 
         <div v-if="activeSubmenu === 'home'" class="space-y-2">
           <router-link v-for="item in homeItems" :key="item.to" :to="item.to" @click="$emit('close')"
-            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all text-sm font-medium text-left text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-gray-100">
-            <span>{{ currentLang === 'en' ? item.label : item.labelKh }}</span>
+            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all text-sm font-medium text-left text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-gray-100"
+            :class="{ 'justify-center': props.collapsed }">
+            <span class="flex-shrink-0">{{ currentLang === 'en' ? item.label : item.labelKh }}</span>
           </router-link>
         </div>
 
         <div v-else-if="activeSubmenu === 'documents'" class="space-y-2">
-          <div v-for="category in categories" :key="category.id" @click="selectCategory(category.id)"
-            :class="['w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all text-sm font-medium text-left',
-              selectedCategory === category.id
-                ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400'
-                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-gray-100']">
-            <span>{{ currentLang === 'en' ? getCategoryLabel(category.title) : category.title }}</span>
-            <span class="text-xs text-gray-400">{{ getCategoryCount(category.id) }}</span>
+          <div v-for="category in categories" :key="category.id" @click="selectCategory(category.id)" :class="['w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all text-sm font-medium text-left',
+            selectedCategory === category.id
+              ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400'
+              : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-gray-100',
+            { 'justify-center': props.collapsed }]">
+            <span class="truncate">{{ currentLang === 'en' ? getCategoryLabel(category.title) : category.title }}</span>
           </div>
         </div>
 
         <div v-else-if="activeSubmenu === 'documents-list' && selectedCategory" class="space-y-2">
           <div v-for="doc in categoryDocuments" :key="doc.id"
-            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all text-sm font-medium text-left text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-gray-100">
+            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all text-sm font-medium text-left text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-gray-100"
+            :class="{ 'justify-center': props.collapsed }">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24"
               stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round"
                 d="M9 12h6m-6 6h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2z" />
             </svg>
-            <span class="truncate">{{ doc.doc_name }}</span>
+            <span class="truncate" v-if="!props.collapsed">{{ doc.doc_name }}</span>
           </div>
         </div>
 
         <div v-else-if="activeSubmenu === 'settings'" class="space-y-2">
           <router-link v-for="item in settingsItems" :key="item.to" :to="item.to" @click="$emit('close')"
-            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all text-sm font-medium text-left text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-gray-100">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all text-sm font-medium text-left text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-gray-100"
+            :class="{ 'justify-center': props.collapsed }">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24"
               stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round"
-                d="M10.325 4.317c.426-1.534 2.076-2.518 3.694-1.917 1.599.609 2.717 2.16 2.717 3.757v1.515c0 .92-.515 1.73-1.277 2.14-.94.47-1.988.522-2.996.244-.92-.244-1.706-.66-2.446-1.136-.75-.475-1.42-1.016-2.14-1.578-.718.562-1.39 1.093-2.14 1.578-.74.484-1.526.852-2.446 1.136-.92.244-1.988.21-2.996-.244-.86-.41-1.477-1.22-1.477-2.14v-1.515c0-1.597 1.118-3.148 2.717-3.757 1.618-.6 3.268.383 3.694 1.917h.002zM12 15v2m-6 4h12a2 2 0 002-2v-5a2 2 0 00-2-2H6a2 2 0 00-2 2v5a2 2 0 002 2z" />
+                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            <span>{{ currentLang === 'en' ? item.label : item.labelKh }}</span>
+            <span class="truncate" v-if="!props.collapsed">{{ currentLang === 'en' ? item.label : item.labelKh }}</span>
           </router-link>
         </div>
 
         <div v-else-if="activeSubmenu === 'help'" class="space-y-2">
           <router-link v-for="item in helpItems" :key="item.to" :to="item.to" @click="$emit('close')"
-            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all text-sm font-medium text-left text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-gray-100">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all text-sm font-medium text-left text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-gray-100"
+            :class="{ 'justify-center': props.collapsed }">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24"
               stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"></circle>
-              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 2.5-3 4"></path>
-              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              <circle cx="12" cy="12" r="10" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 2.5-3 4" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
             </svg>
-            <span>{{ currentLang === 'en' ? item.label : item.labelKh }}</span>
+            <span class="truncate" v-if="!props.collapsed">{{ currentLang === 'en' ? item.label : item.labelKh }}</span>
           </router-link>
         </div>
 
@@ -85,27 +90,37 @@
         </div>
       </div>
 
-      <div class="p-4 border-t border-gray-200 dark:border-gray-700 mt-auto">
+      <div class="p-4 border-t border-gray-200 dark:border-gray-700">
         <div class="flex flex-col gap-1">
           <button @click="$emit('menu-click', 'settings')"
-            class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-colors text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor" stroke-width="2">
+            class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-colors"
+            :class="[
+              props.collapsed || activeSubmenu === 'settings' || activeSubmenu === 'help' ? 'justify-center' : 'w-full',
+              activeSubmenu === 'settings' ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60'
+            ]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round"
                 d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
               <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            {{ currentLang === 'en' ? 'Settings' : 'ការកំណត់' }}
+            <span v-if="!props.collapsed && activeSubmenu !== 'settings' && activeSubmenu !== 'help'">
+              {{ currentLang === 'en' ? 'Settings' : 'ការកំណត់' }}
+            </span>
           </button>
           <button @click="$emit('menu-click', 'help')"
-            class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-colors text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor" stroke-width="2">
+            class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-colors"
+            :class="[
+              props.collapsed || activeSubmenu === 'settings' || activeSubmenu === 'help' ? 'justify-center' : 'w-full',
+              activeSubmenu === 'help' ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60'
+            ]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10" />
               <path stroke-linecap="round" stroke-linejoin="round" d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 2.5-3 4" />
-              <line x1="12" y1="17" x2="12.01" y2="17" stroke-linecap="round" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
             </svg>
-            {{ currentLang === 'en' ? 'Help' : 'ជំនួយ' }}
+            <span v-if="!props.collapsed && activeSubmenu !== 'settings' && activeSubmenu !== 'help'">
+              {{ currentLang === 'en' ? 'Help' : 'ជំនួយ' }}
+            </span>
           </button>
         </div>
       </div>
@@ -123,7 +138,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, inject, h } from 'vue'
+import { ref, computed, watch, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 import { API_BASE } from '../config/env.js'
@@ -132,9 +147,10 @@ const props = defineProps({
   sidebarLeftOpen: Boolean,
   currentLang: String,
   activeSubmenu: String,
+  collapsed: Boolean,
 })
 
-defineEmits(['toggle', 'close', 'menu-click'])
+defineEmits(['toggle', 'close', 'menu-click', 'toggle-collapsed'])
 
 const router = useRouter()
 
@@ -219,7 +235,6 @@ const goBack = () => {
   if (selectedCategory.value) {
     selectedCategory.value = null
   }
-  // Could emit event to close sidebar or go back to previous view
 }
 
 watch(() => props.activeSubmenu, (newVal) => {

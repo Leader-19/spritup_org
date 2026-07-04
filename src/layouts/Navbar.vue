@@ -3,13 +3,6 @@
     <div class="flex items-center justify-between h-full px-4 lg:px-6">
       <div class="flex items-center gap-3">
         <div class="flex items-center gap-2">
-          <!-- <div
-            class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center shadow-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-          </div> -->
           <div class="flex flex-col">
             <a href="/" class="flex flex-col">
               <span class="font-display font-extrabold text-xl tracking-tight">
@@ -23,15 +16,29 @@
 
         </div>
 
-        <div class="hidden lg:flex items-center gap-1 ml-6">
+        <div class="hidden lg:flex items-center gap-1 ml-6 overflow-x-auto flex-1 scrollbar-hide" ref="navContainer">
           <button v-for="item in navItems" :key="item.key" @click="$emit('menu-click', item.key)"
-            :class="['px-4 py-2 rounded-lg text-sm font-medium transition-all',
+            :class="['px-4 py-2 rounded-lg text-sm font-medium transition-all flex-shrink-0',
               activeSubmenu === item.key
                 ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400'
                 : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-gray-100']">
             {{ currentLang === 'en' ? item.label : item.labelKh }}
           </button>
         </div>
+        
+        <button @click="scrollLeft"
+          class="hidden lg:flex p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors text-gray-600 dark:text-gray-300">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        
+        <button @click="scrollRight"
+          class="hidden lg:flex p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors text-gray-600 dark:text-gray-300">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
       </div>
 
       <div class="flex items-center gap-2">
@@ -109,6 +116,19 @@ const emit = defineEmits(['toggle-dark', 'menu-click', 'set-lang'])
 const router = useRouter()
 const langOpen = ref(false)
 const searchQuery = ref('')
+const navContainer = ref(null)
+
+const scrollLeft = () => {
+  if (navContainer.value) {
+    navContainer.value.scrollBy({ left: -200, behavior: 'smooth' })
+  }
+}
+
+const scrollRight = () => {
+  if (navContainer.value) {
+    navContainer.value.scrollBy({ left: 200, behavior: 'smooth' })
+  }
+}
 
 const languages = [
   { code: 'en', name: 'English', flag: '🇺🇸' },
@@ -118,14 +138,14 @@ const languages = [
 const navItems = [
   { key: 'home', label: 'All', labelKh: 'ទាំអស់', page: 'home-page' },
   { key: 'documents', label: 'Documents', labelKh: 'រដ្ឋធម្មនុញ្ញ', page: 'documents-page' },
-  { key: 'documents', label: 'Documents', labelKh: 'សន្ធិសញ្ញា អនុសញ្ញា កតិកាសញ្ញា', page: 'documents-page' },
-  { key: 'documents', label: 'Documents', labelKh: 'ក្រម', page: 'documents-page' },
-  { key: 'documents', label: 'Documents', labelKh: 'ច្បាប់', page: 'documents-page' },
-   { key: 'documents', label: 'Documents', labelKh: 'ព្រះរាជក្រម', page: 'documents-page' },
-   { key: 'documents', label: 'Documents', labelKh: 'ព្រះរាជក្រឹត្យ', page: 'documents-page' },
-   { key: 'documents', label: 'Documents', labelKh: 'អនុក្រឹត្យ', page: 'documents-page' },
-    { key: 'documents', label: 'Documents', labelKh: 'ប្រកាស', page: 'documents-page' },
-    { key: 'documents', label: 'Documents', labelKh: 'ដីកា', page: 'documents-page' },
+  { key: 'documents', label: 'Treaty/Convention', labelKh: 'សន្ធិសញ្ញា អនុសញ្ញា កតិកាសញ្ញា', page: 'documents-page' },
+  { key: 'documents', label: 'Krom', labelKh: 'ក្រម', page: 'documents-page' },
+  { key: 'documents', label: 'Law', labelKh: 'ច្បាប់', page: 'documents-page' },
+  { key: 'documents', label: 'Preah Reachokram', labelKh: 'ព្រះរាជក្រម', page: 'documents-page' },
+  { key: 'documents', label: 'Royal Decree', labelKh: 'ព្រះរាជក្រឹត្យ', page: 'documents-page' },
+  { key: 'documents', label: 'Sub-Decree', labelKh: 'អនុក្រឹត្យ', page: 'documents-page' },
+  { key: 'documents', label: 'Brakeas', labelKh: 'ប្រកាស', page: 'documents-page' },
+  { key: 'documents', label: 'Deyka', labelKh: 'ដីកា', page: 'documents-page' },
   { key: 'ai-chat', label: 'AI Chat', labelKh: 'សេចក្ដីសម្រេច', page: 'ai-chat-page' },
 ]
 

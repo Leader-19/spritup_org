@@ -4,13 +4,14 @@
         @menu-click="setActiveSubmenu" @set-lang="setLang" />
 
     <SidebarLeft :sidebar-left-open="sidebarLeftOpen" :current-lang="currentLang" :active-submenu="activeSubmenu"
-        @toggle="sidebarLeftOpen = !sidebarLeftOpen" @close="sidebarLeftOpen = true" @menu-click="setActiveSubmenu" />
+        :collapsed="sidebarCollapsed" @toggle="sidebarLeftOpen = !sidebarLeftOpen" @close="sidebarLeftOpen = true" 
+        @menu-click="setActiveSubmenu" @toggle-collapsed="sidebarCollapsed = !sidebarCollapsed" />
 
     <Sidebar :sidebar-open="sidebarOpen" :is-mobile="isMobile" :current-lang="currentLang" @close="sidebarOpen = false"
         @toggle="sidebarOpen = !sidebarOpen" />
 
     <main :class="['transition-all duration-300 min-h-screen bg-gray-50 dark:bg-gray-950',
-        sidebarLeftOpen ? 'lg:pl-64' : 'lg:pl-0',
+        sidebarLeftOpen ? (sidebarCollapsed ? 'lg:pl-16' : 'lg:pl-64') : 'lg:pl-0',
         sidebarOpen ? 'lg:pr-72' : 'lg:pr-0']">
         <div class="pt-20 pb-12 px-4 lg:px-8 min-h-[calc(100vh-64px)]">
             <router-view />
@@ -35,6 +36,7 @@ const currentLang = ref('kh')
 const isMobile = ref(false)
 const activePage = ref('home-page')
 const activeSubmenu = ref('home')
+const sidebarCollapsed = ref(false)
 const route = useRoute()
 
 provide('currentLang', currentLang)

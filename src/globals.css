@@ -223,3 +223,13 @@ h1, h2, h3, h4, h5, .font-display {
   background: rgba(13,13,23,0.97);
   border-right: 1px solid rgba(99,102,241,0.15);
 }
+
+/* Hide scrollbar but allow scrolling */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
