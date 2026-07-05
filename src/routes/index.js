@@ -8,9 +8,11 @@ import ContactPage from "../views/contact/ContactPage.vue";
 import SettingsProfile from "../views/settings/SettingsProfile.vue";
 import SettingsPreferences from "../views/settings/SettingsPreferences.vue";
 import SettingsPrivacy from "../views/settings/SettingsPrivacy.vue";
+import SettingsPage from "../views/settings/SettingsPage.vue";
 import HelpFaq from "../views/help/HelpFaq.vue";
 import HelpSupport from "../views/help/HelpSupport.vue";
 import HelpDocumentation from "../views/help/HelpDocumentation.vue";
+import HelpPage from "../views/help/HelpPage.vue";
 import TableComponents from "../components/documents/TableComponents.vue";
 import LawTableComponents from "../components/documents/LawTableComponents.vue";
 import KromTableComponents from "../components/documents/KromTableComponents.vue";
@@ -120,6 +122,11 @@ const routes = [
     component: SettingsPrivacy,
   },
   {
+    path: "/settings",
+    name: "settings-page",
+    component: SettingsPage,
+  },
+  {
     path: "/help/faq",
     name: "help-faq",
     component: HelpFaq,
@@ -133,6 +140,11 @@ const routes = [
     path: "/help/documentation",
     name: "help-documentation",
     component: HelpDocumentation,
+  },
+  {
+    path: "/help",
+    name: "help-page",
+    component: HelpPage,
   },
 ];
 

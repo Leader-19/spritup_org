@@ -78,9 +78,13 @@ onMounted(() => {
     window.addEventListener('resize', checkMobile)
     activePage.value = route.name
     if (route.name === 'home-page') {
-        activeSubmenu.value = 'home'
+      activeSubmenu.value = 'home'
+    } else if (route.name === 'settings-page' || route.name?.startsWith('settings-')) {
+      activeSubmenu.value = 'settings'
+    } else if (route.name === 'help-page' || route.name?.startsWith('help-')) {
+      activeSubmenu.value = 'help'
     }
-})
+  })
 
 onUnmounted(() => {
     window.removeEventListener('resize', checkMobile)
@@ -90,120 +94,131 @@ const seo = useSeo()
 
 const seoMap = {
   'home-page': {
-    title: 'Nexus Dashboard - Home',
-    description: 'Explore documents, laws, decrees, and more with Nexus Dashboard.',
+    title: 'SPRITUP center - Home',
+    description: 'Explore documents, laws, decrees, and more with SPRITUP center.',
     keywords: 'documents, laws, decrees, constitution, dashboard, sharing',
     ogImage: '/placeholder-logo.png',
   },
   'documents-page': {
-    title: 'Documents - Nexus Dashboard',
+    title: 'Documents - SPRITUP center',
     description: 'Browse and manage your documents efficiently.',
     keywords: 'documents, management, files',
   },
   'dashboard-page': {
-    title: 'Dashboard - Nexus Dashboard',
+    title: 'Dashboard - SPRITUP center',
     description: 'View your dashboard metrics and insights.',
     keywords: 'dashboard, metrics, insights',
     noindex: true,
   },
   'donate-page': {
-    title: 'Donate - Nexus Dashboard',
-    description: 'Support us to keep Nexus Dashboard running.',
+    title: 'Donate - SPRITUP center',
+    description: 'Support us to keep SPRITUP center running.',
     keywords: 'donate, support, contribution',
     ogImage: '/placeholder-logo.png',
   },
   'contact-page': {
-    title: 'Contact Us - Nexus Dashboard',
+    title: 'Contact Us - SPRITUP center',
     description: 'Get in touch with our team.',
     keywords: 'contact, support, email, phone',
     ogImage: '/placeholder-logo.png',
   },
   'all-documents-page': {
-    title: 'All Documents - Nexus Dashboard',
+    title: 'All Documents - SPRITUP center',
     description: 'Browse all available documents.',
     keywords: 'all documents, browse, list',
   },
   'law-documents-page': {
-    title: 'Law Documents - Nexus Dashboard',
+    title: 'Law Documents - SPRITUP center',
     description: 'Explore law documents and regulations.',
     keywords: 'law documents, regulations, legal',
   },
   'krom-documents-page': {
-    title: 'Krom Documents - Nexus Dashboard',
+    title: 'Krom Documents - SPRITUP center',
     description: 'Browse Krom documents.',
     keywords: 'krom documents',
   },
   'brakeas-documents-page': {
-    title: 'Brakeas Documents - Nexus Dashboard',
+    title: 'Brakeas Documents - SPRITUP center',
     description: 'Browse Brakeas documents.',
     keywords: 'brakeas documents',
   },
   'constitution-documents-page': {
-    title: 'Constitution Documents - Nexus Dashboard',
+    title: 'Constitution Documents - SPRITUP center',
     description: 'Explore Constitution documents.',
     keywords: 'constitution documents, legal',
   },
   'deyka-documents-page': {
-    title: 'Deyka Documents - Nexus Dashboard',
+    title: 'Deyka Documents - SPRITUP center',
     description: 'Browse Deyka documents.',
     keywords: 'deyka documents',
   },
   'niyeambratebatte-documents-page': {
-    title: 'Niyeambratebatte Documents - Nexus Dashboard',
+    title: 'Niyeambratebatte Documents - SPRITUP center',
     description: 'Browse Niyeambratebatte documents.',
     keywords: 'niyeambratebatte documents',
   },
   'preahreachokram-documents-page': {
-    title: 'Preahreachokram Documents - Nexus Dashboard',
+    title: 'Preahreachokram Documents - SPRITUP center',
     description: 'Browse Preahreachokram documents.',
     keywords: 'preahreachokram documents',
   },
   'royaldecree-documents-page': {
-    title: 'Royal Decree Documents - Nexus Dashboard',
+    title: 'Royal Decree Documents - SPRITUP center',
     description: 'Browse Royal Decree documents.',
     keywords: 'royal decree documents',
   },
   'sub-decree-documents-page': {
-    title: 'Sub Decree Documents - Nexus Dashboard',
+    title: 'Sub Decree Documents - SPRITUP center',
     description: 'Browse Sub Decree documents.',
     keywords: 'sub decree documents',
   },
   'treatyconventionpact-documents-page': {
-    title: 'Treaty, Convention, Pact Documents - Nexus Dashboard',
+    title: 'Treaty, Convention, Pact Documents - SPRITUP center',
     description: 'Browse treaty, convention, and pact documents.',
     keywords: 'treaty, convention, pact documents',
   },
+  'settings-page': {
+    title: 'Settings - SPRITUP center',
+    description: 'Manage your settings.',
+    keywords: 'settings',
+    noindex: true,
+  },
   'settings-profile': {
-    title: 'Profile Settings - Nexus Dashboard',
+    title: 'Profile Settings - SPRITUP center',
     description: 'Manage your profile settings.',
     keywords: 'profile, settings',
     noindex: true,
   },
   'settings-preferences': {
-    title: 'Preferences - Nexus Dashboard',
+    title: 'Preferences - SPRITUP center',
     description: 'Manage your preferences.',
     keywords: 'preferences, settings',
     noindex: true,
   },
   'settings-privacy': {
-    title: 'Privacy Settings - Nexus Dashboard',
+    title: 'Privacy Settings - SPRITUP center',
     description: 'Manage your privacy settings.',
     keywords: 'privacy, settings',
     noindex: true,
   },
+  'help-page': {
+    title: 'Help - SPRITUP center',
+    description: 'Get help and support.',
+    keywords: 'help, support, faq',
+  },
   'help-faq': {
-    title: 'FAQ - Nexus Dashboard',
+    title: 'FAQ - SPRITUP center',
     description: 'Frequently asked questions.',
     keywords: 'faq, help, questions',
   },
   'help-support': {
-    title: 'Support - Nexus Dashboard',
+    title: 'Support - SPRITUP center',
     description: 'Get support from our team.',
     keywords: 'support, help, contact',
     ogImage: '/placeholder-logo.png',
   },
   'help-documentation': {
-    title: 'Documentation - Nexus Dashboard',
+    title: 'Documentation - SPRITUP center',
     description: 'Read our documentation and guides.',
     keywords: 'documentation, guides, help',
   },
@@ -212,16 +227,16 @@ const seoMap = {
 const applySeo = (name) => {
   const data = seoMap[name]
   if (!data) {
-    seo.setTitle('Nexus Dashboard')
+    seo.setTitle('SPRITUP center')
     seo.setMeta('description', 'Share, manage, and explore documents efficiently.')
-    seo.setProperty('og:title', 'Nexus Dashboard')
+    seo.setProperty('og:title', 'SPRITUP center')
     seo.setProperty('og:description', 'Share, manage, and explore documents efficiently.')
     seo.setLink('canonical', 'https://spritup-org-jcyg.vercel.app/')
     seo.setMeta('robots', 'index, follow')
     seo.setJsonLd({
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
-      name: 'Nexus Dashboard',
+      name: 'SPRITUP center',
       description: 'Share, manage, and explore documents efficiently.',
       url: 'https://spritup-org-jcyg.vercel.app/',
     })
@@ -259,6 +274,10 @@ watch(
     }
     if (newName === 'home-page') {
       activeSubmenu.value = 'home'
+    } else if (newName === 'settings-page' || newName?.startsWith('settings-')) {
+      activeSubmenu.value = 'settings'
+    } else if (newName === 'help-page' || newName?.startsWith('help-')) {
+      activeSubmenu.value = 'help'
     }
   }
 )

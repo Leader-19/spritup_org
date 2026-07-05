@@ -16,41 +16,47 @@
 
         </div>
 
-        <div class="hidden lg:flex items-center gap-1 ml-6 overflow-x-auto flex-1 scrollbar-hide" ref="navContainer">
-          <button v-for="item in navItems" :key="item.key" @click="$emit('menu-click', item.key)"
+        <div class="flex items-center gap-1 ml-6 overflow-x-auto flex-1 scrollbar-hide" ref="navContainer">
+          <button v-for="item in navItems" :key="item.key" @click="handleNavClick(item)"
             :class="['px-4 py-2 rounded-lg text-sm font-medium transition-all flex-shrink-0',
-              activeSubmenu === item.key
+              activeNavKey === item.key
                 ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400'
                 : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-gray-100']">
             {{ currentLang === 'en' ? item.label : item.labelKh }}
           </button>
         </div>
-        
+
         <button @click="scrollLeft"
           class="hidden lg:flex p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors text-gray-600 dark:text-gray-300">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        
+
         <button @click="scrollRight"
           class="hidden lg:flex p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors text-gray-600 dark:text-gray-300">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
           </svg>
         </button>
       </div>
 
       <div class="flex items-center gap-2">
-        <div class="relative hidden sm:block">
-          <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
-            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8" />
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35" />
-          </svg>
+        <div class="relative hidden sm:flex items-center">
+
           <input v-model="searchQuery" @keyup.enter="handleSearch" type="text"
             :placeholder="currentLang === 'en' ? 'Search...' : 'ស្វែងរក...'"
-            class="w-64 pl-9 pr-4 py-2.5 rounded-xl bg-gray-300 border-collapse dark:bg-gray-800/80 text-sm text-gray-700 dark:text-gray-300 placeholder-gray-400 border-none outline-none focus:ring-2 focus:ring-brand-400/50 transition" />
+            class="w-48 pl-9 pr-12 py-2.5 rounded-xl bg-gray-300 border-collapse dark:bg-gray-800/80 text-sm text-gray-700 dark:text-gray-300 placeholder-gray-400 border-none outline-none focus:ring-2 focus:ring-brand-400/50 transition" />
+          <button @click="handleSearch"
+            class="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 rounded-lg bg-brand-600 text-white hover:bg-brand-700 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M21 21l-4.35-4.35m1.85-5.65a7.5 7.5 0 11-15 0a7.5 7.5 0 0115 0z" />
+            </svg>
+          </button>
         </div>
 
         <button @click="$emit('toggle-dark')"
@@ -102,8 +108,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import axios from 'axios'
+import { API_BASE } from '../config/env.js'
 
 const props = defineProps({
   isDark: Boolean,
@@ -114,9 +122,12 @@ const props = defineProps({
 const emit = defineEmits(['toggle-dark', 'menu-click', 'set-lang'])
 
 const router = useRouter()
+const route = useRoute()
 const langOpen = ref(false)
 const searchQuery = ref('')
 const navContainer = ref(null)
+const categories = ref([])
+const catsLoading = ref(false)
 
 const scrollLeft = () => {
   if (navContainer.value) {
@@ -135,24 +146,76 @@ const languages = [
   { code: 'kh', name: 'ខ្មែរ', flag: '🇰🇭' },
 ]
 
-const navItems = [
-  { key: 'home', label: 'All', labelKh: 'ទាំអស់', page: 'home-page' },
-  { key: 'documents', label: 'Documents', labelKh: 'រដ្ឋធម្មនុញ្ញ', page: 'documents-page' },
-  { key: 'documents', label: 'Treaty/Convention', labelKh: 'សន្ធិសញ្ញា អនុសញ្ញា កតិកាសញ្ញា', page: 'documents-page' },
-  { key: 'documents', label: 'Krom', labelKh: 'ក្រម', page: 'documents-page' },
-  { key: 'documents', label: 'Law', labelKh: 'ច្បាប់', page: 'documents-page' },
-  { key: 'documents', label: 'Preah Reachokram', labelKh: 'ព្រះរាជក្រម', page: 'documents-page' },
-  { key: 'documents', label: 'Royal Decree', labelKh: 'ព្រះរាជក្រឹត្យ', page: 'documents-page' },
-  { key: 'documents', label: 'Sub-Decree', labelKh: 'អនុក្រឹត្យ', page: 'documents-page' },
-  { key: 'documents', label: 'Brakeas', labelKh: 'ប្រកាស', page: 'documents-page' },
-  { key: 'documents', label: 'Deyka', labelKh: 'ដីកា', page: 'documents-page' },
-  { key: 'ai-chat', label: 'AI Chat', labelKh: 'សេចក្ដីសម្រេច', page: 'ai-chat-page' },
-]
+const getCategoryLabel = (title) => {
+  const map = {
+    'រដ្ឋធម្មនុញ្ញ': 'Constitution',
+    'សន្ធិសញ្ញា អនុសញ្ញា កតិកាសញ្ញា': 'Treaty/Convention/Pact',
+    'ក្រម': 'Krom',
+    'ច្បាប់': 'Law',
+    'ព្រះរាជក្រម': 'Preah Reachokram',
+    'ព្រះរាជក្រឹត្យ': 'Royal Decree',
+    'អនុក្រឹត្យ': 'Sub-Decree',
+    'ប្រកាស': 'Brakeas',
+    'ដីកា': 'Deyka',
+  }
+  return map[title] || title
+}
+
+const fetchCategories = async () => {
+  catsLoading.value = true
+  try {
+    const response = await axios.get(`${API_BASE}/documents`)
+    if (response.data.status === 'success') {
+      categories.value = response.data.categories || []
+    }
+  } catch (error) {
+    console.error('Error fetching categories:', error)
+  } finally {
+    catsLoading.value = false
+  }
+}
+
+const navItems = computed(() => {
+  const items = [
+    { key: 'all', label: 'All', labelKh: 'ទាំអស់', to: '/documents' },
+  ]
+
+  for (const cat of categories.value) {
+    items.push({
+      key: `cat-${cat.id}`,
+      label: getCategoryLabel(cat.title),
+      labelKh: cat.title,
+      to: `/documents?category=${cat.id}`,
+    })
+  }
+
+  items.push({ key: 'ai-chat', label: 'AI Chat', labelKh: 'AI Chat' })
+
+  return items
+})
+
+const activeNavKey = computed(() => {
+  if (route.path === '/documents' && !route.query.category) return 'all'
+  if (route.path === '/documents' && route.query.category) return `cat-${route.query.category}`
+  return ''
+})
+
+const handleNavClick = (item) => {
+  if (item.to) {
+    router.push(item.to)
+  } else {
+    emit('menu-click', item.key)
+  }
+}
 
 const selectLang = (code) => {
   langOpen.value = false
   emit('set-lang', code)
 }
+
+onMounted(() => {
+  fetchCategories()
+})
 
 const handleSearch = () => {
   if (searchQuery.value.trim()) {

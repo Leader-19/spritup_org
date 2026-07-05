@@ -1,37 +1,20 @@
 <template>
-  <div class="px-4 md:px-6 lg:px-10 py-8 max-w-8xl mx-auto">
+  <div class="px-4 md:px-6 lg:px-10 py-8 max-w-8xl ml-auto">
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
       <div class="flex items-center gap-4 flex-wrap">
         <h1 class="font-display font-bold text-3xl text-gray-900 dark:text-white">
           {{ currentLang === 'en' ? 'Documents' : 'ឯកសារ' }}
         </h1>
 
-        <!-- Category Filter -->
-        <div class="relative">
-          <svg xmlns="http://www.w3.org/2000/svg"
-            class="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none"
-            viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-          </svg>
-        </div>
+        <button @click="viewMode = viewMode === 'grid' ? 'list' : 'grid'"
+          class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+          {{ viewMode === 'grid' ? (currentLang === 'en' ? 'List View' : 'ទិដ្ឋភាពបញ្ជី') : (currentLang === 'en' ? 'Card View' : 'ទិដ្ឋភាពកាត') }}
+        </button>
 
-        <!-- Items Per Page -->
-        <div class="relative">
-          <select v-model="itemsPerPage" @change="changeItemsPerPage"
-            class="appearance-none pl-3 pr-8 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-brand-400/50">
-            <option :value="10">{{ currentLang === 'en' ? '10 per page' : '១០ ក្នុងមួយទំព័រ' }}</option>
-            <option :value="20">{{ currentLang === 'en' ? '20 per page' : '២០ ក្នុងមួយទំព័រ' }}</option>
-            <option :value="30">{{ currentLang === 'en' ? '30 per page' : '៣០ ក្នុងមួយទំព័រ' }}</option>
-            <option :value="40">{{ currentLang === 'en' ? '40 per page' : '៤០ ក្នុងមួយទំព័រ' }}</option>
-            <option :value="50">{{ currentLang === 'en' ? '50 per page' : '៥០ ក្នុងមួយទំព័រ' }}</option>
-            <option :value="100">{{ currentLang === 'en' ? '100 per page' : '១០០ ក្នុងមួយទំព័រ' }}</option>
-          </select>
-          <svg xmlns="http://www.w3.org/2000/svg"
-            class="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none"
-            viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-          </svg>
-        </div>
+        <select v-model="itemsPerPage" @change="changeItemsPerPage"
+          class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-xs font-medium text-gray-700 dark:text-gray-300 outline-none">
+          <option v-for="opt in perPageOptions" :key="opt" :value="opt">{{ currentLang === 'en' ? `${opt} per page` : `${opt} ក្នុងមួយទំព័រ` }}</option>
+        </select>
       </div>
 
       <div class="relative w-full sm:w-auto">
@@ -51,61 +34,61 @@
       }}</p>
     </div>
 
-    <div v-else-if="!viewerOpen" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      <div v-for="doc in documents" :key="doc.id"
-        class="p-5 rounded-2xl bg-white/80 dark:bg-gray-800/80 glass border border-gray-100 dark:border-gray-700/50 hover:shadow-lg transition-shadow">
-        <div class="flex items-start gap-3 mb-3">
-          <div
-            class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center flex-shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M9 12h6m-6 6h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2z" />
-            </svg>
-          </div>
-          <div class="flex-1 min-w-0">
-            <h3 class="font-display font-semibold text-lg text-gray-900 dark:text-white truncate">{{ doc.doc_name }}
-            </h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400">{{ doc.category?.title }}</p>
-          </div>
+    <div v-else-if="!viewerOpen && viewMode === 'grid' && paginatedDocuments.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div v-for="doc in paginatedDocuments" :key="doc.id"
+        class="rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all overflow-hidden flex flex-col cursor-pointer"
+        @click="viewDocument(doc)">
+        <div class="relative bg-gray-100 dark:bg-gray-700 flex-shrink-0">
+          <img v-if="doc.image" :src="docImage(doc)" class="w-full max-h-[400px] object-contain" />
+          <div v-else class="w-full h-48 flex items-center justify-center text-gray-400 text-sm">No image</div>
         </div>
-        <p class="text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-2">{{ doc.description }}</p>
-        <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-          <span>{{ formatDate(doc.created_at) }}</span>
-          <button @click="viewDocument(doc)"
-            class="px-3 py-1 rounded-lg bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 hover:bg-brand-100 dark:hover:bg-brand-900/50 transition-colors flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-            </svg>
-            {{ currentLang === 'en' ? 'View' : 'មើល' }}
-          </button>
+        <div class="p-4 flex-1 flex flex-col">
+          <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-1 line-clamp-1">{{ doc.doc_name }}</h3>
+          <!-- <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">{{ getCategoryLabel(doc.categoryTitle) }}</p> -->
+          <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 flex-1">{{ doc.description }}</p>
+          <span class="mt-4 w-full py-2 rounded-xl bg-brand-600 text-white text-sm font-medium text-center hover:bg-brand-700 transition-colors">View Document</span>
         </div>
       </div>
     </div>
 
-    <div v-if="loading && !viewerOpen" class="text-center py-8">
-      <p class="text-gray-500 dark:text-gray-400">{{ currentLang === 'en' ? 'No documents found' : 'រកមិនឃីញឯកសារ' }}
-      </p>
-  </div>
+    <div v-else-if="!viewerOpen && viewMode === 'list' && paginatedDocuments.length" class="space-y-3">
+      <div v-for="doc in paginatedDocuments" :key="doc.id" @click="viewDocument(doc)"
+        class="flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all cursor-pointer">
+        <div class="w-40 h-40 rounded-xl bg-gray-100 dark:bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
+          <img v-if="doc.image" :src="docImage(doc)" class="max-w-full max-h-full object-contain" />
+          <div v-else class="text-gray-400 text-xs">No image</div>
+        </div>
+        <div class="flex-1 min-w-0">
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white line-clamp-1">{{ doc.doc_name }}</h3>
+          <!-- <p class="text-gray-600 dark:text-gray-400">{{ getCategoryLabel(doc.categoryTitle) }}</p> -->
+          <p class="text-gray-500 dark:text-gray-500 line-clamp-1">{{ doc.description }}</p>
+        </div>
+        <span class="px-4 py-2 bg-brand-600 text-white rounded-xl whitespace-nowrap hover:bg-brand-700 transition-colors">View</span>
+      </div>
+    </div>
 
-  <div v-if="pagination.last_page > 1" class="flex justify-center mt-8">
-    <div class="flex items-center gap-2">
-      <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1"
-        :class="['px-3 py-1 rounded-lg', currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800']">
+    <div v-if="!loading && !viewerOpen && !filteredDocuments.length" class="text-center py-8">
+      <p class="text-gray-500 dark:text-gray-400">{{ currentLang === 'en' ? 'No documents found' : 'រកមិនឃីញឯកសារ'
+      }}</p>
+    </div>
+
+    <div v-if="!viewerOpen && filteredDocuments.length" class="flex items-center justify-end gap-3 mt-6">
+      <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1"
+        :class="['px-4 py-2 rounded-lg text-sm font-medium transition-colors', currentPage === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700']">
         {{ currentLang === 'en' ? 'Previous' : 'មុន' }}
       </button>
-      <span class="text-sm text-gray-500 dark:text-gray-400">{{ currentPage }} / {{ pagination.last_page }}</span>
-      <button @click="changePage(currentPage + 1)" :disabled="currentPage === pagination.last_page"
-        :class="['px-3 py-1 rounded-lg', currentPage === pagination.last_page ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800']">
+
+      <span class="text-sm text-gray-600 dark:text-gray-400">
+        {{ currentLang === 'en' ? 'Page' : 'ទំព័រ' }} {{ currentPage }} / {{ totalPages }} ({{ filteredDocuments.length }} {{ currentLang === 'en' ? 'total' : 'សរុប' }})
+      </span>
+
+      <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages"
+        :class="['px-4 py-2 rounded-lg text-sm font-medium transition-colors', currentPage === totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700']">
         {{ currentLang === 'en' ? 'Next' : 'បន្ទាប់' }}
       </button>
     </div>
-  </div>
 
-  <!-- INLINE FULL VIEW (does NOT affect sidebar/navbar) -->
+    <!-- INLINE FULL VIEW (does NOT affect sidebar/navbar) -->
   <transition name="fade">
     <div v-if="viewerOpen"
       class="relative w-full h-[calc(100vh-140px)] mt-4 bg-black rounded-xl overflow-hidden border">
@@ -161,22 +144,17 @@ import { API_BASE, API_URL } from '../../config/env.js'
 const currentLang = inject('currentLang')
 const route = useRoute()
 
-const documents = ref([])
-const categories = ref([])
+const rawCategories = ref([])
 const loading = ref(false)
 const searchQuery = ref('')
 const selectedCategory = ref('')
 const viewerOpen = ref(false)
 const viewingDoc = ref(null)
 const documentContent = ref('')
+const viewMode = ref('grid')
 const itemsPerPage = ref(10)
 const currentPage = ref(1)
-const pagination = ref({
-  current_page: 1,
-  last_page: 1,
-  per_page: 10,
-  total: 0
-})
+const perPageOptions = [10, 20, 30, 40, 50, 100]
 
 const fileExt = computed(() => {
   return viewingDoc.value?.doc_upload?.split('.').pop()?.toLowerCase()
@@ -188,47 +166,82 @@ const isHtmlContent = computed(() => {
 
 const fileUrl = computed(() => {
   if (!viewingDoc.value?.doc_upload) return ''
-
   return `${API_URL}/storage/${viewingDoc.value.doc_upload}`
 })
 
-const fetchCategories = async () => {
-  try {
-    const response = await axios.get(`${API_BASE}/categories`)
-    if (response.data.status === 'success') {
-      categories.value = response.data.categories || []
+const allDocuments = computed(() => {
+  const docs = []
+  for (const cat of rawCategories.value) {
+    for (const doc of (cat.documents || [])) {
+      docs.push({
+        ...doc,
+        categoryId: cat.id,
+        categoryTitle: cat.title,
+      })
     }
-  } catch (error) {
-    console.error('Error fetching categories:', error)
   }
-}
+  return docs
+})
 
-const fetchDocuments = async (page = 1) => {
+const filteredDocuments = computed(() => {
+  let docs = [...allDocuments.value]
+
+  if (selectedCategory.value) {
+    docs = docs.filter(d => String(d.categoryId) === String(selectedCategory.value))
+  }
+
+  if (searchQuery.value.trim()) {
+    const q = searchQuery.value.toLowerCase()
+    docs = docs.filter(d =>
+      ((d.doc_name || '')).toLowerCase().includes(q) ||
+      ((d.doc_title || '')).toLowerCase().includes(q) ||
+      ((d.description || '')).toLowerCase().includes(q)
+    )
+  }
+
+  return docs
+})
+
+const paginatedDocuments = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value
+  const end = start + itemsPerPage.value
+  return filteredDocuments.value.slice(start, end)
+})
+
+const fetchDocuments = async () => {
   loading.value = true
   try {
-    const response = await axios.get(`${API_BASE}/documents`, {
-      params: {
-        page: page,
-        per_page: itemsPerPage.value,
-        search: searchQuery.value,
-        category_id: selectedCategory.value || undefined
-      }
-    })
+    const response = await axios.get(`${API_BASE}/documents`)
     if (response.data.status === 'success') {
-      documents.value = response.data.documents || []
-      pagination.value = response.data.pagination || {
-        current_page: 1,
-        last_page: 1,
-        per_page: itemsPerPage.value,
-        total: (response.data.documents || []).length
-      }
-      currentPage.value = pagination.value.current_page
+      rawCategories.value = response.data.categories || []
+    } else {
+      console.warn('Unexpected documents API response:', response.data)
     }
   } catch (error) {
     console.error('Error fetching documents:', error)
   } finally {
     loading.value = false
   }
+}
+
+const docImage = (doc) => {
+  if (!doc.image) return ''
+  return `${API_URL}/storage/${doc.image}`
+}
+
+const getCategoryLabel = (title) => {
+  const map = {
+    'រដ្ឋធម្មនុញ្ញ': 'Constitution',
+    'សន្ធិសញ្ញា អនុសញ្ញា កតិកាសញ្ញា': 'Treaty/Convention/Pact',
+    'ក្រម': 'Krom',
+    'ច្បាប់': 'Law',
+    'ព្រះរាជក្រម': 'Preah Reachokram',
+    'ព្រះរាជក្រឹត្យ': 'Royal Decree',
+    'អនុក្រឹត្យ': 'Sub-Decree',
+    'ប្រកាស': 'Brakeas',
+    'ដីកា': 'Deyka',
+  }
+  return map[title] || title
 }
 
 const formatDate = (dateStr) => {
@@ -259,32 +272,32 @@ const closeViewer = () => {
   documentContent.value = ''
 }
 
-const changePage = (page) => {
-  if (page >= 1 && page <= pagination.value.last_page) {
-    fetchDocuments(page)
-  }
-}
+const totalPages = computed(() => Math.max(1, Math.ceil(filteredDocuments.value.length / itemsPerPage.value)))
 
-const changeItemsPerPage = () => {
-  currentPage.value = 1
-  fetchDocuments(1)
+const goToPage = (page) => {
+  currentPage.value = Math.max(1, Math.min(page, totalPages.value))
 }
 
 const handleSearchInput = () => {
   currentPage.value = 1
-  fetchDocuments(1)
 }
 
 const handleCategoryChange = () => {
   currentPage.value = 1
-  fetchDocuments(1)
+}
+
+const changeItemsPerPage = () => {
+  currentPage.value = 1
 }
 
 onMounted(() => {
-  fetchCategories()
   const catId = route.query.category
   if (catId) {
     selectedCategory.value = catId
+  }
+  const search = route.query.search
+  if (search) {
+    searchQuery.value = search
   }
   fetchDocuments()
 })
@@ -294,6 +307,11 @@ watch(() => route.query.category, (newVal) => {
   if (newVal) {
     fetchDocuments()
   }
+})
+
+watch(() => route.query.search, (newVal) => {
+  searchQuery.value = newVal || ''
+  currentPage.value = 1
 })
 </script>
 
