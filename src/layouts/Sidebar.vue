@@ -4,7 +4,7 @@
     </div>
   </transition>
 
-  <aside :class="['sidebar-glass fixed right-0 top-16 bottom-0 z-30 w-72 overflow-y-auto transition-transform duration-300',
+  <aside :class="['sidebar-glass fixed right-0 top-28 lg:top-16 bottom-0 z-30 w-72 overflow-y-auto transition-transform duration-300',
     sidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0',
     !sidebarOpen && 'lg:w-0 lg:overflow-hidden']"
     style="transition: transform 0.3s cubic-bezier(.4,0,.2,1), width 0.3s;">

@@ -1,3 +1,5 @@
+
+
 <template>
     <div v-for="stat in stats" :key="stat.label"
         class="p-5 rounded-2xl bg-white/80 dark:bg-gray-800/80 glass border border-gray-100 dark:border-gray-700/50 shadow-sm hover:shadow-md transition-shadow">

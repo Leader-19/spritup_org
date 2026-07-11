@@ -39,7 +39,7 @@
         class="rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all overflow-hidden flex flex-col cursor-pointer"
         @click="viewDocument(doc)">
         <div class="relative bg-gray-100 dark:bg-gray-700 flex-shrink-0">
-          <img v-if="doc.image" :src="docImage(doc)" class="w-full max-h-[400px] object-contain" />
+          <img v-if="doc.image" :src="docImage(doc)" :alt="doc.doc_name" class="block w-full h-auto" />
           <div v-else class="w-full h-48 flex items-center justify-center text-gray-400 text-sm">No image</div>
         </div>
         <div class="p-4 flex-1 flex flex-col">
@@ -55,7 +55,7 @@
       <div v-for="doc in paginatedDocuments" :key="doc.id" @click="viewDocument(doc)"
         class="flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all cursor-pointer">
         <div class="w-40 h-40 rounded-xl bg-gray-100 dark:bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
-          <img v-if="doc.image" :src="docImage(doc)" class="max-w-full max-h-full object-contain" />
+          <img v-if="doc.image" :src="docImage(doc)" :alt="doc.doc_name" class="max-w-full max-h-full object-contain" />
           <div v-else class="text-gray-400 text-xs">No image</div>
         </div>
         <div class="flex-1 min-w-0">
@@ -171,15 +171,21 @@ const fileUrl = computed(() => {
 
 const allDocuments = computed(() => {
   const docs = []
-  for (const cat of rawCategories.value) {
-    for (const doc of (cat.documents || [])) {
-      docs.push({
-        ...doc,
-        categoryId: cat.id,
-        categoryTitle: cat.title,
-      })
+  const collectDocuments = (categories) => {
+    for (const cat of categories) {
+      for (const doc of (cat.documents || [])) {
+        docs.push({
+          ...doc,
+          categoryId: cat.id,
+          categoryTitle: cat.title,
+        })
+      }
+      // Laravel serializes `subCategories` as `sub_categories` in JSON.
+      // Without this, documents in child categories never reach the listing.
+      collectDocuments(cat.sub_categories || cat.subcategories || cat.children || [])
     }
   }
+  collectDocuments(rawCategories.value)
   return docs
 })
 
@@ -304,9 +310,7 @@ onMounted(() => {
 
 watch(() => route.query.category, (newVal) => {
   selectedCategory.value = newVal || ''
-  if (newVal) {
-    fetchDocuments()
-  }
+  currentPage.value = 1
 })
 
 watch(() => route.query.search, (newVal) => {

@@ -1,12 +1,16 @@
 <template>
+  <transition name="fade">
+    <div v-if="sidebarLeftOpen && isMobile" class="fixed inset-0 z-40 overlay" @click="$emit('toggle')"></div>
+  </transition>
+
   <transition name="slide">
-    <aside v-if="sidebarLeftOpen" :class="['sidebar-left-glass flex flex-col fixed left-0 top-16 bottom-0 z-20 transition-transform duration-300',
-      props.collapsed ? 'w-16' : 'w-64',
+    <aside v-if="sidebarLeftOpen" :class="['sidebar-left-glass flex flex-col fixed left-0 top-28 lg:top-16 bottom-0 z-50 transition-transform duration-300',
+      props.collapsed && !isMobile ? 'w-16' : 'w-72 max-w-[85vw]',
       sidebarLeftOpen ? 'translate-x-0' : '-translate-x-full']">
       <div class="p-4 flex-1 flex flex-col overflow-y-auto">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500"
-            v-if="!props.collapsed && (activeSubmenu === 'settings' || activeSubmenu === 'help' || activeSubmenu === 'home')">
+            v-if="!props.collapsed && activeSubmenu === 'home'">
             {{ sidebarTitle }}
           </h3>
           <div v-else-if="!props.collapsed"></div>
@@ -23,6 +27,12 @@
           :current-lang="currentLang"
           :active-section="activeHomeSection"
           @select="goToHomeSection" />
+
+        <DocumentsSidebar v-else-if="isDocumentsRoute && !props.collapsed"
+          :current-lang="currentLang"
+          :categories="categories"
+          root-category-title="អន្តរវិស័យ"
+          @select-category="selectCategory" />
       </div>
 
       <div class="p-4 border-t border-gray-200 dark:border-gray-700">
@@ -78,12 +88,14 @@ import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
 import { API_BASE } from '../config/env.js'
 import HomeSidebar from '../components/home/HomeSidebar.vue'
+import DocumentsSidebar from '../components/documents/DocumentsSidebar.vue'
 
 const props = defineProps({
   sidebarLeftOpen: Boolean,
   currentLang: String,
   activeSubmenu: String,
   collapsed: Boolean,
+  isMobile: Boolean,
 })
 
 defineEmits(['toggle', 'close', 'menu-click', 'toggle-collapsed'])
@@ -108,6 +120,10 @@ const sidebarTitle = computed(() => {
 const activeHomeSection = computed(() => {
   if (route.name === 'home-about-page') return route.query.section || 'objective'
   return ''
+})
+
+const isDocumentsRoute = computed(() => {
+  return route.path === '/documents' || route.path.endsWith('-documents')
 })
 
 const goToHomeSection = (key) => {
@@ -155,7 +171,7 @@ const getCategoryCount = (categoryId) => {
 
 const selectCategory = async (categoryId) => {
   selectedCategory.value = categoryId
-  router.push(`/documents?category=${categoryId}`)
+  router.push(categoryId ? `/documents?category=${categoryId}` : '/documents')
 }
 
 const goToSettings = () => {
@@ -172,9 +188,11 @@ const goBack = () => {
   }
 }
 
-watch(() => props.activeSubmenu, (newVal) => {
-  if (newVal === 'documents') {
+// Fetch whenever the Documents route opens. This makes the All button work
+// even if the menu state changes before the sidebar has mounted.
+watch([() => props.activeSubmenu, () => isDocumentsRoute.value], ([menu, isDocumentRoute]) => {
+  if (menu === 'documents' || isDocumentRoute) {
     fetchDocuments()
   }
-})
+}, { immediate: true })
 </script>

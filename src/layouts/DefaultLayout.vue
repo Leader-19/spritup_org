@@ -3,8 +3,12 @@
         @toggle-sidebar-left="sidebarLeftOpen = !sidebarLeftOpen" @toggle-dark="toggleDark"
         @menu-click="setActiveSubmenu" @set-lang="setLang" />
 
+    <SubNavbar :visible="Boolean(route.query.category)" :category-id="route.query.category"
+        @visibility-change="subNavbarVisible = $event" />
+
     <SidebarLeft :sidebar-left-open="sidebarLeftOpen" :current-lang="currentLang" :active-submenu="activeSubmenu"
-        :collapsed="sidebarCollapsed" @toggle="sidebarLeftOpen = !sidebarLeftOpen" @close="sidebarLeftOpen = true" 
+        :collapsed="sidebarCollapsed" :is-mobile="isMobile"
+        @toggle="sidebarLeftOpen = !sidebarLeftOpen" @close="sidebarLeftOpen = true"
         @menu-click="setActiveSubmenu" @toggle-collapsed="sidebarCollapsed = !sidebarCollapsed" />
 
     <Sidebar :sidebar-open="sidebarOpen" :is-mobile="isMobile" :current-lang="currentLang" @close="sidebarOpen = false"
@@ -13,7 +17,7 @@
     <main :class="['transition-all duration-300 min-h-screen bg-gray-50 dark:bg-gray-950',
         sidebarLeftOpen ? (sidebarCollapsed ? 'lg:pl-16' : 'lg:pl-64') : 'lg:pl-0',
         sidebarOpen ? 'lg:pr-72' : 'lg:pr-0']">
-        <div class="pt-20 pb-12 px-4 lg:px-8 min-h-[calc(100vh-64px)]">
+        <div :class="['pb-12 px-4 lg:px-8 min-h-[calc(100vh-64px)]', subNavbarVisible ? 'pt-44 lg:pt-32' : 'pt-32 lg:pt-20']">
             <router-view />
         </div>
 
@@ -29,6 +33,7 @@ import Navbar from './Navbar.vue'
 import Sidebar from './Sidebar.vue'
 import SidebarLeft from './SidebarLeft.vue'
 import Footer from './Footer.vue'
+import SubNavbar from './SubNavbar.vue'
 
 const sidebarLeftOpen = ref(true)
 const sidebarOpen = ref(false)
@@ -38,12 +43,18 @@ const isMobile = ref(false)
 const activePage = ref('home-page')
 const activeSubmenu = ref('home')
 const sidebarCollapsed = ref(false)
+const subNavbarVisible = ref(false)
 const route = useRoute()
 
 provide('currentLang', currentLang)
 
 const checkMobile = () => {
-    isMobile.value = window.innerWidth < 1024
+    const mobile = window.innerWidth < 1024
+    if (mobile && !isMobile.value) {
+        sidebarLeftOpen.value = false
+        sidebarCollapsed.value = false
+    }
+    isMobile.value = mobile
 }
 
 const toggleDark = () => {
@@ -66,6 +77,10 @@ const setActiveSubmenu = (menu) => {
          sidebarLeftOpen.value = false
      } else if (menu === 'home' || menu === 'documents' || menu === 'settings' || menu === 'help') {
          sidebarLeftOpen.value = !!menu
+         // The document categories are rendered in the expanded left sidebar.
+         if (menu === 'documents') {
+             sidebarCollapsed.value = false
+         }
          sidebarOpen.value = false
      } else {
          sidebarLeftOpen.value = false
@@ -83,6 +98,8 @@ onMounted(() => {
       activeSubmenu.value = 'settings'
     } else if (route.name === 'help-page' || route.name?.startsWith('help-')) {
       activeSubmenu.value = 'help'
+    } else if (route.name === 'documents-page' || route.path.endsWith('-documents')) {
+      activeSubmenu.value = 'documents'
     }
   })
 
@@ -284,7 +301,23 @@ watch(
       activeSubmenu.value = 'settings'
     } else if (newName === 'help-page' || newName?.startsWith('help-')) {
       activeSubmenu.value = 'help'
+    } else if (newName === 'documents-page' || route.path.endsWith('-documents')) {
+      activeSubmenu.value = 'documents'
     }
   }
+)
+
+// The All navigation goes to /documents. Always show the category sidebar for
+// that route instead of relying on a navbar click event.
+watch(
+  () => route.path,
+  (path) => {
+    if (path === '/documents' || path.endsWith('-documents')) {
+      activeSubmenu.value = 'documents'
+      sidebarLeftOpen.value = true
+      sidebarCollapsed.value = false
+    }
+  },
+  { immediate: true }
 )
 </script>

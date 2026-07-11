@@ -1,14 +1,21 @@
 <template>
-  <nav class="navbar-glass fixed top-0 left-0 right-0 z-40 h-16">
-    <div class="flex items-center justify-between h-full px-4 lg:px-6">
-      <div class="flex items-center gap-3">
+  <nav class="navbar-glass fixed top-0 left-0 right-0 z-40">
+    <div class="flex items-center justify-between h-full gap-2 px-3 sm:px-4 lg:px-6">
+      <div class="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
+        <button @click="$emit('toggle-sidebar-left')"
+          class="lg:hidden shrink-0 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors text-gray-600 dark:text-gray-300"
+          aria-label="Toggle navigation">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
         <div class="flex items-center gap-2">
           <div class="flex flex-col">
             <a href="/" class="flex flex-col">
               <span class="font-display font-extrabold text-xl tracking-tight">
                 SPRITUP
               </span>
-              <span class="text-sm text-gray-600">
+              <span class="hidden sm:block text-sm text-gray-600">
                 Center
               </span>
             </a>
@@ -16,7 +23,7 @@
 
         </div>
 
-        <div class="flex items-center gap-1 ml-6 overflow-x-auto flex-1 scrollbar-hide" ref="navContainer">
+        <div class="hidden lg:flex items-center gap-1 ml-6 overflow-x-auto flex-1 scrollbar-hide" ref="navContainer">
           <button v-for="item in navItems" :key="item.key" @click="handleNavClick(item)"
             :class="['px-4 py-2 rounded-lg text-sm font-medium transition-all flex-shrink-0',
               activeNavKey === item.key
@@ -104,6 +111,18 @@
         </div>
       </div>
     </div>
+
+    <div class="lg:hidden h-12 border-t border-gray-200/70 dark:border-gray-800/70">
+      <div class="flex h-full items-center gap-1 overflow-x-auto px-3 scrollbar-hide">
+        <button v-for="item in navItems" :key="`mobile-${item.key}`" @click="handleNavClick(item)"
+          :class="['px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all flex-shrink-0',
+            activeNavKey === item.key
+              ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400'
+              : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60']">
+          {{ currentLang === 'en' ? item.label : item.labelKh }}
+        </button>
+      </div>
+    </div>
   </nav>
 </template>
 
@@ -119,7 +138,7 @@ const props = defineProps({
   activeSubmenu: String,
 })
 
-const emit = defineEmits(['toggle-dark', 'menu-click', 'set-lang'])
+const emit = defineEmits(['toggle-sidebar-left', 'toggle-dark', 'menu-click', 'set-lang'])
 
 const router = useRouter()
 const route = useRoute()
@@ -177,7 +196,7 @@ const fetchCategories = async () => {
 
 const navItems = computed(() => {
   const items = [
-    { key: 'all', label: 'All', labelKh: 'ទាំអស់', to: '/documents' },
+    { key: 'all', label: 'All', labelKh: 'ទាំងអស់', to: '/documents' },
   ]
 
   for (const cat of categories.value) {
@@ -202,6 +221,11 @@ const activeNavKey = computed(() => {
 
 const handleNavClick = (item) => {
   if (item.to) {
+    // Route changes within /documents keep the same route name, so explicitly
+    // activate the Documents sidebar for All and every document category.
+    if (item.to.startsWith('/documents')) {
+      emit('menu-click', 'documents')
+    }
     router.push(item.to)
   } else {
     emit('menu-click', item.key)
