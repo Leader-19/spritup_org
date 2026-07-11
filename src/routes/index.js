@@ -1,6 +1,7 @@
 // router/index.js
 import { createRouter, createWebHistory } from "vue-router";
 import HomePage from "../views/home/HomePage.vue";
+import HomeAboutPage from "../views/home/HomeAboutPage.vue";
 import DashboardPage from "../views/dashboard/DashboardPage.vue";
 import DocumentsPage from "../views/documents/DocumentsPage.vue";
 import DonatePage from "../views/donates/DonatePage.vue";
@@ -30,6 +31,11 @@ const routes = [
     path: "/",
     name: "home-page",
     component: HomePage,
+  },
+  {
+    path: "/home",
+    name: "home-about-page",
+    component: HomeAboutPage,
   },
   {
     path: "/dashboard",

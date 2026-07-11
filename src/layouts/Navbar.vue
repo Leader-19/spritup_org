@@ -9,7 +9,7 @@
                 SPRITUP
               </span>
               <span class="text-sm text-gray-600">
-                Organization
+                Center
               </span>
             </a>
           </div>

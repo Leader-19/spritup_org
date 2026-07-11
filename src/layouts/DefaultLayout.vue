@@ -77,7 +77,7 @@ onMounted(() => {
     checkMobile()
     window.addEventListener('resize', checkMobile)
     activePage.value = route.name
-    if (route.name === 'home-page') {
+    if (route.name === 'home-page' || route.name === 'home-about-page') {
       activeSubmenu.value = 'home'
     } else if (route.name === 'settings-page' || route.name?.startsWith('settings-')) {
       activeSubmenu.value = 'settings'
@@ -103,6 +103,12 @@ const seoMap = {
     title: 'Documents - SPRITUP center',
     description: 'Browse and manage your documents efficiently.',
     keywords: 'documents, management, files',
+  },
+  'home-about-page': {
+    title: 'About SPRITUP center',
+    description: 'Learn about our objective, mission, vision, contact, and how you can support us through donations.',
+    keywords: 'about, objective, mission, vision, contact, donate',
+    ogImage: '/placeholder-logo.png',
   },
   'dashboard-page': {
     title: 'Dashboard - SPRITUP center',
@@ -272,7 +278,7 @@ watch(
     if (newName) {
       applySeo(newName)
     }
-    if (newName === 'home-page') {
+    if (newName === 'home-page' || newName === 'home-about-page') {
       activeSubmenu.value = 'home'
     } else if (newName === 'settings-page' || newName?.startsWith('settings-')) {
       activeSubmenu.value = 'settings'

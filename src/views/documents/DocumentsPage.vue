@@ -2,12 +2,12 @@
   <div class="px-4 md:px-6 lg:px-10 py-8 max-w-8xl ml-auto">
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
       <div class="flex items-center gap-4 flex-wrap">
-        <h1 class="font-display font-bold text-3xl text-gray-900 dark:text-white">
+        <h1 class="font-display font-bold text-2xl text-gray-900 dark:text-white">
           {{ currentLang === 'en' ? 'Documents' : 'ឯកសារ' }}
         </h1>
 
         <button @click="viewMode = viewMode === 'grid' ? 'list' : 'grid'"
-          class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+          class="px-3 py-2.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
           {{ viewMode === 'grid' ? (currentLang === 'en' ? 'List View' : 'ទិដ្ឋភាពបញ្ជី') : (currentLang === 'en' ? 'Card View' : 'ទិដ្ឋភាពកាត') }}
         </button>
 
