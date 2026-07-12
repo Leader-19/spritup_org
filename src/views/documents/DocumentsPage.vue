@@ -140,6 +140,7 @@ import { ref, computed, inject, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
 import { API_BASE, API_URL } from '../../config/env.js'
+import { normalizeCategories } from '../../utils/api.js'
 
 const currentLang = inject('currentLang')
 const route = useRoute()
@@ -219,7 +220,7 @@ const fetchDocuments = async () => {
   try {
     const response = await axios.get(`${API_BASE}/documents`)
     if (response.data.status === 'success') {
-      rawCategories.value = response.data.categories || []
+      rawCategories.value = normalizeCategories(response.data.categories)
     } else {
       console.warn('Unexpected documents API response:', response.data)
     }

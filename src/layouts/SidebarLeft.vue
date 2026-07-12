@@ -4,7 +4,7 @@
   </transition>
 
   <transition name="slide">
-    <aside v-if="sidebarLeftOpen" :class="['sidebar-left-glass flex flex-col fixed left-0 top-28 lg:top-16 bottom-0 z-50 transition-transform duration-300',
+    <aside v-if="sidebarLeftOpen" :class="['sidebar-left-glass flex flex-col fixed left-0 top-28 lg:top-16 bottom-0 z-50 overflow-hidden transition-[width] duration-300',
       props.collapsed && !isMobile ? 'w-16' : 'w-72 max-w-[85vw]',
       sidebarLeftOpen ? 'translate-x-0' : '-translate-x-full']">
       <div class="p-4 flex-1 flex flex-col overflow-y-auto">
@@ -14,7 +14,7 @@
             {{ sidebarTitle }}
           </h3>
           <div v-else-if="!props.collapsed"></div>
-          <button @click="$emit('toggle-collapsed')"
+          <button @click="$emit('toggle')"
             class="p-1.5 rounded-lg hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-colors text-gray-600 dark:text-gray-300">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
               stroke="currentColor" stroke-width="2">
@@ -23,16 +23,20 @@
           </button>
         </div>
 
-        <HomeSidebar v-if="activeSubmenu === 'home' && !props.collapsed"
-          :current-lang="currentLang"
-          :active-section="activeHomeSection"
-          @select="goToHomeSection" />
+        <transition name="fade">
+          <HomeSidebar v-if="activeSubmenu === 'home' && !props.collapsed"
+            :current-lang="currentLang"
+            :active-section="activeHomeSection"
+            @select="goToHomeSection" />
+        </transition>
 
-        <DocumentsSidebar v-else-if="isDocumentsRoute && !props.collapsed"
-          :current-lang="currentLang"
-          :categories="categories"
-          root-category-title="អន្តរវិស័យ"
-          @select-category="selectCategory" />
+        <transition name="fade">
+          <DocumentsSidebar v-if="isDocumentsRoute && !props.collapsed"
+            :current-lang="currentLang"
+            :categories="categories"
+            root-category-title="អន្តរវិស័យ"
+            @select-category="selectCategory" />
+        </transition>
       </div>
 
       <div class="p-4 border-t border-gray-200 dark:border-gray-700">
@@ -87,6 +91,7 @@ import { ref, computed, watch, inject } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
 import { API_BASE } from '../config/env.js'
+import { normalizeCategories } from '../utils/api.js'
 import HomeSidebar from '../components/home/HomeSidebar.vue'
 import DocumentsSidebar from '../components/documents/DocumentsSidebar.vue'
 
@@ -140,8 +145,8 @@ const fetchDocuments = async () => {
   try {
     const response = await axios.get(`${API_BASE}/documents`)
     if (response.data.status === 'success') {
-      documents.value = response.data.documents || []
-      categories.value = response.data.categories || []
+      documents.value = normalizeCategories(response.data.documents)
+      categories.value = normalizeCategories(response.data.categories)
     }
   } catch (error) {
     console.error('Error fetching documents:', error)

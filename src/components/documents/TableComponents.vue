@@ -106,6 +106,7 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { API_URL } from '../../config/env'
+import { normalizeCategories, flattenDocuments } from '../../utils/api.js'
 
 const documents = ref([])
 const categories = ref([])
@@ -120,8 +121,8 @@ const fetchDocuments = async () => {
         const res = await axios.get(`${API_URL}/api/documents`)
 
         // ✅ IMPORTANT (match your API)
-        documents.value = res.data.documents
-        categories.value = res.data.categories
+        categories.value = normalizeCategories(res.data.categories)
+        documents.value = flattenDocuments(categories.value)
 
     } catch (err) {
         error.value = err.message

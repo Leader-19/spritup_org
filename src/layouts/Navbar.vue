@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar-glass fixed top-0 left-0 right-0 z-40">
-    <div class="flex items-center justify-between h-full gap-2 px-3 sm:px-4 lg:px-6">
+    <div class="flex items-center justify-between h-14 lg:h-16 gap-2 px-3 sm:px-4 lg:px-6">
       <div class="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
         <button @click="$emit('toggle-sidebar-left')"
           class="lg:hidden shrink-0 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors text-gray-600 dark:text-gray-300"
@@ -131,6 +131,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
 import { API_BASE } from '../config/env.js'
+import { normalizeCategories } from '../utils/api.js'
 
 const props = defineProps({
   isDark: Boolean,
@@ -185,7 +186,7 @@ const fetchCategories = async () => {
   try {
     const response = await axios.get(`${API_BASE}/documents`)
     if (response.data.status === 'success') {
-      categories.value = response.data.categories || []
+      categories.value = normalizeCategories(response.data.categories)
     }
   } catch (error) {
     console.error('Error fetching categories:', error)

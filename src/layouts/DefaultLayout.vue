@@ -4,7 +4,8 @@
         @menu-click="setActiveSubmenu" @set-lang="setLang" />
 
     <SubNavbar :visible="Boolean(route.query.category)" :category-id="route.query.category"
-        @visibility-change="subNavbarVisible = $event" />
+      :sidebar-open="sidebarLeftOpen" :collapsed="sidebarCollapsed"
+      @visibility-change="subNavbarVisible = $event" />
 
     <SidebarLeft :sidebar-left-open="sidebarLeftOpen" :current-lang="currentLang" :active-submenu="activeSubmenu"
         :collapsed="sidebarCollapsed" :is-mobile="isMobile"
@@ -14,10 +15,10 @@
     <Sidebar :sidebar-open="sidebarOpen" :is-mobile="isMobile" :current-lang="currentLang" @close="sidebarOpen = false"
         @toggle="sidebarOpen = !sidebarOpen" />
 
-    <main :class="['transition-all duration-300 min-h-screen bg-gray-50 dark:bg-gray-950',
-        sidebarLeftOpen ? (sidebarCollapsed ? 'lg:pl-16' : 'lg:pl-64') : 'lg:pl-0',
+        <main :class="['transition-all duration-300 min-h-screen bg-gray-50 dark:bg-gray-950',
+          sidebarLeftOpen ? (sidebarCollapsed ? 'lg:pl-16' : 'lg:pl-72') : 'lg:pl-0',
         sidebarOpen ? 'lg:pr-72' : 'lg:pr-0']">
-        <div :class="['pb-12 px-4 lg:px-8 min-h-[calc(100vh-64px)]', subNavbarVisible ? 'pt-44 lg:pt-32' : 'pt-32 lg:pt-20']">
+        <div :class="['pb-12 px-4 lg:px-8 min-h-[calc(100vh-64px)]', subNavbarVisible ? 'pt-40 lg:pt-32' : 'pt-28 lg:pt-20']">
             <router-view />
         </div>
 
@@ -71,22 +72,23 @@ const setLang = (lang) => {
 }
 
 const setActiveSubmenu = (menu) => {
-     activeSubmenu.value = menu
-     if (menu === 'ai-chat') {
-         sidebarOpen.value = true
-         sidebarLeftOpen.value = false
-     } else if (menu === 'home' || menu === 'documents' || menu === 'settings' || menu === 'help') {
-         sidebarLeftOpen.value = !!menu
-         // The document categories are rendered in the expanded left sidebar.
-         if (menu === 'documents') {
-             sidebarCollapsed.value = false
-         }
-         sidebarOpen.value = false
-     } else {
-         sidebarLeftOpen.value = false
-         sidebarOpen.value = false
-     }
- }
+   activeSubmenu.value = menu
+   if (menu === 'ai-chat') {
+       sidebarOpen.value = true
+       sidebarLeftOpen.value = false
+   } else if (menu === 'home' || menu === 'documents' || menu === 'settings' || menu === 'help') {
+       // Keep the left sidebar closed on mobile; users open it manually.
+       sidebarLeftOpen.value = !isMobile.value
+       // The document categories are rendered in the expanded left sidebar.
+       if (menu === 'documents') {
+           sidebarCollapsed.value = false
+       }
+       sidebarOpen.value = false
+   } else {
+       sidebarLeftOpen.value = false
+       sidebarOpen.value = false
+   }
+}
 
 onMounted(() => {
     checkMobile()
@@ -276,7 +278,7 @@ const applySeo = (name) => {
   const canonical = typeof data.canonical === 'string' ? data.canonical : `https://spritup-org-jcyg.vercel.app${route.path}`
   seo.setLink('canonical', canonical)
 
-  const image = data.ogImage || 'https://spritup-org-jcyg.vercel.app/icon-dark-32x32.png'
+  const image = data.ogImage || 'https://spritup-org-jcyg.vercel.app/qr-code.jpg'
   seo.setProperty('og:image', image)
   seo.setProperty('og:url', canonical)
 
@@ -314,7 +316,8 @@ watch(
   (path) => {
     if (path === '/documents' || path.endsWith('-documents')) {
       activeSubmenu.value = 'documents'
-      sidebarLeftOpen.value = true
+      // Don't force the sidebar open on mobile; let users toggle it.
+      if (!isMobile.value) sidebarLeftOpen.value = true
       sidebarCollapsed.value = false
     }
   },

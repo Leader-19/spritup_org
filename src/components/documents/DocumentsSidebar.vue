@@ -42,6 +42,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
 import { API_BASE } from '../../config/env.js'
+import { normalizeCategories } from '../../utils/api.js'
 
 const props = defineProps({
   currentLang: String,
@@ -85,16 +86,12 @@ const allCategories = computed(() => {
     ? rootCategory?.sub_categories || rootCategory?.subcategories || rootCategory?.children || rootCategory?.child_categories || []
     : categories
 
+  // Only the first level (sub categories) is shown in the sidebar. The sub
+  // categories they contain are exposed via the sub-navbar instead.
   const addCategories = (categories, depth = 0) => {
     for (const category of categories || []) {
       if (!category || typeof category !== 'object') continue
       flattened.push({ category, depth })
-      // Laravel serializes a `subCategories` relationship as `sub_categories`.
-      // Keep the other variants for compatibility with the existing API data.
-      addCategories(
-        category.sub_categories || category.subcategories || category.children || category.child_categories,
-        depth + 1,
-      )
     }
   }
 
@@ -117,7 +114,7 @@ const fetchCategories = async () => {
     const response = await axios.get(`${API_BASE}/documents`)
     const payload = response.data || {}
     const categories = payload.categories || payload.data?.categories || payload.data
-    apiCategories.value = Array.isArray(categories) ? categories : []
+    apiCategories.value = normalizeCategories(categories)
   } catch (error) {
     console.error('Error fetching sidebar categories:', error)
   } finally {
