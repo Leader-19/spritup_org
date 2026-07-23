@@ -42,10 +42,10 @@
           <img v-if="doc.image" :src="docImage(doc)" :alt="doc.doc_name" class="block w-full h-auto" />
           <div v-else class="w-full h-48 flex items-center justify-center text-gray-400 text-sm">No image</div>
         </div>
-        <div class="p-4 flex-1 flex flex-col">
+        <div class="p-4 flex-1 flex flex-col min-h-0">
           <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-1 line-clamp-1">{{ doc.doc_name }}</h3>
           <!-- <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">{{ getCategoryLabel(doc.categoryTitle) }}</p> -->
-          <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 flex-1">{{ doc.description }}</p>
+          <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">{{ doc.description }}</p>
           <span class="mt-4 w-full py-2 rounded-xl bg-brand-600 text-white text-sm font-medium text-center hover:bg-brand-700 transition-colors">View Document</span>
         </div>
       </div>
