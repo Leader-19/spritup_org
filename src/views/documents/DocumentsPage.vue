@@ -43,9 +43,18 @@
           <div v-else class="w-full h-48 flex items-center justify-center text-gray-400 text-sm">No image</div>
         </div>
         <div class="p-4 flex-1 flex flex-col min-h-0">
-          <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-1 line-clamp-1">{{ doc.doc_name }}</h3>
-          <!-- <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">{{ getCategoryLabel(doc.categoryTitle) }}</p> -->
-          <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">{{ doc.description }}</p>
+          <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-1"
+            :class="isExpanded(doc.id) ? '' : 'line-clamp-1'">
+            {{ doc.doc_name }}
+          </h3>
+          <p class="text-sm text-gray-600 dark:text-gray-300"
+            :class="isExpanded(doc.id) ? '' : 'line-clamp-2'">
+            {{ doc.description }}
+          </p>
+          <span class="mt-2 text-xs text-brand-600 dark:text-brand-400 cursor-pointer hover:underline"
+            @click.stop="toggleExpand(doc.id)">
+            {{ isExpanded(doc.id) ? (currentLang === 'en' ? 'See less' : 'បង្កត់') : (currentLang === 'en' ? 'See more' : 'មើលបន្ថែម') }}
+          </span>
           <span class="mt-4 w-full py-2 rounded-xl bg-brand-600 text-white text-sm font-medium text-center hover:bg-brand-700 transition-colors">View Document</span>
         </div>
       </div>
@@ -59,9 +68,18 @@
           <div v-else class="text-gray-400 text-xs">No image</div>
         </div>
         <div class="flex-1 min-w-0">
-          <h3 class="text-xl font-bold text-gray-900 dark:text-white line-clamp-1">{{ doc.doc_name }}</h3>
-          <!-- <p class="text-gray-600 dark:text-gray-400">{{ getCategoryLabel(doc.categoryTitle) }}</p> -->
-          <p class="text-gray-500 dark:text-gray-500 line-clamp-1">{{ doc.description }}</p>
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white"
+            :class="isExpanded(doc.id) ? '' : 'line-clamp-1'">
+            {{ doc.doc_name }}
+          </h3>
+          <p class="text-gray-500 dark:text-gray-500"
+            :class="isExpanded(doc.id) ? '' : 'line-clamp-1'">
+            {{ doc.description }}
+          </p>
+          <span class="text-xs text-brand-600 dark:text-brand-400 cursor-pointer hover:underline"
+            @click.stop="toggleExpand(doc.id)">
+            {{ isExpanded(doc.id) ? (currentLang === 'en' ? 'See less' : 'បង្កត់') : (currentLang === 'en' ? 'See more' : 'មើលបន្ថែម') }}
+          </span>
         </div>
         <span class="px-4 py-2 bg-brand-600 text-white rounded-xl whitespace-nowrap hover:bg-brand-700 transition-colors">View</span>
       </div>
@@ -279,7 +297,19 @@ const closeViewer = () => {
   documentContent.value = ''
 }
 
-const totalPages = computed(() => Math.max(1, Math.ceil(filteredDocuments.value.length / itemsPerPage.value)))
+const expandedDocs = ref(new Set())
+
+const toggleExpand = (docId) => {
+  const next = new Set(expandedDocs.value)
+  if (next.has(docId)) {
+    next.delete(docId)
+  } else {
+    next.add(docId)
+  }
+  expandedDocs.value = next
+}
+
+const isExpanded = (docId) => expandedDocs.value.has(docId)
 
 const goToPage = (page) => {
   currentPage.value = Math.max(1, Math.min(page, totalPages.value))

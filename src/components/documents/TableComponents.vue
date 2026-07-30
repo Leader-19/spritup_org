@@ -54,8 +54,20 @@
                             </td>
 
                             <!-- Title -->
-                            <td class="p-3 text-gray-700 dark:text-gray-300">
-                                {{ document.doc_title }}
+                            <td class="p-3 text-gray-700 dark:text-gray-300 max-w-xs">
+                                <div v-if="document.doc_title && document.doc_title.length > 50">
+                                    <span v-if="!expandedRows.has(document.id)">
+                                        {{ document.doc_title.slice(0, 50) }}...
+                                    </span>
+                                    <span v-else>
+                                        {{ document.doc_title }}
+                                    </span>
+                                    <span class="text-brand-600 dark:text-brand-400 cursor-pointer hover:underline ml-1"
+                                        @click="toggleRow(document.id)">
+                                        {{ expandedRows.has(document.id) ? 'See less' : 'See more' }}
+                                    </span>
+                                </div>
+                                <span v-else>{{ document.doc_title }}</span>
                             </td>
 
                             <!-- Category -->
@@ -112,6 +124,17 @@ const documents = ref([])
 const categories = ref([])
 const loading = ref(false)
 const error = ref(null)
+const expandedRows = ref(new Set())
+
+const toggleRow = (id) => {
+  const next = new Set(expandedRows.value)
+  if (next.has(id)) {
+    next.delete(id)
+  } else {
+    next.add(id)
+  }
+  expandedRows.value = next
+}
 
 const fetchDocuments = async () => {
     loading.value = true
