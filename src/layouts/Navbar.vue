@@ -9,8 +9,10 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
-        <div class="flex items-center gap-2">
-          <div class="flex flex-col">
+        <div class="flex items-center gap-2 sm:gap-3">
+          <div class="flex items-center gap-2 sm:gap-2.5">
+            <img src="/logo.jpg" alt="SPRITUP Center Logo"
+              class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg object-contain shadow-md flex-shrink-0" />
             <a href="/" class="flex flex-col">
               <span class="font-display font-extrabold text-xl tracking-tight">
                 SPRITUP
@@ -20,7 +22,6 @@
               </span>
             </a>
           </div>
-
         </div>
 
         <div class="hidden lg:flex items-center gap-1 ml-6 overflow-x-auto flex-1 scrollbar-hide" ref="navContainer">

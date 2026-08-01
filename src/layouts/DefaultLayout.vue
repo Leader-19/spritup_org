@@ -116,7 +116,7 @@ const seoMap = {
     title: 'SPRITUP center - Home',
     description: 'Explore documents, laws, decrees, and more with SPRITUP center.',
     keywords: 'documents, laws, decrees, constitution, dashboard, sharing',
-    ogImage: '/placeholder-logo.png',
+    ogImage: 'https://www.spritup.site/logo.jpg',
   },
   'documents-page': {
     title: 'Documents - SPRITUP center',
@@ -127,7 +127,7 @@ const seoMap = {
     title: 'About SPRITUP center',
     description: 'Learn about our objective, mission, vision, contact, and how you can support us through donations.',
     keywords: 'about, objective, mission, vision, contact, donate',
-    ogImage: '/placeholder-logo.png',
+    ogImage: 'https://www.spritup.site/logo.jpg',
   },
   'dashboard-page': {
     title: 'Dashboard - SPRITUP center',
@@ -139,13 +139,13 @@ const seoMap = {
     title: 'Donate - SPRITUP center',
     description: 'Support us to keep SPRITUP center running.',
     keywords: 'donate, support, contribution',
-    ogImage: '/placeholder-logo.png',
+    ogImage: 'https://www.spritup.site/logo.jpg',
   },
   'contact-page': {
     title: 'Contact Us - SPRITUP center',
     description: 'Get in touch with our team.',
     keywords: 'contact, support, email, phone',
-    ogImage: '/placeholder-logo.png',
+    ogImage: 'https://www.spritup.site/logo.jpg',
   },
   'all-documents-page': {
     title: 'All Documents - SPRITUP center',
@@ -240,7 +240,7 @@ const seoMap = {
     title: 'Support - SPRITUP center',
     description: 'Get support from our team.',
     keywords: 'support, help, contact',
-    ogImage: '/placeholder-logo.png',
+    ogImage: 'https://www.spritup.site/logo.jpg',
   },
   'help-documentation': {
     title: 'Documentation - SPRITUP center',
@@ -256,14 +256,14 @@ const applySeo = (name) => {
     seo.setMeta('description', 'Share, manage, and explore documents efficiently.')
     seo.setProperty('og:title', 'SPRITUP center')
     seo.setProperty('og:description', 'Share, manage, and explore documents efficiently.')
-    seo.setLink('canonical', 'https://spritup-org-jcyg.vercel.app/')
+    seo.setLink('canonical', 'https://www.spritup.site/')
     seo.setMeta('robots', 'index, follow')
     seo.setJsonLd({
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
       name: 'SPRITUP center',
       description: 'Share, manage, and explore documents efficiently.',
-      url: 'https://spritup-org-jcyg.vercel.app/',
+      url: 'https://www.spritup.site/',
     })
     return
   }
@@ -275,10 +275,10 @@ const applySeo = (name) => {
   seo.setProperty('og:description', data.description)
   seo.setMeta('robots', data.noindex ? 'noindex, nofollow' : 'index, follow')
 
-  const canonical = typeof data.canonical === 'string' ? data.canonical : `https://spritup-org-jcyg.vercel.app${route.path}`
+  const canonical = typeof data.canonical === 'string' ? data.canonical : `https://www.spritup.site${route.path}`
   seo.setLink('canonical', canonical)
 
-  const image = data.ogImage || 'https://spritup-org-jcyg.vercel.app/qr-code.jpg'
+  const image = data.ogImage || 'https://www.spritup.site/logo.jpg'
   seo.setProperty('og:image', image)
   seo.setProperty('og:url', canonical)
 

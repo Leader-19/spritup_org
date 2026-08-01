@@ -98,8 +98,7 @@
             យើងខ្ញុំទទួលការបរិច្ចាគតាមរយៈប្រព័ន្ធធនាគារដែលមានសុវត្ថិភាព និងងាយស្រួលបំផុត
           </p>
 
-          <img src="../../public/qr-code.jpg" alt="">
-
+          <img src="../../public/qr-code.jpg" alt="SPRITUP Center Logo" class="max-w-[100px] w-full h-auto rounded-lg shadow-md object-contain">
         </div>
       </div>
 
