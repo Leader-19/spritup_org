@@ -17,6 +17,27 @@ h1, h2, h3, h4, h5, .font-display {
   font-family: 'Siemreap', 'Syne', sans-serif;
 }
 
+/* Focus visible */
+:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 5px;
@@ -232,4 +253,48 @@ h1, h2, h3, h4, h5, .font-display {
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* Back to top */
+.back-to-top {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 30;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(99,102,241,0.15);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+.back-to-top:hover {
+  background: rgba(99,102,241,0.1);
+  border-color: rgba(99,102,241,0.3);
+}
+
+.dark .back-to-top {
+  background: rgba(13,13,23,0.9);
+  border-color: rgba(99,102,241,0.2);
+}
+
+.dark .back-to-top:hover {
+  background: rgba(99,102,241,0.15);
 }

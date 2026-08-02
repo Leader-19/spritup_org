@@ -13,6 +13,20 @@
       <span>{{ currentLang === 'en' ? 'All documents' : 'ឯកសារ​ទាំងអស់' }}</span>
     </button>
 
+    <div v-if="lastSeen.length && rootCategoryTitle === 'អន្តរវិស័យ'" class="mt-3 mb-1">
+      <h4 class="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-2">
+        {{ currentLang === 'en' ? 'Last Seen' : 'បានឃើញថ្មី' }}
+      </h4>
+      <button v-for="item in lastSeen" :key="item.id"
+        @click="$emit('select-category', item.id)"
+        :class="['flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-colors w-full text-left',
+          selectedCategory === item.id
+            ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400'
+            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60']">
+        <span class="truncate">{{ item.title }}</span>
+      </button>
+    </div>
+
     <template v-if="allCategories.length">
       <button v-for="item in allCategories" :key="item.category.id"
         :style="{ paddingLeft: `${12 + item.depth * 16}px` }"
@@ -100,6 +114,18 @@ const allCategories = computed(() => {
 })
 
 const showAllDocuments = computed(() => !props.rootCategoryTitle)
+
+const LAST_SEEN_KEY = 'spritup_last_seen_categories'
+
+const lastSeen = computed(() => {
+  try {
+    const raw = localStorage.getItem(LAST_SEEN_KEY)
+    if (!raw) return []
+    const list = JSON.parse(raw)
+    const availableTitles = new Set(allCategories.value.map(item => item.category.title))
+    return list.filter(item => availableTitles.has(item.title))
+  } catch (_) { return [] }
+})
 
 const categoryTitle = (category) => category.title || category.name || category.category_name || ''
 

@@ -51,24 +51,38 @@
         </button>
       </div>
 
-      <div class="flex items-center gap-2">
-        <div class="relative hidden sm:flex items-center">
+<div class="flex items-center gap-2">
+         <div class="relative hidden sm:flex items-center">
+           <input v-model="searchQuery" @keyup.enter="handleSearch" @input="onSearchInput" type="text"
+             :placeholder="currentLang === 'en' ? 'Search...' : 'ស្វែងរក...'"
+             class="w-48 pl-9 pr-12 py-2.5 rounded-xl bg-gray-300 border-collapse dark:bg-gray-800/80 text-sm text-gray-700 dark:text-gray-300 placeholder-gray-400 border-none outline-none focus:ring-2 focus:ring-brand-400/50 transition" />
+           <button v-if="searchQuery" @click="clearSearch"
+             class="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+             </svg>
+           </button>
+           <button @click="handleSearch"
+             class="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 rounded-lg bg-brand-600 text-white hover:bg-brand-700 transition-colors">
+             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+               stroke="currentColor" stroke-width="2">
+               <path stroke-linecap="round" stroke-linejoin="round"
+                 d="M21 21l-4.35-4.35m1.85-5.65a7.5 7.5 0 11-15 0a7.5 7.5 0 0115 0z" />
+             </svg>
+           </button>
+         </div>
 
-          <input v-model="searchQuery" @keyup.enter="handleSearch" type="text"
-            :placeholder="currentLang === 'en' ? 'Search...' : 'ស្វែងរក...'"
-            class="w-48 pl-9 pr-12 py-2.5 rounded-xl bg-gray-300 border-collapse dark:bg-gray-800/80 text-sm text-gray-700 dark:text-gray-300 placeholder-gray-400 border-none outline-none focus:ring-2 focus:ring-brand-400/50 transition" />
-          <button @click="handleSearch"
-            class="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 rounded-lg bg-brand-600 text-white hover:bg-brand-700 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M21 21l-4.35-4.35m1.85-5.65a7.5 7.5 0 11-15 0a7.5 7.5 0 0115 0z" />
-            </svg>
-          </button>
-        </div>
+         <button @click="toggleMobileSearch"
+           class="sm:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors text-gray-600 dark:text-gray-300">
+           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+             stroke="currentColor" stroke-width="2">
+             <path stroke-linecap="round" stroke-linejoin="round"
+               d="M21 21l-4.35-4.35m1.85-5.65a7.5 7.5 0 11-15 0a7.5 7.5 0 0115 0z" />
+           </svg>
+         </button>
 
-        <button @click="$emit('toggle-dark')"
-          class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors text-gray-600 dark:text-gray-300">
+         <button @click="$emit('toggle-dark')"
+           class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors text-gray-600 dark:text-gray-300">
           <svg v-if="!isDark" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
             stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
@@ -113,22 +127,44 @@
       </div>
     </div>
 
-    <div class="lg:hidden h-12 border-t border-gray-200/70 dark:border-gray-800/70">
-      <div class="flex h-full items-center gap-1 overflow-x-auto px-3 scrollbar-hide">
-        <button v-for="item in navItems" :key="`mobile-${item.key}`" @click="handleNavClick(item)"
-          :class="['px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all flex-shrink-0',
-            activeNavKey === item.key
-              ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400'
-              : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60']">
-          {{ currentLang === 'en' ? item.label : item.labelKh }}
-        </button>
-      </div>
-    </div>
+<div class="lg:hidden border-t border-gray-200/70 dark:border-gray-800/70" v-if="searchOpen">
+       <div class="flex items-center gap-2 px-3 py-2">
+         <input v-model="searchQuery" @keyup.enter="handleSearch" @input="onSearchInput" type="text"
+           :placeholder="currentLang === 'en' ? 'Search...' : 'ស្វែងរក...'"
+           class="flex-1 px-4 py-2.5 rounded-xl bg-gray-200 dark:bg-gray-800 text-sm text-gray-700 dark:text-gray-300 placeholder-gray-400 border-none outline-none focus:ring-2 focus:ring-brand-400/50 transition" />
+         <button v-if="searchQuery" @click="clearSearch"
+           class="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+           </svg>
+         </button>
+         <button @click="handleSearch"
+           class="p-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700 transition-colors">
+           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+             stroke="currentColor" stroke-width="2">
+             <path stroke-linecap="round" stroke-linejoin="round"
+               d="M21 21l-4.35-4.35m1.85-5.65a7.5 7.5 0 11-15 0a7.5 7.5 0 0115 0z" />
+           </svg>
+         </button>
+       </div>
+     </div>
+
+     <div class="lg:hidden h-12 border-t border-gray-200/70 dark:border-gray-800/70" v-else>
+       <div class="flex h-full items-center gap-1 overflow-x-auto px-3 scrollbar-hide">
+         <button v-for="item in navItems" :key="`mobile-${item.key}`" @click="handleNavClick(item)"
+           :class="['px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all flex-shrink-0',
+             activeNavKey === item.key
+               ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400'
+               : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60']">
+           {{ currentLang === 'en' ? item.label : item.labelKh }}
+         </button>
+       </div>
+     </div>
   </nav>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
 import { API_BASE } from '../config/env.js'
@@ -149,6 +185,8 @@ const searchQuery = ref('')
 const navContainer = ref(null)
 const categories = ref([])
 const catsLoading = ref(false)
+const searchOpen = ref(false)
+let searchTimer = null
 
 const scrollLeft = () => {
   if (navContainer.value) {
@@ -196,12 +234,33 @@ const fetchCategories = async () => {
   }
 }
 
+const categoryOrder = [
+  'ច្បាប់',
+  'ព្រះរាជក្រឹត្យ',
+  'អនុក្រឹត្យ',
+  'ប្រកាស',
+  'សេចក្តីសម្រេច',
+  'សារាចរ',
+  'សេចក្តីណែនាំ',
+  'យុទ្ធសាស្ត្រ',
+  'គោលនយោបាយ',
+]
+
+const categoryOrderMap = {}
+categoryOrder.forEach((title, index) => { categoryOrderMap[title] = index })
+
 const navItems = computed(() => {
   const items = [
     { key: 'all', label: 'All', labelKh: 'ទាំងអស់', to: '/documents' },
   ]
 
-  for (const cat of categories.value) {
+  const sortedCats = [...categories.value].sort((a, b) => {
+    const aIdx = categoryOrderMap[a.title] ?? Infinity
+    const bIdx = categoryOrderMap[b.title] ?? Infinity
+    return aIdx - bIdx
+  })
+
+  for (const cat of sortedCats) {
     items.push({
       key: `cat-${cat.id}`,
       label: getCategoryLabel(cat.title),
@@ -245,7 +304,34 @@ onMounted(() => {
 
 const handleSearch = () => {
   if (searchQuery.value.trim()) {
-    router.push({ name: 'documents-page', query: { search: searchQuery.value } })
+    router.push({ name: 'documents-page', query: { search: searchQuery.value.trim() } })
   }
 }
+
+const clearSearch = () => {
+  searchQuery.value = ''
+  router.push({ name: 'documents-page', query: {} })
+}
+
+const toggleMobileSearch = () => {
+  searchOpen.value = !searchOpen.value
+  if (searchOpen.value) {
+    nextTick(() => {
+      const input = document.querySelector('.lg\\:hidden input[type="text"]')
+      if (input) input.focus()
+    })
+  }
+}
+
+const onSearchInput = () => {
+  if (searchTimer) clearTimeout(searchTimer)
+  searchTimer = setTimeout(() => {
+    const q = searchQuery.value.trim()
+    router.push({ name: 'documents-page', query: q ? { search: q } : {} })
+  }, 400)
+}
+
+watch(() => route.query.search, (newVal) => {
+  searchQuery.value = newVal || ''
+}, { immediate: true })
 </script>

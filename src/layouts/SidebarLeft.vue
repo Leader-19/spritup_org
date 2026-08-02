@@ -174,9 +174,26 @@ const getCategoryCount = (categoryId) => {
   return documents.value.filter(doc => doc.category_id === categoryId).length
 }
 
+const LAST_SEEN_KEY = 'spritup_last_seen_categories'
+
+const addLastSeen = (id, title) => {
+  try {
+    const raw = localStorage.getItem(LAST_SEEN_KEY)
+    const list = raw ? JSON.parse(raw) : []
+    const filtered = list.filter(item => item.id !== id)
+    filtered.unshift({ id, title, timestamp: Date.now() })
+    if (filtered.length > 10) filtered.length = 10
+    localStorage.setItem(LAST_SEEN_KEY, JSON.stringify(filtered))
+  } catch (_) { /* localStorage unavailable */ }
+}
+
 const selectCategory = async (categoryId) => {
   selectedCategory.value = categoryId
   router.push(categoryId ? `/documents?category=${categoryId}` : '/documents')
+  const cat = categories.value.find(c => c.id === categoryId)
+  if (cat) {
+    addLastSeen(categoryId, cat.title)
+  }
 }
 
 const goToSettings = () => {

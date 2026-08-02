@@ -24,17 +24,25 @@
 
     </main>
     <Footer :current-lang="currentLang" />
+
+    <Teleport to="body">
+      <Toast />
+      <BackToTop />
+    </Teleport>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted, provide, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useSeo } from '../composables/useSeo'
+import { useToast } from '../composables/useToast'
 import Navbar from './Navbar.vue'
 import Sidebar from './Sidebar.vue'
 import SidebarLeft from './SidebarLeft.vue'
 import Footer from './Footer.vue'
 import SubNavbar from './SubNavbar.vue'
+import Toast from '../components/Toast.vue'
+import BackToTop from '../components/BackToTop.vue'
 
 const sidebarLeftOpen = ref(true)
 const sidebarOpen = ref(false)
@@ -46,6 +54,8 @@ const activeSubmenu = ref('home')
 const sidebarCollapsed = ref(false)
 const subNavbarVisible = ref(false)
 const route = useRoute()
+
+const { info, success, error, warning, remove } = useToast()
 
 provide('currentLang', currentLang)
 
@@ -73,21 +83,19 @@ const setLang = (lang) => {
 
 const setActiveSubmenu = (menu) => {
    activeSubmenu.value = menu
-   if (menu === 'ai-chat') {
-       sidebarOpen.value = true
-       sidebarLeftOpen.value = false
-   } else if (menu === 'home' || menu === 'documents' || menu === 'settings' || menu === 'help') {
-       // Keep the left sidebar closed on mobile; users open it manually.
-       sidebarLeftOpen.value = !isMobile.value
-       // The document categories are rendered in the expanded left sidebar.
-       if (menu === 'documents') {
-           sidebarCollapsed.value = false
-       }
-       sidebarOpen.value = false
-   } else {
-       sidebarLeftOpen.value = false
-       sidebarOpen.value = false
-   }
+    if (menu === 'ai-chat') {
+        sidebarOpen.value = true
+        sidebarLeftOpen.value = false
+    } else if (menu === 'home' || menu === 'documents' || menu === 'settings' || menu === 'help') {
+        sidebarLeftOpen.value = !isMobile.value
+        if (menu === 'documents') {
+            sidebarCollapsed.value = false
+        }
+        sidebarOpen.value = false
+    } else {
+        sidebarLeftOpen.value = false
+        sidebarOpen.value = false
+    }
 }
 
 onMounted(() => {
@@ -103,7 +111,7 @@ onMounted(() => {
     } else if (route.name === 'documents-page' || route.path.endsWith('-documents')) {
       activeSubmenu.value = 'documents'
     }
-  })
+})
 
 onUnmounted(() => {
     window.removeEventListener('resize', checkMobile)
@@ -309,14 +317,11 @@ watch(
   }
 )
 
-// The All navigation goes to /documents. Always show the category sidebar for
-// that route instead of relying on a navbar click event.
 watch(
   () => route.path,
   (path) => {
     if (path === '/documents' || path.endsWith('-documents')) {
       activeSubmenu.value = 'documents'
-      // Don't force the sidebar open on mobile; let users toggle it.
       if (!isMobile.value) sidebarLeftOpen.value = true
       sidebarCollapsed.value = false
     }

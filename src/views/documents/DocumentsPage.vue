@@ -1,7 +1,7 @@
 <template>
   <div class="px-4 md:px-6 lg:px-10 py-8 max-w-8xl ml-auto">
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-      <div class="flex items-center gap-4 flex-wrap">
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+      <div class="flex items-center gap-3 flex-wrap">
         <h1 class="font-display font-bold text-2xl text-gray-900 dark:text-white">
           {{ currentLang === 'en' ? 'Documents' : 'ឯកសារ' }}
         </h1>
@@ -17,15 +17,21 @@
         </select>
       </div>
 
-      <div class="relative w-full sm:w-auto">
+      <div class="relative w-full">
         <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
           fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <circle cx="11" cy="11" r="8" />
           <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35" />
         </svg>
-        <input v-model="searchQuery" @input="handleSearchInput" type="text"
+        <input v-model="searchQuery" @input="onSearchInput" @keyup.enter="handleSearch" type="text"
           :placeholder="currentLang === 'en' ? 'Search documents...' : 'ស្វែងរកឯកសារ...'"
-          class="w-full sm:w-64 pl-9 pr-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-sm text-gray-700 dark:text-gray-300 placeholder-gray-400 border-none outline-none focus:ring-2 focus:ring-brand-400/50 transition" />
+          class="w-full pl-9 pr-10 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-sm text-gray-700 dark:text-gray-300 placeholder-gray-400 border-none outline-none focus:ring-2 focus:ring-brand-400/50 transition" />
+        <button v-if="searchQuery" @click="clearSearch"
+          class="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
     </div>
 
@@ -34,7 +40,39 @@
       }}</p>
     </div>
 
-    <div v-else-if="!viewerOpen && viewMode === 'grid' && paginatedDocuments.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    <div v-if="loading" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
+      <div v-for="i in 8" :key="i" class="rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden flex flex-col animate-pulse">
+        <div class="bg-gray-200 dark:bg-gray-700 h-48 w-full"></div>
+        <div class="p-4 flex-1 flex flex-col gap-3">
+          <div class="h-5 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+          <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+          <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+          <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-xl mt-auto"></div>
+        </div>
+      </div>
+    </div>
+
+    <div v-else-if="error" class="text-center py-16">
+      <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-red-400" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+        </svg>
+      </div>
+      <h3 class="font-display font-semibold text-xl text-gray-900 dark:text-white mb-2">
+        {{ currentLang === 'en' ? 'Something went wrong' : 'មានបញ្ហាមួយផង' }}
+      </h3>
+      <p class="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-4">
+        {{ currentLang === 'en' ? 'Failed to load documents. Please try again later.' : 'មិនអាចទាញយកឯកសារ។ សូមព្យាយាមម្តងទៀត។' }}
+      </p>
+      <button @click="fetchDocuments"
+        class="inline-block px-5 py-2.5 rounded-xl bg-brand-600 text-white text-sm font-medium hover:bg-brand-700 transition-colors">
+        {{ currentLang === 'en' ? 'Retry' : 'ព្យាយាមម្តងទៀត' }}
+      </button>
+    </div>
+
+    <div v-else-if="!viewerOpen && viewMode === 'grid' && paginatedDocuments.length" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
       <div v-for="doc in paginatedDocuments" :key="doc.id"
         class="rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all overflow-hidden flex flex-col cursor-pointer"
         @click="viewDocument(doc)">
@@ -62,8 +100,8 @@
 
     <div v-else-if="!viewerOpen && viewMode === 'list' && paginatedDocuments.length" class="space-y-3">
       <div v-for="doc in paginatedDocuments" :key="doc.id" @click="viewDocument(doc)"
-        class="flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all cursor-pointer">
-        <div class="w-40 h-40 rounded-xl bg-gray-100 dark:bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
+        class="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-4 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all cursor-pointer">
+        <div class="w-full sm:w-40 h-32 sm:h-40 rounded-xl bg-gray-100 dark:bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
           <img v-if="doc.image" :src="docImage(doc)" :alt="doc.doc_name" class="max-w-full max-h-full object-contain" />
           <div v-else class="text-gray-400 text-xs">No image</div>
         </div>
@@ -85,9 +123,27 @@
       </div>
     </div>
 
-    <div v-if="!loading && !viewerOpen && !filteredDocuments.length" class="text-center py-8">
-      <p class="text-gray-500 dark:text-gray-400">{{ currentLang === 'en' ? 'No documents found' : 'រកមិនឃីញឯកសារ'
-      }}</p>
+    <div v-if="!loading && !viewerOpen && !filteredDocuments.length" class="text-center py-16">
+      <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-gray-300 dark:text-gray-600" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+        </svg>
+      </div>
+      <h3 class="font-display font-semibold text-xl text-gray-900 dark:text-white mb-2">
+        {{ currentLang === 'en' ? 'No documents found' : 'រកមិនឃីញឯកសារ' }}
+      </h3>
+      <p class="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto">
+        {{ searchQuery.trim()
+          ? (currentLang === 'en' ? 'Try adjusting your search terms or browse a different category.' : 'សាកល្បងប្តូរពាក្យស្វែងរក ឬរកដូចគ្នាក្នុងប្រភេទផ្សេង។')
+          : (currentLang === 'en' ? 'No documents are available in this category yet.' : 'មិនមានឯកសារនៅក្នុងប្រភេទនេះទេ។')
+        }}
+      </p>
+      <router-link v-if="searchQuery.trim()" to="/documents"
+        class="mt-4 inline-block px-5 py-2.5 rounded-xl bg-brand-600 text-white text-sm font-medium hover:bg-brand-700 transition-colors">
+        {{ currentLang === 'en' ? 'Clear Search' : 'លុបការស្វែងរក' }}
+      </router-link>
     </div>
 
     <div v-if="!viewerOpen && filteredDocuments.length" class="flex items-center justify-end gap-3 mt-6">
@@ -154,13 +210,14 @@
 </template>
 
 <script setup>
-import { ref, computed, inject, onMounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, computed, inject, onMounted, watch, nextTick } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
 import { API_BASE, API_URL } from '../../config/env.js'
 import { normalizeCategories } from '../../utils/api.js'
 
 const currentLang = inject('currentLang')
+const router = useRouter()
 const route = useRoute()
 
 const rawCategories = ref([])
@@ -174,6 +231,8 @@ const viewMode = ref('grid')
 const itemsPerPage = ref(10)
 const currentPage = ref(1)
 const perPageOptions = [10, 20, 30, 40, 50, 100]
+const error = ref(null)
+let searchTimer = null
 
 const fileExt = computed(() => {
   return viewingDoc.value?.doc_upload?.split('.').pop()?.toLowerCase()
@@ -185,7 +244,9 @@ const isHtmlContent = computed(() => {
 
 const fileUrl = computed(() => {
   if (!viewingDoc.value?.doc_upload) return ''
-  return `${API_URL}/storage/${viewingDoc.value.doc_upload}`
+  const url = `${API_URL}/storage/${viewingDoc.value.doc_upload}`
+  if (fileExt.value === 'pdf') return `${url}#toolbar=0`
+  return url
 })
 
 const allDocuments = computed(() => {
@@ -220,7 +281,10 @@ const filteredDocuments = computed(() => {
     docs = docs.filter(d =>
       ((d.doc_name || '')).toLowerCase().includes(q) ||
       ((d.doc_title || '')).toLowerCase().includes(q) ||
-      ((d.description || '')).toLowerCase().includes(q)
+      ((d.description || '')).toLowerCase().includes(q) ||
+      ((d.categoryTitle || '')).toLowerCase().includes(q) ||
+      ((d.doc_code || '')).toLowerCase().includes(q) ||
+      ((d.keywords || '')).toLowerCase().includes(q)
     )
   }
 
@@ -233,17 +297,24 @@ const paginatedDocuments = computed(() => {
   return filteredDocuments.value.slice(start, end)
 })
 
+const totalPages = computed(() => {
+  return Math.max(1, Math.ceil(filteredDocuments.value.length / itemsPerPage.value))
+})
+
 const fetchDocuments = async () => {
   loading.value = true
+  error.value = null
   try {
     const response = await axios.get(`${API_BASE}/documents`)
     if (response.data.status === 'success') {
       rawCategories.value = normalizeCategories(response.data.categories)
     } else {
       console.warn('Unexpected documents API response:', response.data)
+      error.value = 'Unexpected response from server'
     }
-  } catch (error) {
-    console.error('Error fetching documents:', error)
+  } catch (err) {
+    console.error('Error fetching documents:', err)
+    error.value = err.message || 'Failed to load documents'
   } finally {
     loading.value = false
   }
@@ -315,8 +386,23 @@ const goToPage = (page) => {
   currentPage.value = Math.max(1, Math.min(page, totalPages.value))
 }
 
-const handleSearchInput = () => {
+const handleSearch = () => {
   currentPage.value = 1
+  router.push({ query: { ...route.query, search: searchQuery.value.trim() || undefined } })
+}
+
+const clearSearch = () => {
+  searchQuery.value = ''
+  currentPage.value = 1
+  router.push({ query: { ...route.query, search: undefined } })
+}
+
+const onSearchInput = () => {
+  if (searchTimer) clearTimeout(searchTimer)
+  searchTimer = setTimeout(() => {
+    const q = searchQuery.value.trim()
+    router.push({ query: { ...route.query, search: q || undefined } })
+  }, 400)
 }
 
 const handleCategoryChange = () => {
