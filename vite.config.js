@@ -41,6 +41,7 @@ export default defineConfig({
         navigateFallback: '/offline.html',
         navigateFallbackDenylist: [/^\/api/],
         runtimeCaching: [
+          // ── Google Fonts (cache first, long-lived) ──────────────────────
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*$/i,
             handler: 'CacheFirst',
@@ -69,14 +70,77 @@ export default defineConfig({
               }
             }
           },
+
+          // ── Documents API (network first, short TTL) ────────────────────
+          // GET /api/documents — the main document list used everywhere
           {
-            urlPattern: /\/api\/.*$/i,
+            urlPattern: /^https?:\/\/[^/]+\/api\/documents(\?.*)?$/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'documents-api-cache',
+              networkTimeoutSeconds: 5,
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 // 1 hour
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
+
+          // ── User profile & categories (network first) ───────────────────
+          // GET /api/profile, GET /api/my-categories
+          {
+            urlPattern: /^https?:\/\/[^/]+\/api\/(profile|my-categories)(\?.*)?$/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'user-api-cache',
+              networkTimeoutSeconds: 5,
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 // 1 hour
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
+
+          // ── Storage / document files (cache first) ──────────────────────
+          // GET /storage/* — document PDFs, images, uploads
+          {
+            urlPattern: /^https?:\/\/[^/]+\/storage\/.*$/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'storage-files-cache',
+              expiration: {
+                maxEntries: 200,
+                maxAgeSeconds: 60 * 60 * 24 * 7 // 7 days
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              },
+              // Only cache successful responses with content
+              backgroundSync: {
+                name: 'storage-sync-queue',
+                options: {
+                  maxRetentionTime: 60 * 24 // 24 minutes
+                }
+              }
+            }
+          },
+
+          // ── All other API requests (network first, fallback) ────────────
+          {
+            urlPattern: /^https?:\/\/[^/]+\/api\/.*$/i,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'api-cache',
+              networkTimeoutSeconds: 5,
               expiration: {
                 maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 // 1 day
+                maxAgeSeconds: 60 * 60 // 1 hour
               },
               cacheableResponse: {
                 statuses: [0, 200]

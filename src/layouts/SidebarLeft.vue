@@ -37,6 +37,8 @@
             root-category-title="អន្តរវិស័យ"
             @select-category="selectCategory" />
         </transition>
+
+        
       </div>
 
       <div class="p-4 border-t border-gray-200 dark:border-gray-700">
@@ -92,6 +94,7 @@ import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
 import { API_BASE } from '../config/env.js'
 import { normalizeCategories } from '../utils/api.js'
+import { useAuth } from '../stores/auth.js'
 import HomeSidebar from '../components/home/HomeSidebar.vue'
 import DocumentsSidebar from '../components/documents/DocumentsSidebar.vue'
 
@@ -107,6 +110,7 @@ defineEmits(['toggle', 'close', 'menu-click', 'toggle-collapsed'])
 
 const router = useRouter()
 const route = useRoute()
+const auth = useAuth()
 
 const categories = ref([])
 const documents = ref([])

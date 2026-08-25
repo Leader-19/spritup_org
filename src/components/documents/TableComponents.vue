@@ -112,6 +112,8 @@
 
         </div>
     </div>
+
+    <DocumentViewer :visible="viewerVisible" :document="selectedDoc" @close="viewerVisible = false" />
 </template>
 
 <script setup>
@@ -119,6 +121,7 @@ import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { API_URL } from '../../config/env'
 import { normalizeCategories, flattenDocuments } from '../../utils/api.js'
+import DocumentViewer from './DocumentViewer.vue'
 
 const documents = ref([])
 const categories = ref([])
@@ -155,8 +158,12 @@ const fetchDocuments = async () => {
     }
 }
 
+const selectedDoc = ref(null)
+const viewerVisible = ref(false)
+
 const viewDoc = (doc) => {
-    alert(`View document: ${doc.doc_name}\nDownload is disabled.`)
+    selectedDoc.value = doc
+    viewerVisible.value = true
 }
 
 onMounted(() => {

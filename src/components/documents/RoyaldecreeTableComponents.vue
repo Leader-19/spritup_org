@@ -77,10 +77,10 @@
 
                             <!-- File -->
                             <td class="p-3">
-                                <a :href="`${API_URL}/storage/${document.doc_upload}`" target="_blank"
+                                <button @click="viewDoc(document)"
                                     class="text-indigo-600 hover:underline">
                                     View
-                                </a>
+                                </button>
                             </td>
 
                             <!-- Date -->
@@ -113,6 +113,8 @@
 
         </div>
     </div>
+
+    <DocumentViewer :visible="viewerVisible" :document="selectedDoc" @close="viewerVisible = false" />
 </template>
 
 <script setup>
@@ -120,12 +122,20 @@ import { ref, onMounted } from 'vue'
 import { API_URL } from '../../config/env'
 import { normalizeCategories, flattenDocuments } from '../../utils/api.js'
 import axios from 'axios'
+import DocumentViewer from './DocumentViewer.vue'
 
 
 const documents = ref([])
 const categories = ref([])
 const loading = ref(false)
 const error = ref(null)
+const selectedDoc = ref(null)
+const viewerVisible = ref(false)
+
+const viewDoc = (doc) => {
+    selectedDoc.value = doc
+    viewerVisible.value = true
+}
 const expandedRows = ref(new Set())
 
 const toggleRow = (id) => {

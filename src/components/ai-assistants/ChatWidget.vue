@@ -47,7 +47,8 @@
           <input ref="fileInput" type="file" accept="image/*" class="hidden"
             @change="handleImageUpload" />
           <button @click="triggerFileInput"
-            class="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+            :disabled="!auth.isAuthenticated"
+            class="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
             :title="currentLang === 'en' ? 'Upload image' : 'អាប់ឡូដរូបភាព'">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500 dark:text-gray-400"
               fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -72,11 +73,13 @@
 <script setup>
 import { ref } from 'vue'
 import { API_BASE } from '../../config/env.js'
+import { useAuth } from '../../stores/auth.js'
 
 defineProps({
   currentLang: { type: String, default: 'en' }
 })
 
+const auth = useAuth()
 const chatInput = ref('')
 const aiTyping = ref(false)
 const fileInput = ref(null)
@@ -91,6 +94,18 @@ const triggerFileInput = () => {
 const handleImageUpload = async (event) => {
   const file = event.target.files?.[0]
   if (!file) return
+
+  if (!auth.isAuthenticated) {
+    messages.value.push({
+      id: messages.value.length + 1,
+      role: 'assistant',
+      content: currentLang === 'en'
+        ? 'Please log in to upload images and chat with AI.'
+        : 'សូមចូលគណនីដើម្បីអាប់ឡូដរូបភាពនិងជជែកជាមួយ AI ។',
+    })
+    event.target.value = ''
+    return
+  }
 
   if (!file.type.startsWith('image/')) {
     messages.value.push({

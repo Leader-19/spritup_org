@@ -180,8 +180,7 @@
       <!-- Viewer Body -->
       <div class="h-[calc(100vh-200px)] w-full bg-white">
         <!-- PDF -->
-        <iframe v-if="fileExt === 'pdf'" :src="fileUrl" class="w-full h-full border-0">
-        </iframe>
+        <iframe v-if="fileExt === 'pdf'" :src="fileUrl" class="w-full h-full border-0"></iframe>
 
         <!-- Image -->
         <div v-else-if="['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(fileExt)"
@@ -210,11 +209,13 @@
 </template>
 
 <script setup>
-import { ref, computed, inject, onMounted, watch, nextTick } from 'vue'
+import { ref, computed, inject, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import axios from 'axios'
-import { API_BASE, API_URL } from '../../config/env.js'
+import apiClient from '../../utils/apiClient.js'
+import { API_URL } from '../../config/env.js'
 import { normalizeCategories } from '../../utils/api.js'
+import { useAuth } from '../../stores/auth.js'
+
 
 const currentLang = inject('currentLang')
 const router = useRouter()
@@ -244,10 +245,14 @@ const isHtmlContent = computed(() => {
 
 const fileUrl = computed(() => {
   if (!viewingDoc.value?.doc_upload) return ''
-  const url = `${API_URL}/storage/${viewingDoc.value.doc_upload}`
-  if (fileExt.value === 'pdf') return `${url}#toolbar=0`
-  return url
+  return `${API_URL}/storage/${viewingDoc.value.doc_upload}`
 })
+
+const isMobile = computed(() => {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+})
+
+
 
 const allDocuments = computed(() => {
   const docs = []
@@ -305,7 +310,9 @@ const fetchDocuments = async () => {
   loading.value = true
   error.value = null
   try {
-    const response = await axios.get(`${API_BASE}/documents`)
+    const auth = useAuth()
+    const endpoint = auth.isAuthenticated ? '/my-documents' : '/documents'
+    const response = await apiClient.get(endpoint)
     if (response.data.status === 'success') {
       rawCategories.value = normalizeCategories(response.data.categories)
     } else {
@@ -353,7 +360,7 @@ const viewDocument = async (doc) => {
 
   if (fileExt.value === 'docx') {
     try {
-      const response = await axios.get(`${API_BASE}/documents/${doc.id}/content`)
+      const response = await apiClient.get(`/documents/${doc.id}/content`)
       documentContent.value = response.data.content || ''
     } catch (error) {
       console.error('Error fetching document content:', error)

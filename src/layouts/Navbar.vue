@@ -1,93 +1,50 @@
 <template>
   <nav class="navbar-glass fixed top-0 left-0 right-0 z-40">
-    <div class="flex items-center justify-between h-14 lg:h-16 gap-2 px-3 sm:px-4 lg:px-6">
+    <div class="flex items-center justify-between h-14 lg:h-16 gap-1 sm:gap-2 px-2 sm:px-4 lg:px-6">
       <div class="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
-        <button @click="$emit('toggle-sidebar-left')"
-          class="lg:hidden shrink-0 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors text-gray-600 dark:text-gray-300"
-          aria-label="Toggle navigation">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-        <div class="flex items-center gap-2 sm:gap-3">
-          <div class="flex items-center gap-2 sm:gap-2.5">
-            <img src="/logo.jpg" alt="SPRITUP Center Logo"
-              class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg object-contain shadow-md flex-shrink-0" />
-            <a href="/" class="flex flex-col">
-              <span class="font-display font-extrabold text-xl tracking-tight">
-                SPRITUP
-              </span>
-              <span class="hidden sm:block text-sm text-gray-600">
-                Center
-              </span>
-            </a>
-          </div>
-        </div>
+        <NavbarBrand @toggle-sidebar-left="$emit('toggle-sidebar-left')" />
 
-        <div class="hidden lg:flex items-center gap-1 ml-6 overflow-x-auto flex-1 scrollbar-hide" ref="navContainer">
-          <button v-for="item in navItems" :key="item.key" @click="handleNavClick(item)"
-            :class="['px-4 py-2 rounded-lg text-sm font-medium transition-all flex-shrink-0',
-              activeNavKey === item.key
-                ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400'
-                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-gray-100']">
-            {{ currentLang === 'en' ? item.label : item.labelKh }}
+        <NavbarNav :items="navItems" :active-key="activeNavKey" :current-lang="currentLang"
+          @navigate="handleNavClick" />
+      </div>
+
+      <div class="flex items-center gap-1 sm:gap-2">
+        <div class="relative hidden sm:flex items-center">
+          <input v-model="searchQuery" @keyup.enter="handleSearch" @input="onSearchInput" type="text"
+            :placeholder="currentLang === 'en' ? 'Search...' : 'ស្វែងរក...'"
+            class="w-48 pl-9 pr-12 py-2.5 rounded-xl bg-gray-300 border-collapse dark:bg-gray-800/80 text-sm text-gray-700 dark:text-gray-300 placeholder-gray-400 border-none outline-none focus:ring-2 focus:ring-brand-400/50 transition" />
+          <button v-if="searchQuery" @click="clearSearch"
+            class="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          <button @click="handleSearch"
+            class="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 rounded-lg bg-brand-600 text-white hover:bg-brand-700 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M21 21l-4.35-4.35m1.85-5.65a7.5 7.5 0 11-15 0a7.5 7.5 0 0115 0z" />
+            </svg>
           </button>
         </div>
 
-        <button @click="scrollLeft"
-          class="hidden lg:flex p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors text-gray-600 dark:text-gray-300">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-            stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        <button @click="toggleMobileSearch"
+          class="sm:hidden p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors text-gray-600 dark:text-gray-300">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M21 21l-4.35-4.35m1.85-5.65a7.5 7.5 0 11-15 0a7.5 7.5 0 0115 0z" />
           </svg>
         </button>
 
-        <button @click="scrollRight"
-          class="hidden lg:flex p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors text-gray-600 dark:text-gray-300">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-            stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-      </div>
-
-<div class="flex items-center gap-2">
-         <div class="relative hidden sm:flex items-center">
-           <input v-model="searchQuery" @keyup.enter="handleSearch" @input="onSearchInput" type="text"
-             :placeholder="currentLang === 'en' ? 'Search...' : 'ស្វែងរក...'"
-             class="w-48 pl-9 pr-12 py-2.5 rounded-xl bg-gray-300 border-collapse dark:bg-gray-800/80 text-sm text-gray-700 dark:text-gray-300 placeholder-gray-400 border-none outline-none focus:ring-2 focus:ring-brand-400/50 transition" />
-           <button v-if="searchQuery" @click="clearSearch"
-             class="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
-             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-             </svg>
-           </button>
-           <button @click="handleSearch"
-             class="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 rounded-lg bg-brand-600 text-white hover:bg-brand-700 transition-colors">
-             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-               stroke="currentColor" stroke-width="2">
-               <path stroke-linecap="round" stroke-linejoin="round"
-                 d="M21 21l-4.35-4.35m1.85-5.65a7.5 7.5 0 11-15 0a7.5 7.5 0 0115 0z" />
-             </svg>
-           </button>
-         </div>
-
-         <button @click="toggleMobileSearch"
-           class="sm:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors text-gray-600 dark:text-gray-300">
-           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-             stroke="currentColor" stroke-width="2">
-             <path stroke-linecap="round" stroke-linejoin="round"
-               d="M21 21l-4.35-4.35m1.85-5.65a7.5 7.5 0 11-15 0a7.5 7.5 0 0115 0z" />
-           </svg>
-         </button>
-
-         <button @click="$emit('toggle-dark')"
-           class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors text-gray-600 dark:text-gray-300">
-          <svg v-if="!isDark" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+        <button @click="$emit('toggle-dark')"
+          class="p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors text-gray-600 dark:text-gray-300">
+         <svg v-if="!isDark" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
             stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
           </svg>
-          <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+         <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
             stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="5" />
             <line x1="12" y1="1" x2="12" y2="3" />
@@ -101,74 +58,62 @@
           </svg>
         </button>
 
-        <div class="relative">
-          <button @click="langOpen = !langOpen"
-            class="flex items-center gap-1.5 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors text-sm font-medium text-gray-600 dark:text-gray-300">
-            <span>{{ currentLang === 'en' ? '🇺🇸' : '🇰🇭' }}</span>
-            <span class="hidden sm:inline">{{ currentLang === 'en' ? 'EN' : 'KH' }}</span>
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
+        <LanguageSwitcher :current-lang="currentLang" @set-lang="setLang" />
 
-          <div :class="['lang-dropdown absolute right-0 top-full mt-2 w-36 rounded-xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden z-50',
-            'bg-white dark:bg-gray-900',
-            langOpen ? 'lang-visible' : 'lang-hidden']">
-            <button v-for="lang in languages" :key="lang.code" @click="selectLang(lang.code)" :class="['w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors',
-              currentLang === lang.code
-                ? 'bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 font-medium'
-                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/60']">
-              <span>{{ lang.flag }}</span>
-              <span>{{ lang.name }}</span>
-            </button>
-          </div>
-        </div>
+        <UserMenu v-if="auth.isAuthenticated && auth.user" :current-lang="currentLang" @logout="handleLogout" />
+        <ProfileLoginButton v-else :current-lang="currentLang" @open="router.push('/login')" />
       </div>
     </div>
 
-<div class="lg:hidden border-t border-gray-200/70 dark:border-gray-800/70" v-if="searchOpen">
-       <div class="flex items-center gap-2 px-3 py-2">
-         <input v-model="searchQuery" @keyup.enter="handleSearch" @input="onSearchInput" type="text"
-           :placeholder="currentLang === 'en' ? 'Search...' : 'ស្វែងរក...'"
-           class="flex-1 px-4 py-2.5 rounded-xl bg-gray-200 dark:bg-gray-800 text-sm text-gray-700 dark:text-gray-300 placeholder-gray-400 border-none outline-none focus:ring-2 focus:ring-brand-400/50 transition" />
-         <button v-if="searchQuery" @click="clearSearch"
-           class="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
-           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-           </svg>
-         </button>
-         <button @click="handleSearch"
-           class="p-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700 transition-colors">
-           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-             stroke="currentColor" stroke-width="2">
-             <path stroke-linecap="round" stroke-linejoin="round"
-               d="M21 21l-4.35-4.35m1.85-5.65a7.5 7.5 0 11-15 0a7.5 7.5 0 0115 0z" />
-           </svg>
-         </button>
-       </div>
-     </div>
+    <div class="lg:hidden border-t border-gray-200/70 dark:border-gray-800/70" v-if="searchOpen">
+      <div class="flex items-center gap-2 px-3 py-2">
+        <input v-model="searchQuery" @keyup.enter="handleSearch" @input="onSearchInput" type="text"
+          :placeholder="currentLang === 'en' ? 'Search...' : 'ស្វែងរក...'"
+          class="flex-1 px-4 py-2.5 rounded-xl bg-gray-200 dark:bg-gray-800 text-sm text-gray-700 dark:text-gray-300 placeholder-gray-400 border-none outline-none focus:ring-2 focus:ring-brand-400/50 transition" />
+        <button v-if="searchQuery" @click="clearSearch"
+          class="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        <button @click="handleSearch"
+          class="p-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M21 21l-4.35-4.35m1.85-5.65a7.5 7.5 0 11-15 0a7.5 7.5 0 0115 0z" />
+          </svg>
+        </button>
+      </div>
+    </div>
 
-     <div class="lg:hidden h-12 border-t border-gray-200/70 dark:border-gray-800/70" v-else>
-       <div class="flex h-full items-center gap-1 overflow-x-auto px-3 scrollbar-hide">
-         <button v-for="item in navItems" :key="`mobile-${item.key}`" @click="handleNavClick(item)"
-           :class="['px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all flex-shrink-0',
-             activeNavKey === item.key
-               ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400'
-               : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60']">
-           {{ currentLang === 'en' ? item.label : item.labelKh }}
-         </button>
-       </div>
-     </div>
-  </nav>
+    <div class="lg:hidden h-12 border-t border-gray-200/70 dark:border-gray-800/70" v-else>
+      <div class="flex h-full items-center gap-1 overflow-x-auto px-3 scrollbar-hide">
+        <button v-for="item in navItems" :key="`mobile-${item.key}`" @click="handleNavClick(item)"
+          :class="['px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all flex-shrink-0',
+            activeNavKey === item.key
+              ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400'
+              : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60']">
+          {{ currentLang === 'en' ? item.label : item.labelKh }}
+        </button>
+      </div>
+    </div>
+
+    </nav>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch, nextTick } from 'vue'
+import { ref, computed, onMounted, watch, nextTick, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import axios from 'axios'
-import { API_BASE } from '../config/env.js'
+import apiClient from '../utils/apiClient.js'
 import { normalizeCategories } from '../utils/api.js'
+import { useAuth } from '../stores/auth.js'
+import { useToast } from '../composables/useToast.js'
+import NavbarBrand from '../components/navbar/NavbarBrand.vue'
+import NavbarNav from '../components/navbar/NavbarNav.vue'
+import LanguageSwitcher from '../components/navbar/LanguageSwitcher.vue'
+import UserMenu from '../components/navbar/UserMenu.vue'
+import ProfileLoginButton from '../components/navbar/ProfileLoginButton.vue'
 
 const props = defineProps({
   isDark: Boolean,
@@ -180,30 +125,13 @@ const emit = defineEmits(['toggle-sidebar-left', 'toggle-dark', 'menu-click', 's
 
 const router = useRouter()
 const route = useRoute()
-const langOpen = ref(false)
+const auth = useAuth()
+const { success: toastSuccess, error: toastError } = useToast()
 const searchQuery = ref('')
-const navContainer = ref(null)
 const categories = ref([])
 const catsLoading = ref(false)
 const searchOpen = ref(false)
 let searchTimer = null
-
-const scrollLeft = () => {
-  if (navContainer.value) {
-    navContainer.value.scrollBy({ left: -200, behavior: 'smooth' })
-  }
-}
-
-const scrollRight = () => {
-  if (navContainer.value) {
-    navContainer.value.scrollBy({ left: 200, behavior: 'smooth' })
-  }
-}
-
-const languages = [
-  { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'kh', name: 'ខ្មែរ', flag: '🇰🇭' },
-]
 
 const getCategoryLabel = (title) => {
   const map = {
@@ -223,7 +151,7 @@ const getCategoryLabel = (title) => {
 const fetchCategories = async () => {
   catsLoading.value = true
   try {
-    const response = await axios.get(`${API_BASE}/documents`)
+    const response = await apiClient.get('/documents')
     if (response.data.status === 'success') {
       categories.value = normalizeCategories(response.data.categories)
     }
@@ -269,6 +197,7 @@ const navItems = computed(() => {
     })
   }
 
+  items.push({ key: 'plans', label: 'Plans', labelKh: 'គម្រោង', to: '/subscription-plans' })
   items.push({ key: 'ai-chat', label: 'AI Chat', labelKh: 'AI Chat' })
 
   return items
@@ -277,6 +206,7 @@ const navItems = computed(() => {
 const activeNavKey = computed(() => {
   if (route.path === '/documents' && !route.query.category) return 'all'
   if (route.path === '/documents' && route.query.category) return `cat-${route.query.category}`
+  if (route.path === '/subscription-plans') return 'plans'
   return ''
 })
 
@@ -293,13 +223,32 @@ const handleNavClick = (item) => {
   }
 }
 
-const selectLang = (code) => {
-  langOpen.value = false
+const setLang = (code) => {
   emit('set-lang', code)
+}
+
+const handleLogout = async () => {
+  try {
+    await apiClient.post('/logout')
+  } catch {
+    // ignore logout errors (e.g. token already invalid)
+  }
+  auth.clearAuth()
+  router.push('/')
+}
+
+const logoutHandler = () => {
+  auth.clearAuth()
+  router.push('/login')
 }
 
 onMounted(() => {
   fetchCategories()
+  window.addEventListener('auth:logout', logoutHandler)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('auth:logout', logoutHandler)
 })
 
 const handleSearch = () => {

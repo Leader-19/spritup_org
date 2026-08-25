@@ -8,8 +8,6 @@
       'Your comprehensive source for Cambodian legal documents, laws, and regulations. We provide easy access to constitutional documents, statutes, and legal frameworks to help citizens, researchers, and legal professionals navigate the Cambodian legal system.' : 'រាល់សមិទ្ធផល និងការផ្លាស់ប្តូរជាវិជ្ជមានដែល SPRITUP បាននិងកំពុងបង្កើតឡើង គឺមិនអាចខ្វះបានឡើយនូវការចូលរួមចំណែកពីសប្បុរសជន និងដៃគូគាំទ្រដូចជាលោកអ្នក។ មិនថាការឧបត្ថម្ភនោះតិច ឬច្រើន ក្ដីស្រឡាញ់របស់អ្នកគឺជាកម្លាំងចលករដ៏សំខាន់ ក្នុងការជួយទ្រទ្រង់មជ្ឈមណ្ឌលរបស់យើង ឱ្យបន្តបេសកកម្មអភិវឌ្ឍយុវជន និងជួយសង្គ្រោះសហគមន៍បានកាន់តែទូលំទូលាយ។' }}
     </p>
 
-    <HomePageCardComponents :current-lang="currentLang" />
-
     <div class="flex flex-wrap gap-4 mt-8 justify-center">
       <router-link to="/documents"
         class="px-6 py-3 rounded-xl bg-brand-600 text-white font-medium hover:bg-brand-700 transition-colors inline-block">
@@ -24,7 +22,6 @@
 </template>
 
 <script setup>
-import HomePageCardComponents from './HomePageCardComponents.vue';
 
 defineProps({
   currentLang: { type: String, default: 'en' }
