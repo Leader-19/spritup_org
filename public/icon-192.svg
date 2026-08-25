@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6"/>
+      <stop offset="100%" style="stop-color:#1d4ed8"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#60a5fa"/>
+      <stop offset="100%" style="stop-color:#3b82f6"/>
+    </linearGradient>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="96" cy="96" r="96" fill="url(#bg)"/>
+  <!-- Document icon -->
+  <g transform="translate(48, 32)">
+    <path d="M16 0C10.477 0 6 4.477 6 10v84c0 5.523 4.477 10 10 10h60c5.523 0 10-4.477 10-10V10c0-5.523-4.477-10-10-10H16z" fill="white" opacity="0.95"/>
+    <!-- Folded corner -->
+    <path d="M66 0l20 20V10C86 4.477 81.523 0 76 0H66z" fill="white" opacity="0.8"/>
+    <!-- Lines representing text -->
+    <rect x="22" y="30" width="48" height="4" rx="2" fill="url(#accent)" opacity="0.6"/>
+    <rect x="22" y="42" width="40" height="4" rx="2" fill="url(#accent)" opacity="0.4"/>
+    <rect x="22" y="54" width="44" height="4" rx="2" fill="url(#accent)" opacity="0.6"/>
+    <rect x="22" y="66" width="36" height="4" rx="2" fill="url(#accent)" opacity="0.4"/>
+    <!-- S letter mark -->
+    <text x="46" y="90" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="bold" fill="url(#accent)" text-anchor="middle">S</text>
+  </g>
+</svg>

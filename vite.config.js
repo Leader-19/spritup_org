@@ -7,32 +7,37 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['logo.jpg'],
+      includeAssets: ['logo.jpg', 'icon-192.svg', 'icon-512.svg', 'icon-maskable-512.svg'],
       manifest: {
         name: 'SPRITUP center',
         short_name: 'SPRITUP',
         description: 'Share, manage, and explore documents efficiently.',
-        theme_color: '#ffffff',
+        theme_color: '#3b82f6',
         background_color: '#ffffff',
         display: 'standalone',
         scope: '/',
         start_url: '/',
         icons: [
           {
-            src: 'logo.jpg',
+            src: 'icon-192.svg',
             sizes: '192x192',
-            type: 'image/jpeg'
+            type: 'image/svg+xml'
+          },
+          {
+            src: 'icon-512.svg',
+            sizes: '512x512',
+            type: 'image/svg+xml'
+          },
+          {
+            src: 'icon-maskable-512.svg',
+            sizes: '512x512',
+            type: 'image/svg+xml',
+            purpose: 'maskable'
           },
           {
             src: 'logo.jpg',
-            sizes: '512x512',
+            sizes: '1024x1024',
             type: 'image/jpeg'
-          },
-          {
-            src: 'logo.jpg',
-            sizes: '512x512',
-            type: 'image/jpeg',
-            purpose: 'any maskable'
           }
         ]
       },
