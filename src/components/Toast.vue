@@ -2,12 +2,14 @@
   <transition-group name="toast" tag="div"
       class="fixed bottom-6 right-6 z-[100] flex flex-col gap-2">
       <div v-for="toast in toasts" :key="toast.id"
+        @click="handleToastClick(toast)"
         :class="['flex items-center gap-3 px-5 py-3 rounded-xl shadow-lg border max-w-sm',
           'transition-all duration-300',
+          toast.onClick ? 'cursor-pointer hover:shadow-xl' : '',
           toastTypeClasses(toast.type)]">
         <span class="text-lg flex-shrink-0">{{ toastIcon(toast.type) }}</span>
         <span class="text-sm font-medium text-gray-800 dark:text-gray-100 flex-1">{{ toast.message }}</span>
-        <button @click="remove(toast.id)"
+        <button @click.stop="remove(toast.id)"
           class="flex-shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
             stroke="currentColor" stroke-width="2">
@@ -21,7 +23,13 @@
 <script setup>
 import { useToast } from '../composables/useToast'
 
-const { toasts, remove } = useToast()
+const { toasts, remove, onClick } = useToast()
+
+const handleToastClick = (toast) => {
+  if (toast.onClick) {
+    onClick(toast.id)
+  }
+}
 
 const toastTypeClasses = (type) => {
   const map = {

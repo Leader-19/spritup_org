@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPRITUP center - Offline</title>
+  <meta name="theme-color" content="#ffffff">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Siemreap', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #f9fafb;
+      color: #111827;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #0d0d17;
+        color: #f3f4f6;
+      }
+    }
+
+    .container {
+      text-align: center;
+      padding: 2rem;
+      max-width: 480px;
+    }
+
+    .icon {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 2rem;
+      opacity: 0.8;
+    }
+
+    .wifi-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .wifi-icon svg {
+      stroke: #9ca3af;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    p {
+      font-size: 1.05rem;
+      color: #6b7280;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      p {
+        color: #9ca3af;
+      }
+    }
+
+    .retry-btn {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      background-color: #3b82f6;
+      color: #ffffff;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .retry-btn:hover {
+      background-color: #2563eb;
+    }
+
+    .retry-btn:active {
+      background-color: #1d4ed8;
+    }
+
+    .brand {
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      color: #9ca3af;
+    }
+
+    .tips {
+      margin-top: 1.5rem;
+      text-align: left;
+      background: #f3f4f6;
+      border-radius: 0.5rem;
+      padding: 1rem 1.25rem;
+      font-size: 0.9rem;
+      color: #4b5563;
+      line-height: 1.8;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .tips {
+        background: #1a1a2e;
+        color: #9ca3af;
+      }
+    }
+
+    .tips li {
+      margin-left: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="wifi-icon">
+      <svg viewBox="0 0 24 24" width="80" height="80">
+        <path d="M1.5 8.5c4.5-5 16.5-5 21 0" />
+        <path d="M5 12c3.5-4 10.5-4 14 0" />
+        <path d="M8.5 15.5c2-2.5 5-2.5 7 0" />
+        <circle cx="12" cy="19" r="1" fill="#9ca3af" stroke="none" />
+      </svg>
+    </div>
+
+    <h1>You're Offline</h1>
+    <p>
+      It looks like you've lost your internet connection. 
+      Please check your network and try again.
+    </p>
+
+    <button class="retry-btn" onclick="window.location.reload()">
+      Try Again
+    </button>
+
+    <ul class="tips">
+      <li>Check your Wi-Fi or mobile data</li>
+      <li>Make sure Airplane Mode is off</li>
+      <li>Try moving to a different location</li>
+    </ul>
+
+    <div class="brand">SPRITUP center</div>
+  </div>
+</body>
+</html>

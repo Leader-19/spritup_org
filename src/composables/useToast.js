@@ -4,13 +4,21 @@ const toasts = ref([])
 let idCounter = 0
 
 export function useToast() {
-  const add = (message, type = 'info', duration = 3500) => {
+  const add = (message, type = 'info', duration = 3500, onClick = null) => {
     const id = ++idCounter
-    toasts.value.push({ id, message, type, duration })
+    toasts.value.push({ id, message, type, duration, onClick })
     setTimeout(() => {
       remove(id)
     }, duration)
     return id
+  }
+
+  const onClick = (id) => {
+    const toast = toasts.value.find(t => t.id === id)
+    if (toast?.onClick) {
+      toast.onClick()
+    }
+    remove(id)
   }
 
   const remove = (id) => {
@@ -25,10 +33,12 @@ export function useToast() {
 
   return {
     toasts: readonly(toasts),
+    add,
     info,
     success,
     error,
     warning,
     remove,
+    onClick,
   }
 }

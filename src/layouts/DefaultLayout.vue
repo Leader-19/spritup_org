@@ -15,19 +15,20 @@
     <Sidebar :sidebar-open="sidebarOpen" :is-mobile="isMobile" :current-lang="currentLang" @close="sidebarOpen = false"
         @toggle="sidebarOpen = !sidebarOpen" />
 
-        <main :class="['transition-all duration-300 min-h-screen bg-gray-50 dark:bg-gray-950',
+        <main :class="['transition-all duration-300 bg-gray-50 dark:bg-gray-950 flex flex-col min-h-screen',
           sidebarLeftOpen ? (sidebarCollapsed ? 'lg:pl-16' : 'lg:pl-72') : 'lg:pl-0',
         sidebarOpen ? 'lg:pr-72' : 'lg:pr-0']">
-        <div :class="['pb-12 px-4 lg:px-8 min-h-[calc(100vh-64px)]', subNavbarVisible ? 'pt-40 lg:pt-32' : 'pt-28 lg:pt-20']">
+        <div :class="['flex-1 pb-12 px-4 lg:px-8 min-h-[calc(100vh-64px)]', subNavbarVisible ? 'pt-40 lg:pt-32' : 'pt-28 lg:pt-20']">
             <router-view />
         </div>
 
+        <Footer :current-lang="currentLang" />
     </main>
-    <Footer :current-lang="currentLang" />
 
     <Teleport to="body">
       <Toast />
       <BackToTop />
+      <PwaInstallBanner />
     </Teleport>
 </template>
 
@@ -43,6 +44,7 @@ import Footer from './Footer.vue'
 import SubNavbar from './SubNavbar.vue'
 import Toast from '../components/Toast.vue'
 import BackToTop from '../components/BackToTop.vue'
+import PwaInstallBanner from '../components/PwaInstallBanner.vue'
 
 const sidebarLeftOpen = ref(true)
 const sidebarOpen = ref(false)
