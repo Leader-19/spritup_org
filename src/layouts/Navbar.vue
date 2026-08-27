@@ -29,6 +29,14 @@
           </button>
         </div>
 
+        <!-- Mobile Take Quiz button -->
+        <router-link v-if="auth.isAuthenticated" to="/quizzes"
+          class="sm:hidden p-1.5 rounded-lg bg-brand-600 text-white hover:bg-brand-700 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+          </svg>
+        </router-link>
+
         <button @click="toggleMobileSearch"
           class="sm:hidden p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors text-gray-600 dark:text-gray-300">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
@@ -40,12 +48,10 @@
 
         <button @click="$emit('toggle-dark')"
           class="p-1.5 sm:p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors text-gray-600 dark:text-gray-300">
-         <svg v-if="!isDark" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor" stroke-width="2">
+         <svg v-if="!isDark" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
           </svg>
-         <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor" stroke-width="2">
+         <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="5" />
             <line x1="12" y1="1" x2="12" y2="3" />
             <line x1="12" y1="21" x2="12" y2="23" />
@@ -57,6 +63,15 @@
             <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
           </svg>
         </button>
+
+        <!-- Take Quiz button (authenticated users only) -->
+        <router-link v-if="auth.isAuthenticated" to="/quizzes"
+          class="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-brand-600 text-white text-sm font-medium hover:bg-brand-700 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+          </svg>
+          {{ currentLang === 'en' ? 'Take Quiz' : 'ធ្វើតេស្ត' }}
+        </router-link>
 
         <LanguageSwitcher :current-lang="currentLang" @set-lang="setLang" />
 
@@ -198,6 +213,7 @@ const navItems = computed(() => {
   }
 
   items.push({ key: 'plans', label: 'Plans', labelKh: 'គម្រោង', to: '/subscription-plans' })
+  items.push({ key: 'quizzes', label: 'Take Quiz', labelKh: 'ធ្វើតេស្ត', to: '/quizzes' })
   items.push({ key: 'ai-chat', label: 'AI Chat', labelKh: 'AI Chat' })
 
   return items
@@ -207,6 +223,7 @@ const activeNavKey = computed(() => {
   if (route.path === '/documents' && !route.query.category) return 'all'
   if (route.path === '/documents' && route.query.category) return `cat-${route.query.category}`
   if (route.path === '/subscription-plans') return 'plans'
+  if (route.path.startsWith('/quizzes')) return 'quizzes'
   return ''
 })
 
