@@ -11,6 +11,15 @@
           {{ viewMode === 'grid' ? (currentLang === 'en' ? 'List View' : 'ទិដ្ឋភាពបញ្ជី') : (currentLang === 'en' ? 'Card View' : 'ទិដ្ឋភាពកាត') }}
         </button>
 
+        <select v-model="sortBy"
+          class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-xs font-medium text-gray-700 dark:text-gray-300 outline-none">
+          <option value="newest">{{ currentLang === 'en' ? 'Newest first' : 'ថ្មីបំផុត' }}</option>
+          <option value="oldest">{{ currentLang === 'en' ? 'Oldest first' : 'ចាស់បំផុត' }}</option>
+          <option value="title_asc">{{ currentLang === 'en' ? 'Title A-Z' : 'ចំណងជើង A-Z' }}</option>
+          <option value="title_desc">{{ currentLang === 'en' ? 'Title Z-A' : 'ចំណងជើង Z-A' }}</option>
+          <option value="category">{{ currentLang === 'en' ? 'By category' : 'តាមប្រភេទ' }}</option>
+        </select>
+
         <select v-model="itemsPerPage" @change="changeItemsPerPage"
           class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-xs font-medium text-gray-700 dark:text-gray-300 outline-none">
           <option v-for="opt in perPageOptions" :key="opt" :value="opt">{{ currentLang === 'en' ? `${opt} per page` : `${opt} ក្នុងមួយទំព័រ` }}</option>
@@ -79,6 +88,14 @@
         <div class="relative bg-gray-100 dark:bg-gray-700 flex-shrink-0">
           <img v-if="doc.image" :src="docImage(doc)" :alt="doc.doc_name" class="block w-full h-auto" />
           <div v-else class="w-full h-48 flex items-center justify-center text-gray-400 text-sm">No image</div>
+          <button v-if="auth.isAuthenticated" @click.stop="toggleLibrary(doc)"
+            :class="['absolute top-2 right-2 p-2 rounded-full transition-colors shadow-sm',
+              libraryIds.has(doc.id) ? 'bg-brand-600 text-white hover:bg-brand-700' : 'bg-white/90 dark:bg-gray-800/90 text-gray-500 hover:text-brand-600 dark:text-gray-400 dark:hover:text-brand-400']"
+            :title="libraryIds.has(doc.id) ? 'Remove from Library' : 'Add to Library'">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" :fill="libraryIds.has(doc.id) ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </button>
         </div>
         <div class="p-4 flex-1 flex flex-col min-h-0">
           <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-1"
@@ -106,10 +123,20 @@
           <div v-else class="text-gray-400 text-xs">No image</div>
         </div>
         <div class="flex-1 min-w-0">
-          <h3 class="text-xl font-bold text-gray-900 dark:text-white"
-            :class="isExpanded(doc.id) ? '' : 'line-clamp-1'">
-            {{ doc.doc_name }}
-          </h3>
+          <div class="flex items-start justify-between gap-2">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white"
+              :class="isExpanded(doc.id) ? '' : 'line-clamp-1'">
+              {{ doc.doc_name }}
+            </h3>
+            <button v-if="auth.isAuthenticated" @click.stop="toggleLibrary(doc)"
+              :class="['p-1.5 rounded-lg transition-colors flex-shrink-0',
+                libraryIds.has(doc.id) ? 'text-brand-600 hover:text-brand-700' : 'text-gray-400 hover:text-brand-600 dark:text-gray-500 dark:hover:text-brand-400']"
+              :title="libraryIds.has(doc.id) ? 'Remove from Library' : 'Add to Library'">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" :fill="libraryIds.has(doc.id) ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+            </button>
+          </div>
           <p class="text-gray-500 dark:text-gray-500"
             :class="isExpanded(doc.id) ? '' : 'line-clamp-1'">
             {{ doc.description }}
@@ -172,9 +199,19 @@
           {{ viewingDoc?.doc_name }}
         </h3>
 
-        <button @click="closeViewer" class="p-2 hover:bg-gray-800 rounded">
-          ✕
-        </button>
+        <div class="flex items-center gap-1">
+          <button v-if="auth.isAuthenticated && viewingDoc" @click="toggleLibrary(viewingDoc)"
+            :class="['p-2 rounded transition-colors',
+              libraryIds.has(viewingDoc?.id) ? 'text-brand-400 hover:text-brand-300' : 'text-gray-400 hover:text-brand-400']"
+            :title="libraryIds.has(viewingDoc?.id) ? 'Remove from Library' : 'Add to Library'">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" :fill="libraryIds.has(viewingDoc?.id) ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </button>
+          <button @click="closeViewer" class="p-2 hover:bg-gray-800 rounded">
+            ✕
+          </button>
+        </div>
       </div>
 
       <!-- Viewer Body -->
@@ -209,17 +246,21 @@
 </template>
 
 <script setup>
-import { ref, computed, inject, onMounted, watch } from 'vue'
+import { ref, computed, inject, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import apiClient from '../../utils/apiClient.js'
 import { API_URL } from '../../config/env.js'
 import { normalizeCategories } from '../../utils/api.js'
 import { useAuth } from '../../stores/auth.js'
+import { useToast } from '../../composables/useToast.js'
 
 
 const currentLang = inject('currentLang')
 const router = useRouter()
 const route = useRoute()
+const { success: toastSuccess, error: toastError } = useToast()
+const auth = useAuth()
+const libraryIds = ref(new Set())
 
 const rawCategories = ref([])
 const loading = ref(false)
@@ -229,11 +270,45 @@ const viewerOpen = ref(false)
 const viewingDoc = ref(null)
 const documentContent = ref('')
 const viewMode = ref('grid')
+const sortBy = ref('newest')
 const itemsPerPage = ref(10)
 const currentPage = ref(1)
 const perPageOptions = [10, 20, 30, 40, 50, 100]
 const error = ref(null)
 let searchTimer = null
+
+// Library helpers
+const fetchLibraryIds = async () => {
+  if (!auth.isAuthenticated) return
+  try {
+    const response = await apiClient.get('/library')
+    const items = response.data.data || []
+    libraryIds.value = new Set(items.map(item => item.id || item.document_id))
+  } catch (err) {
+    console.error('Failed to fetch library:', err)
+  }
+}
+
+const toggleLibrary = async (doc) => {
+  if (!auth.isAuthenticated) {
+    router.push('/login')
+    return
+  }
+  const isInLibrary = libraryIds.value.has(doc.id)
+  try {
+    if (isInLibrary) {
+      await apiClient.delete(`/library/${doc.id}`)
+      libraryIds.value.delete(doc.id)
+      toastSuccess(currentLang.value === 'en' ? 'Removed from library' : 'បានលុបពីបណ្ណាល័យ')
+    } else {
+      await apiClient.post('/library', { document_id: doc.id })
+      libraryIds.value.add(doc.id)
+      toastSuccess(currentLang.value === 'en' ? 'Added to library' : 'បានបន្ថែមទៅបណ្ណាល័យ')
+    }
+  } catch (err) {
+    toastError(err.response?.data?.message || (currentLang.value === 'en' ? 'Failed to update library' : 'បរាជ័យក្នុងការធ្វើបច្ចុប្បន្នភាពបណ្ណាល័យ'))
+  }
+}
 
 const fileExt = computed(() => {
   return viewingDoc.value?.doc_upload?.split('.').pop()?.toLowerCase()
@@ -291,6 +366,25 @@ const filteredDocuments = computed(() => {
       ((d.doc_code || '')).toLowerCase().includes(q) ||
       ((d.keywords || '')).toLowerCase().includes(q)
     )
+  }
+
+  // Apply sorting
+  switch (sortBy.value) {
+    case 'oldest':
+      docs.sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+      break
+    case 'title_asc':
+      docs.sort((a, b) => (a.doc_title || '').localeCompare(b.doc_title || ''))
+      break
+    case 'title_desc':
+      docs.sort((a, b) => (b.doc_title || '').localeCompare(a.doc_title || ''))
+      break
+    case 'category':
+      docs.sort((a, b) => (a.categoryTitle || '').localeCompare(b.categoryTitle || ''))
+      break
+    default: // newest
+      docs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      break
   }
 
   return docs
@@ -420,6 +514,12 @@ const changeItemsPerPage = () => {
   currentPage.value = 1
 }
 
+const handleKeydown = (e) => {
+  if (e.key === 'Escape' && viewerOpen.value) {
+    closeViewer()
+  }
+}
+
 onMounted(() => {
   const catId = route.query.category
   if (catId) {
@@ -430,6 +530,12 @@ onMounted(() => {
     searchQuery.value = search
   }
   fetchDocuments()
+  fetchLibraryIds()
+  document.addEventListener('keydown', handleKeydown)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('keydown', handleKeydown)
 })
 
 watch(() => route.query.category, (newVal) => {

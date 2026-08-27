@@ -23,6 +23,7 @@
                             <th class="p-3 text-left">Category</th>
                             <th class="p-3 text-left">File</th>
                             <th class="p-3 text-left">Date</th>
+                            <th class="p-3 text-left">Library</th>
                         </tr>
                     </thead>
 
@@ -86,6 +87,19 @@
                             <td class="p-3 text-gray-700 dark:text-gray-300">
                                 {{ new Date(document.created_at).toLocaleDateString() }}
                             </td>
+
+                            <!-- Library -->
+                            <td class="p-3">
+                                <button v-if="auth.isAuthenticated" @click="toggleLibrary(document)"
+                                    :class="['p-1.5 rounded-lg transition-colors',
+                                        libraryIds.has(document.id) ? 'text-brand-600 hover:text-brand-700' : 'text-gray-400 hover:text-brand-600 dark:text-gray-500 dark:hover:text-brand-400']"
+                                    :title="libraryIds.has(document.id) ? 'Remove from Library' : 'Add to Library'">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" :fill="libraryIds.has(document.id) ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                    </svg>
+                                </button>
+                                <span v-else class="text-gray-300 dark:text-gray-600 text-xs">—</span>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -122,6 +136,11 @@ import axios from 'axios'
 import { API_URL } from '../../config/env'
 import { normalizeCategories, flattenDocuments } from '../../utils/api.js'
 import DocumentViewer from './DocumentViewer.vue'
+import { useAuth } from '../../stores/auth.js'
+import { useLibrary } from '../../composables/useLibrary.js'
+
+const auth = useAuth()
+const { libraryIds, fetchLibraryIds, toggleLibrary } = useLibrary()
 
 const documents = ref([])
 const categories = ref([])
@@ -168,5 +187,6 @@ const viewDoc = (doc) => {
 
 onMounted(() => {
     fetchDocuments()
+    fetchLibraryIds()
 })
 </script>

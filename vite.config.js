@@ -7,7 +7,7 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['logo.jpg', 'icon-192.svg', 'icon-512.svg', 'icon-maskable-512.svg'],
+      includeAssets: ['logo.jpg', 'icon-192.svg', 'icon-512.svg', 'icon-maskable-512.svg', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png'],
       manifest: {
         name: 'SPRITUP center',
         short_name: 'SPRITUP',
@@ -18,6 +18,7 @@ export default defineConfig({
         scope: '/',
         start_url: '/',
         icons: [
+          // SVG icons (modern browsers)
           {
             src: 'icon-192.svg',
             sizes: '192x192',
@@ -34,6 +35,24 @@ export default defineConfig({
             type: 'image/svg+xml',
             purpose: 'maskable'
           },
+          // PNG fallbacks (older browsers)
+          {
+            src: 'icon-192.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: 'icon-512.png',
+            sizes: '512x512',
+            type: 'image/png'
+          },
+          {
+            src: 'icon-maskable-512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable'
+          },
+          // Original logo
           {
             src: 'logo.jpg',
             sizes: '1024x1024',
