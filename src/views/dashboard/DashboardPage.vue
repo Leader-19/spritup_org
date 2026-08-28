@@ -82,6 +82,35 @@
         </div>
       </div>
 
+      <!-- All Categories with Item Counts -->
+      <div v-if="allCategories.length" class="mb-6 p-6 rounded-2xl bg-white dark:bg-gray-800/80 border border-gray-100 dark:border-gray-700/50">
+        <h2 class="font-display font-semibold text-lg text-gray-900 dark:text-white mb-4">
+          {{ currentLang === 'en' ? 'All Categories' : 'ប្រភេទទាំងអស់' }}
+          <span class="text-sm font-normal text-gray-400 ml-2">({{ allCategories.length }})</span>
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+          <div
+            v-for="cat in allCategories"
+            :key="cat.id"
+            class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-700/40 hover:bg-gray-100 dark:hover:bg-gray-700/60 transition-colors cursor-pointer"
+            @click="$router.push(`/documents?category=${cat.id}`)"
+          >
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 bg-blue-500 text-white">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">{{ cat.name }}</p>
+              <p class="text-xs text-gray-400">
+                <span class="font-bold text-blue-500">{{ cat.count }}</span>
+                {{ currentLang === 'en' ? 'items' : 'ឯកសារ' }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="grid lg:grid-cols-3 gap-5">
         <div class="lg:col-span-2 p-6 rounded-2xl bg-white dark:bg-gray-800/80 border border-gray-100 dark:border-gray-700/50">
           <h2 class="font-display font-semibold text-lg text-gray-900 dark:text-white mb-4">
@@ -192,6 +221,7 @@ const metrics = computed(() => {
 
 const recentDocuments = computed(() => dashboardData.value?.recent_documents ?? [])
 const topCategories = computed(() => dashboardData.value?.top_categories ?? [])
+const allCategories = computed(() => dashboardData.value?.all_categories ?? [])
 
 const maxCatCount = computed(() => {
   if (!topCategories.value.length) return 1
