@@ -405,7 +405,7 @@ const fetchDocuments = async () => {
   error.value = null
   try {
     const auth = useAuth()
-    const endpoint = auth.isAuthenticated ? '/my-documents' : '/documents'
+    const endpoint = auth.isAuthenticated ? '/my-documents' : '/documents/preview'
     const response = await apiClient.get(endpoint)
     if (response.data.status === 'success') {
       rawCategories.value = normalizeCategories(response.data.categories)
