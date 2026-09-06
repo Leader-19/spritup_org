@@ -1,5 +1,5 @@
 <template>
-  <div class="px-4 md:px-6 lg:px-10 py-8 max-w-8xl ml-auto">
+  <div class="px-4 md:px-6 lg:px-10 py-8 max-w-8xl mx-auto">
 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
       <div class="flex items-center gap-3 flex-wrap">
         <h1 class="font-display font-bold text-2xl text-gray-900 dark:text-white">

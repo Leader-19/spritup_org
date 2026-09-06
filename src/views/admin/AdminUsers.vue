@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
-      <div class="max-w-7xl mx-auto">
+      <div class="max-w-8xl mx-auto">
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
           <div>
             <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">{{ pageTitle }}</h1>
@@ -57,9 +57,11 @@
                     </div>
                   </td>
                   <td class="px-6 py-4 text-xs">
-                    <span v-if="user.subscription?.plan" class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
-                      {{ user.subscription.plan.name }}
-                    </span>
+                    <div v-if="user.subscriptions?.length" class="flex flex-wrap gap-1">
+                      <span v-for="sub in user.subscriptions" :key="sub.id" class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
+                        {{ sub.plan?.name || 'Unknown' }}
+                      </span>
+                    </div>
                     <span v-else class="text-gray-400 italic">No plan</span>
                   </td>
                   <td class="px-6 py-4 text-xs">

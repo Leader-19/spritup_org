@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
-    <div class="max-w-7xl mx-auto">
+    <div class="max-w-8xl mx-auto">
       <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
         <div>
           <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">Subscription Plans</h1>
@@ -173,16 +173,29 @@
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Assign Categories</label>
             <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">Select which categories users on this plan can access.</p>
 
+            <div class="relative mb-3">
+              <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input v-model="categorySearch" type="text" placeholder="Search categories..."
+                class="w-full pl-9 pr-9 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-400 focus:border-transparent outline-none transition" />
+              <button v-if="categorySearch" @click="categorySearch = ''" class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
             <div v-if="loadingCategories" class="text-sm text-gray-500 py-2">Loading categories...</div>
             <div v-else class="max-h-48 overflow-y-auto rounded-xl border border-gray-200 dark:border-gray-700 p-3 space-y-1">
-              <label v-for="cat in allCategories" :key="cat.id"
+              <label v-for="cat in filteredCategories" :key="cat.id"
                 class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition-colors">
                 <input type="checkbox" :value="cat.id" v-model="form.category_ids"
                   class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
                 <span class="text-sm text-gray-700 dark:text-gray-300">{{ cat.title }}</span>
                 <span v-if="cat.parent_id" class="text-xs text-gray-400">— subcategory</span>
               </label>
-              <p v-if="allCategories.length === 0" class="text-sm text-gray-400 italic py-2">No categories available.</p>
+              <p v-if="!filteredCategories.length" class="text-sm text-gray-400 italic py-2">No categories match your search.</p>
             </div>
             <div v-if="form.category_ids.length > 0" class="mt-2 text-xs text-gray-500">
               {{ form.category_ids.length }} {{ form.category_ids.length === 1 ? 'category' : 'categories' }} selected
@@ -217,7 +230,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import apiClient from '../../utils/apiClient.js'
 import { useToast } from '../../composables/useToast.js'
 
@@ -230,6 +243,7 @@ const loadingCategories = ref(false)
 const showCreateForm = ref(false)
 const editingPlan = ref(null)
 const saving = ref(false)
+const categorySearch = ref('')
 
 const defaultForm = {
   name: '',
@@ -246,6 +260,12 @@ const defaultForm = {
 }
 
 const form = reactive({ ...defaultForm })
+
+const filteredCategories = computed(() => {
+  if (!categorySearch.value.trim()) return allCategories.value
+  const query = categorySearch.value.toLowerCase()
+  return allCategories.value.filter(c => c.title.toLowerCase().includes(query))
+})
 
 async function fetchPlans() {
   loading.value = true
@@ -286,12 +306,14 @@ function editPlan(plan) {
     is_active: plan.is_active,
     category_ids: plan.categories ? plan.categories.map(c => c.id) : [],
   })
+  categorySearch.value = ''
 }
 
 function closeForm() {
   showCreateForm.value = false
   editingPlan.value = null
   Object.assign(form, defaultForm)
+  categorySearch.value = ''
 }
 
 async function savePlan() {

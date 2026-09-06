@@ -1,6 +1,7 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
-    <div class="w-full max-w-md">
+    <div class="w-full max-w-8xl mx-auto">
+      <div class="max-w-md mx-auto">
       <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8">
         <div class="text-center mb-8">
           <img src="/logo.jpg" alt="SPRITUP Center" class="w-16 h-16 rounded-xl object-contain mx-auto mb-4 shadow-md" />

@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
-      <div class="max-w-4xl mx-auto">
+      <div class="max-w-8xl mx-auto">
         <div class="flex items-center gap-2 mb-8">
           <router-link to="/admin/users" class="text-blue-600 hover:text-blue-700 text-sm font-medium">← Back to Users</router-link>
         </div>
@@ -35,26 +35,31 @@
                 <p class="text-sm font-medium text-gray-900 dark:text-white capitalize">{{ user.registration_source || 'admin' }}</p>
               </div>
               <div class="rounded-xl border border-gray-200 dark:border-gray-700 p-4">
-                <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Category Limit</p>
-                <p class="text-sm font-medium text-gray-900 dark:text-white">{{ user.subscription?.plan?.max_categories || 'Unlimited' }}</p>
-              </div>
-              <div class="rounded-xl border border-gray-200 dark:border-gray-700 p-4">
-                <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Document Limit</p>
-                <p class="text-sm font-medium text-gray-900 dark:text-white">{{ user.subscription?.plan?.max_documents || 'Unlimited' }}</p>
-              </div>
-              <div class="rounded-xl border border-gray-200 dark:border-gray-700 p-4">
-                <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Current Plan</p>
-                <p class="text-sm font-medium text-gray-900 dark:text-white">{{ user.subscription?.plan?.name || 'No plan' }}</p>
-              </div>
-              <div class="rounded-xl border border-gray-200 dark:border-gray-700 p-4">
-                <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Plan Status</p>
-                <p class="text-sm font-medium text-gray-900 dark:text-white capitalize">{{ user.subscription?.status || 'N/A' }}</p>
-              </div>
-              <div class="rounded-xl border border-gray-200 dark:border-gray-700 p-4">
                 <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Assigned Categories</p>
                 <p class="text-sm font-medium text-gray-900 dark:text-white">{{ user.categories?.length || 0 }}</p>
               </div>
             </div>
+
+            <div v-if="user.subscriptions?.length" class="mt-4">
+              <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Active Plans</h3>
+              <div class="space-y-2">
+                <div v-for="sub in user.subscriptions" :key="sub.id" class="rounded-xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/20 p-4">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <p class="font-semibold text-emerald-900 dark:text-emerald-100">{{ sub.plan?.name || 'Unknown Plan' }}</p>
+                      <p class="text-xs text-emerald-700 dark:text-emerald-300 mt-1">
+                        Categories: {{ sub.plan?.max_categories || 'Unlimited' }} | Documents: {{ sub.plan?.max_documents || 'Unlimited' }}
+                      </p>
+                    </div>
+                    <div class="text-right">
+                      <span class="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200">{{ sub.status }}</span>
+                      <p v-if="sub.ends_at" class="text-xs text-emerald-600 dark:text-emerald-400 mt-1">Expires: {{ sub.ends_at }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p v-else class="mt-4 text-sm text-gray-400 text-center py-4">No active plans.</p>
 
             <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
               <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Quick Actions</h3>
@@ -94,11 +99,16 @@
           <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Assign Subscription Plan</h3>
           <div v-if="plans.length === 0" class="text-sm text-gray-500 text-center py-4">No plans available.</div>
           <div v-else class="space-y-3 max-h-96 overflow-y-auto">
-            <div v-for="plan in plans" :key="plan.id" @click="selectPlan(plan)" class="cursor-pointer rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-blue-500 transition-colors" :class="{'border-blue-500 bg-blue-50 dark:bg-blue-950/20': selectedPlan?.id === plan.id}">
+            <div v-for="plan in plans" :key="plan.id" @click="togglePlan(plan)" class="cursor-pointer rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:border-blue-500 transition-colors" :class="{'border-blue-500 bg-blue-50 dark:bg-blue-950/20': selectedPlans.some(p => p.id === plan.id)}">
               <div class="flex items-center justify-between">
-                <div>
-                  <p class="font-semibold text-gray-900 dark:text-white">{{ plan.name }}</p>
-                  <p class="text-xs text-gray-500 dark:text-gray-400">{{ plan.formatted_price }} / {{ plan.duration_days ? plan.duration_days + ' days' : 'lifetime' }}</p>
+                <div class="flex items-center gap-3">
+                  <div class="h-5 w-5 rounded border-2 flex items-center justify-center" :class="selectedPlans.some(p => p.id === plan.id) ? 'border-blue-500 bg-blue-500' : 'border-gray-300 dark:border-gray-600'">
+                    <svg v-if="selectedPlans.some(p => p.id === plan.id)" class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-gray-900 dark:text-white">{{ plan.name }}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ plan.formatted_price }} / {{ plan.duration_days ? plan.duration_days + ' days' : 'lifetime' }}</p>
+                  </div>
                 </div>
                 <div class="text-right text-xs text-gray-500 dark:text-gray-400">
                   <p>Categories: {{ plan.max_categories || 'Unlimited' }}</p>
@@ -109,9 +119,9 @@
           </div>
           <div class="flex items-center justify-end gap-3 mt-6">
             <button type="button" @click="showPlanModal = false" class="rounded-xl px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">Cancel</button>
-            <button @click="assignPlan" :disabled="!selectedPlan || assigning" class="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors disabled:opacity-50">
+            <button @click="assignPlans" :disabled="selectedPlans.length === 0 || assigning" class="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors disabled:opacity-50">
               <span v-if="assigning" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
-              Assign Plan
+              Assign {{ selectedPlans.length > 0 ? selectedPlans.length : '' }} Plan(s)
             </button>
           </div>
         </div>
@@ -129,7 +139,7 @@ const user = ref(null)
 const loading = ref(true)
 const showPlanModal = ref(false)
 const plans = ref([])
-const selectedPlan = ref(null)
+const selectedPlans = ref([])
 const assigning = ref(false)
 
 const fetchUser = async () => {
@@ -148,26 +158,34 @@ const openPlanModal = async () => {
   try {
     const response = await apiClient.get('/admin/plans')
     plans.value = response.data.plans
-    selectedPlan.value = null
+    selectedPlans.value = []
     showPlanModal.value = true
   } catch (error) {
     console.error('Failed to load plans:', error)
   }
 }
 
-const selectPlan = (plan) => {
-  selectedPlan.value = plan
+const togglePlan = (plan) => {
+  const idx = selectedPlans.value.findIndex(p => p.id === plan.id)
+  if (idx >= 0) {
+    selectedPlans.value.splice(idx, 1)
+  } else {
+    selectedPlans.value.push(plan)
+  }
 }
 
-const assignPlan = async () => {
-  if (!selectedPlan.value || !user.value) return
+const assignPlans = async () => {
+  if (selectedPlans.value.length === 0 || !user.value) return
   assigning.value = true
   try {
-    await apiClient.post(`/admin/users/${user.value.id}/plans`, {
-      subscription_plan_id: selectedPlan.value.id,
-      status: 'active',
-    })
+    for (const plan of selectedPlans.value) {
+      await apiClient.post(`/admin/users/${user.value.id}/plans`, {
+        subscription_plan_id: plan.id,
+        status: 'active',
+      })
+    }
     showPlanModal.value = false
+    selectedPlans.value = []
     fetchUser()
   } catch (error) {
     console.error('Failed to assign plan:', error)

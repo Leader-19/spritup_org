@@ -1,6 +1,7 @@
 <template>
   <div :class="['flex items-center justify-center', modal ? '' : 'min-h-screen bg-gray-50 dark:bg-gray-900 px-4']">
-    <div :class="['w-full max-w-md', modal ? '' : '']">
+    <div :class="['w-full max-w-8xl mx-auto', modal ? '' : '']">
+      <div :class="['max-w-md mx-auto', modal ? '' : '']">
       <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-8">
         <div class="text-center mb-8" v-if="!modal">
           <img src="/logo.jpg" alt="SPRITUP Center" @error="handleImageError" class="w-16 h-16 rounded-xl object-contain mx-auto mb-4 shadow-md" />

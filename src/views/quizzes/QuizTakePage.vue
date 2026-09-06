@@ -1,5 +1,5 @@
 <template>
-  <div class="px-4 md:px-6 lg:px-10 py-8 max-w-3xl mx-auto">
+  <div class="px-4 md:px-6 lg:px-10 py-8 max-w-8xl mx-auto">
     <!-- Loading -->
     <div v-if="loading" class="space-y-6">
       <div class="h-16 bg-gray-200 dark:bg-gray-700 rounded-2xl animate-pulse"></div>

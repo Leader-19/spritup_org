@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-10 px-4">
-    <div class="max-w-4xl mx-auto space-y-6">
+    <div class="max-w-8xl mx-auto space-y-6">
       <h1 class="text-3xl font-bold text-gray-800 dark:text-white">
         {{ currentLang === 'en' ? 'Profile Settings' : 'ការកំណត់ប្រវត្តិរូប' }}
       </h1>

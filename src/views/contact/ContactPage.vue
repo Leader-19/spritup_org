@@ -15,31 +15,41 @@
           <h2 class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-4">
             {{ currentLang === 'en' ? 'Send us a message' : 'ផ្ញើសារមកយើង' }}
           </h2>
-          <form class="space-y-4">
+          <form @submit.prevent="handleSubmit" class="space-y-4">
             <div>
               <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
                 {{ currentLang === 'en' ? 'Name' : 'ឈ្មោះ' }}
               </label>
-              <input type="text"
+              <input v-model="name" type="text"
                 class="w-full px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-700 outline-none" />
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
                 {{ currentLang === 'en' ? 'Email' : 'អ៊ីមែល' }}
               </label>
-              <input type="email"
+              <input v-model="email" type="email"
+                class="w-full px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-700 outline-none" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
+                {{ currentLang === 'en' ? 'Subject' : 'ប្រធានបទ' }}
+              </label>
+              <input v-model="subject" type="text" required
                 class="w-full px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-700 outline-none" />
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
                 {{ currentLang === 'en' ? 'Message' : 'សារ' }}
               </label>
-              <textarea rows="4"
+              <textarea v-model="message" rows="4" required
                 class="w-full px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-700 outline-none"></textarea>
             </div>
-            <button type="submit"
-              class="w-full bg-brand-600 hover:bg-brand-700 text-white py-2 rounded-xl">
-              {{ currentLang === 'en' ? 'Send Message' : 'ផ្ញើសារ' }}
+            <div v-if="formError" class="p-3 rounded-xl bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-sm text-red-600 dark:text-red-400">
+              {{ formError }}
+            </div>
+            <button type="submit" :disabled="loading"
+              class="w-full bg-brand-600 hover:bg-brand-700 text-white py-2 rounded-xl disabled:opacity-60 disabled:cursor-not-allowed transition-colors">
+              {{ loading ? (currentLang === 'en' ? 'Sending...' : 'កំពុងផ្ញើ...') : (currentLang === 'en' ? 'Send Message' : 'ផ្ញើសារ') }}
             </button>
           </form>
         </div>
@@ -87,7 +97,44 @@
 </template>
 
 <script setup>
-import { inject } from 'vue'
+import { ref, inject } from 'vue'
+import apiClient from '../../utils/apiClient.js'
+import { useToast } from '../../composables/useToast.js'
 
 const currentLang = inject('currentLang')
+const { success: toastSuccess, error: toastError } = useToast()
+
+const name = ref('')
+const email = ref('')
+const subject = ref('')
+const message = ref('')
+const loading = ref(false)
+const formError = ref('')
+
+async function handleSubmit() {
+  if (!subject.value.trim() || !message.value.trim()) {
+    toastError(currentLang.value === 'en' ? 'Please fill in all required fields.' : 'សូមបំពេញពាក្យសម្ងាត់ទាំងអស់។')
+    return
+  }
+
+  loading.value = true
+  formError.value = ''
+  try {
+    await apiClient.post('/contact', {
+      subject: subject.value,
+      message: message.value,
+      guest_name: name.value || null,
+      guest_email: email.value || null,
+    })
+    toastSuccess(currentLang.value === 'en' ? 'Message sent successfully!' : 'បានផ្ញើសារដោយជោគជ័យ!')
+    name.value = ''
+    email.value = ''
+    subject.value = ''
+    message.value = ''
+  } catch (err) {
+    formError.value = err.response?.data?.message || (currentLang.value === 'en' ? 'Failed to send message.' : 'បរាជ័យក្នុងការផ្ញើសារ។')
+  } finally {
+    loading.value = false
+  }
+}
 </script>

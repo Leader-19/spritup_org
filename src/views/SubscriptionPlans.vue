@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4">
-      <div class="max-w-7xl mx-auto">
+      <div class="max-w-8xl mx-auto">
         <div class="text-center mb-12">
           <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
             Choose Your Plan
@@ -210,16 +210,19 @@ onMounted(async () => {
         apiClient.get('/subscriptions'),
       ])
       const user = profileRes.data.user
-      if (user?.subscription?.plan) {
-        currentPlan.value = user.subscription.plan
+      const activeSubs = Array.isArray(user?.subscription) ? user.subscription : (user?.subscription ? [user.subscription] : [])
+      const activePlanIds = activeSubs.filter(s => s?.plan).map(s => s.plan.id)
+      if (activeSubs.length > 0) {
+        currentPlan.value = activeSubs[0]?.plan || null
       }
-      pendingPlan.value = subscriptionsRes.data.subscriptions?.find(subscription => subscription.status === 'pending')?.plan || null
+      const pendingSub = subscriptionsRes.data.subscriptions?.find(subscription => subscription.status === 'pending')
+      pendingPlan.value = pendingSub?.plan || null
       if (pendingPlan.value) {
         purchaseMessage.value = `${pendingPlan.value.name} is awaiting payment confirmation.`
       }
       plans.value = plans.value.map(p => ({
         ...p,
-        current: p.id === user?.subscription?.plan?.id,
+        current: activePlanIds.includes(p.id),
       }))
     }
   } catch (error) {
