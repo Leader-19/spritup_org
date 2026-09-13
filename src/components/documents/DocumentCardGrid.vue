@@ -6,12 +6,12 @@
       @click="$emit('view', doc)"
       class="group rounded-2xl bg-white dark:bg-gray-800/95 border border-gray-200/80 dark:border-gray-700/80 shadow-sm hover:shadow-xl hover:border-brand-500/40 dark:hover:border-brand-500/40 transition-all duration-300 overflow-hidden flex flex-col cursor-pointer hover:-translate-y-1"
     >
-      <div class="relative w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 overflow-hidden flex-shrink-0 flex items-center justify-center">
+      <div class="relative w-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex-shrink-0">
         <img
           v-if="doc.image"
           :src="docImage(doc)"
           :alt="doc.doc_name"
-          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          class="block w-full h-auto"
         />
         <div v-else class="flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 gap-2 p-4 text-center">
           <div class="w-12 h-12 rounded-2xl bg-gray-200 dark:bg-gray-700/80 flex items-center justify-center">

@@ -3,9 +3,9 @@
         <div v-for="doc in documents" :key="doc.id" @click="$emit('view', doc)"
             class="group flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-2xl bg-white dark:bg-gray-800/95 border border-gray-200/80 dark:border-gray-700/80 shadow-sm hover:shadow-lg hover:border-brand-500/40 dark:hover:border-brand-500/40 transition-all duration-200 cursor-pointer">
             <div
-                class="w-full sm:w-44 h-36 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex-shrink-0 overflow-hidden relative flex items-center justify-center border border-gray-200/50 dark:border-gray-700/50">
+                class="w-full sm:w-44 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex-shrink-0 overflow-hidden relative border border-gray-200/50 dark:border-gray-700/50">
                 <img v-if="doc.image" :src="docImage(doc)" :alt="doc.doc_name"
-                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    class="block w-full h-auto" />
                 <div v-else class="flex flex-col items-center justify-center text-gray-400 gap-1.5 p-3 text-center">
                     <svg class="w-7 h-7 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor" stroke-width="1.5">
