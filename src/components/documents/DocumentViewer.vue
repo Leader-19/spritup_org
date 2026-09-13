@@ -36,8 +36,12 @@
         <iframe v-if="fileExt === 'pdf'" :src="fileUrl" class="w-full h-full border-0"></iframe>
 
         <div v-else-if="['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(fileExt)"
-          class="w-full h-full flex items-center justify-center p-4 bg-gray-900">
-          <img :src="fileUrl" class="max-h-full max-w-full object-contain rounded-lg shadow-md" />
+          class="w-full h-full overflow-auto bg-gray-900 p-4">
+          <img
+            :src="fileUrl"
+            :alt="doc?.doc_name || 'Document image'"
+            class="block h-auto w-auto max-w-none rounded-lg shadow-md"
+          />
         </div>
 
         <iframe v-else-if="isHtmlContent" :srcdoc="content" class="w-full h-full border-0"></iframe>

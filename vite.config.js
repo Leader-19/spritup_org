@@ -62,7 +62,9 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,woff,woff2}'],
-        navigateFallback: '/offline.html',
+        // Serve the cached SPA shell for route navigations. Using offline.html
+        // here made normal online route changes look like a lost connection.
+        navigateFallback: '/index.html',
         navigateFallbackDenylist: [/^\/api/],
         runtimeCaching: [
           // ── Google Fonts (cache first, long-lived) ──────────────────────
