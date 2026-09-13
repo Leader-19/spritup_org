@@ -5,9 +5,9 @@
         <h1 class="font-display font-bold text-3xl text-gray-900 dark:text-white">
           {{ currentLang === 'en' ? 'Quizzes' : 'ការធ្វើតេស្ត' }}
         </h1>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        <!-- <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
           {{ quizzes.length }} {{ currentLang === 'en' ? 'available' : 'មាន' }}
-        </p>
+        </p> -->
       </div>
       <router-link to="/my-attempts"
         class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
@@ -15,18 +15,18 @@
       </router-link>
     </div>
 
-    <!-- Loading -->
-    <div v-if="loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+    Loading
+    <!-- <div v-if="loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
       <div v-for="i in 6" :key="i" class="p-5 rounded-2xl bg-white dark:bg-gray-800/80 border border-gray-100 dark:border-gray-700/50 animate-pulse">
         <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-3"></div>
         <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full mb-2"></div>
         <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3 mb-4"></div>
         <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
       </div>
-    </div>
+    </div> -->
 
     <!-- Empty -->
-    <div v-else-if="quizzes.length === 0" class="text-center py-20">
+    <!-- <div v-else-if="quizzes.length === 0" class="text-center py-20">
       <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -35,10 +35,10 @@
       <h3 class="font-display font-semibold text-xl text-gray-900 dark:text-white mb-2">
         {{ currentLang === 'en' ? 'No quizzes available' : 'មិនមានការធ្វើតេស្ត' }}
       </h3>
-    </div>
+    </div> -->
 
     <!-- Quiz Grid -->
-    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+    <!-- <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
       <div v-for="quiz in quizzes" :key="quiz.id"
         class="p-5 rounded-2xl bg-white dark:bg-gray-800/80 border border-gray-100 dark:border-gray-700/50 shadow-sm hover:shadow-md transition-all">
         <div class="flex items-start justify-between mb-3">
@@ -94,7 +94,7 @@
           </span>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -110,6 +110,7 @@ async function fetchQuizzes() {
   loading.value = true
   try {
     const response = await apiClient.get('/quizzes')
+    console.log(response);
     quizzes.value = response.data.data || response.data || []
   } catch (err) {
     console.error('Failed to fetch quizzes:', err)

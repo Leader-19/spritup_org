@@ -56,19 +56,29 @@ const fetchUserCategories = async () => {
 }
 
 const setAuth = (data) => {
-  state.token = data.token
-  state.user = data.user
-  if (data.token) {
-    localStorage.setItem(TOKEN_KEY, data.token)
-    const expiryTime = Date.now() + (24 * 60 * 60 * 1000)
-    localStorage.setItem(TOKEN_EXPIRY_KEY, expiryTime.toString())
-    state.tokenExpiry = expiryTime.toString()
+  if (data.token !== undefined) {
+    state.token = data.token
+    if (data.token) {
+      localStorage.setItem(TOKEN_KEY, data.token)
+      const expiryTime = Date.now() + (24 * 60 * 60 * 1000)
+      localStorage.setItem(TOKEN_EXPIRY_KEY, expiryTime.toString())
+      state.tokenExpiry = expiryTime.toString()
+    } else {
+      localStorage.removeItem(TOKEN_KEY)
+      localStorage.removeItem(TOKEN_EXPIRY_KEY)
+      state.tokenExpiry = null
+    }
   }
-  if (data.user) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data.user))
-    if (data.user.subscription?.plan) {
-      state.user.category_limit = data.user.subscription.plan.max_categories
-      state.user.document_limit = data.user.subscription.plan.max_documents
+  if (data.user !== undefined) {
+    state.user = data.user
+    if (data.user) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data.user))
+      if (data.user.subscription?.plan) {
+        state.user.category_limit = data.user.subscription.plan.max_categories
+        state.user.document_limit = data.user.subscription.plan.max_documents
+      }
+    } else {
+      localStorage.removeItem(STORAGE_KEY)
     }
   }
 }

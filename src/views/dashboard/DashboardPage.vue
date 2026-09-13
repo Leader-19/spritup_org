@@ -16,6 +16,14 @@
           <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-32"></div>
         </div>
       </div>
+
+      <section v-if="documentUsage" class="mb-8 rounded-2xl border border-indigo-100 bg-gradient-to-r from-indigo-50 to-white p-5 dark:border-indigo-900/50 dark:from-indigo-950/40 dark:to-gray-800">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div><p class="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-300">{{ subscriptionPlan?.name || 'Free' }} plan</p><h2 class="mt-1 text-xl font-bold text-gray-900 dark:text-white">{{ documentUsage.used }} / {{ documentUsage.limit ?? '∞' }} documents</h2><p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ documentUsage.at_limit ? "You've reached your document limit." : documentUsage.remaining === null ? 'Unlimited documents available.' : `${documentUsage.remaining} documents remaining` }}</p></div>
+          <router-link to="/subscription-plans" class="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700">{{ documentUsage.at_limit ? 'Upgrade Plan' : 'Manage Plan' }}</router-link>
+        </div>
+        <div class="mt-4 h-2.5 overflow-hidden rounded-full bg-indigo-100 dark:bg-gray-700"><div class="h-full rounded-full transition-all" :class="documentUsage.at_limit ? 'bg-rose-500' : 'bg-indigo-600'" :style="{ width: `${documentUsage.percentage}%` }"></div></div>
+      </section>
       <div class="grid lg:grid-cols-3 gap-5">
         <div class="lg:col-span-2 p-6 rounded-2xl bg-white dark:bg-gray-800/80 border border-gray-100 dark:border-gray-700/50 animate-pulse">
           <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded w-40 mb-4"></div>
@@ -222,6 +230,8 @@ const metrics = computed(() => {
 const recentDocuments = computed(() => dashboardData.value?.recent_documents ?? [])
 const topCategories = computed(() => dashboardData.value?.top_categories ?? [])
 const allCategories = computed(() => dashboardData.value?.all_categories ?? [])
+const documentUsage = computed(() => dashboardData.value?.document_usage ?? null)
+const subscriptionPlan = computed(() => dashboardData.value?.subscription?.plan ?? null)
 
 const maxCatCount = computed(() => {
   if (!topCategories.value.length) return 1

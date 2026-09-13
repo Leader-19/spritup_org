@@ -47,12 +47,12 @@
       </router-link>
       <router-link v-if="!auth.isAdmin" to="/subscription-plans" @click="open = false" class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
-        {{ currentLang === 'en' ? 'Subscription Plans' : 'គ្រោឡាស៊ីប្រាប់' }}
+        {{ currentLang === 'en' ? 'Subscription Plans' : 'គម្រោង' }}
       </router-link>
-      <router-link v-else to="/admin/plans" @click="open = false" class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors">
+      <a v-else :href="adminWebUrl" @click="open = false" class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
         {{ currentLang === 'en' ? 'Manage Plans' : 'គ្រប់គ្រងគម្រោង' }}
-      </router-link>
+      </a>
       <button @click="logout" class="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
         {{ currentLang === 'en' ? 'Sign out' : 'ចាកចេញ' }}
@@ -66,6 +66,7 @@ import { ref, watch, onMounted } from 'vue'
 import { useAuth } from '../../stores/auth.js'
 import { useToast } from '../../composables/useToast.js'
 import { useLibrary } from '../../composables/useLibrary.js'
+import { ADMIN_WEB_URL } from '../../config/env.js'
 
 const props = defineProps({
   currentLang: {
@@ -77,6 +78,7 @@ const props = defineProps({
 const emit = defineEmits(['logout'])
 
 const auth = useAuth()
+const adminWebUrl = ADMIN_WEB_URL
 const { success: toastSuccess, error: toastError } = useToast()
 const { libraryCount, fetchLibraryIds, suppressBadgeToast } = useLibrary()
 

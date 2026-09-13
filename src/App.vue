@@ -7,7 +7,7 @@ import { useAuth } from './stores/auth.js'
 const route = useRoute()
 const auth = useAuth()
 
-const authRoutes = ['/login', '/register']
+const authRoutes = ['/login', '/register', '/forgot-password', '/reset-password']
 const showLayout = computed(() => !authRoutes.includes(route.path))
 
 const handleLogout = () => {

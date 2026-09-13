@@ -43,6 +43,22 @@
 
       <div class="p-4 border-t border-gray-200 dark:border-gray-700">
         <div class="flex flex-col gap-1">
+          <button @click="goToPlans"
+            class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-colors"
+            :class="[
+              props.collapsed ? 'justify-center' : 'w-full',
+              route.path === '/subscription-plans'
+                ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 font-semibold'
+                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60'
+            ]">
+            <svg class="w-4 h-4 flex-shrink-0 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
+            <span v-if="!props.collapsed">
+              {{ currentLang === 'en' ? 'Plans' : 'គម្រោង' }}
+            </span>
+          </button>
+
           <button v-if="auth.isAuthenticated" @click="goToQuizzes"
             class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-colors"
             :class="[
@@ -215,6 +231,10 @@ const selectCategory = async (categoryId) => {
 
 const goToSettings = () => {
   router.push('/settings')
+}
+
+const goToPlans = () => {
+  router.push('/subscription-plans')
 }
 
 const goToQuizzes = () => {

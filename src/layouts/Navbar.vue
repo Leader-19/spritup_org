@@ -29,8 +29,21 @@
           </button>
         </div>
 
+        <!-- Mobile Plans button (គម្រោង) -->
+        <router-link to="/subscription-plans"
+          :title="currentLang === 'en' ? 'Plans' : 'គម្រោង'"
+          class="sm:hidden p-1.5 rounded-lg transition-colors"
+          :class="route.path === '/subscription-plans'
+            ? 'bg-amber-500 text-white shadow-sm'
+            : 'bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/50 border border-amber-200 dark:border-amber-800/60'">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+          </svg>
+        </router-link>
+
         <!-- Mobile Take Quiz button -->
         <router-link v-if="auth.isAuthenticated" to="/quizzes"
+          :title="currentLang === 'en' ? 'Take Quiz' : 'ធ្វើតេស្ត'"
           class="sm:hidden p-1.5 rounded-lg bg-brand-600 text-white hover:bg-brand-700 transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
@@ -64,9 +77,24 @@
           </svg>
         </button>
 
+        <!-- Plans button (គម្រោង) -->
+        <router-link to="/subscription-plans"
+          class="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all shadow-sm"
+          :class="route.path === '/subscription-plans'
+            ? 'bg-amber-500 text-white shadow-amber-500/20 shadow-md ring-2 ring-amber-400/40'
+            : 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/60 hover:bg-amber-100 dark:hover:bg-amber-900/40'">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-amber-500 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+          </svg>
+          <span>{{ currentLang === 'en' ? 'Plans' : 'គម្រោង' }}</span>
+        </router-link>
+
         <!-- Take Quiz button (authenticated users only) -->
         <router-link v-if="auth.isAuthenticated" to="/quizzes"
-          class="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-brand-600 text-white text-sm font-medium hover:bg-brand-700 transition-colors">
+          class="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-colors shadow-sm"
+          :class="route.path.startsWith('/quizzes')
+            ? 'bg-brand-700 text-white ring-2 ring-brand-400/40'
+            : 'bg-brand-600 text-white hover:bg-brand-700'">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
           </svg>
@@ -105,11 +133,18 @@
     <div class="lg:hidden h-12 border-t border-gray-200/70 dark:border-gray-800/70" v-else>
       <div class="flex h-full items-center gap-1 overflow-x-auto px-3 scrollbar-hide">
         <button v-for="item in navItems" :key="`mobile-${item.key}`" @click="handleNavClick(item)"
-          :class="['px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all flex-shrink-0',
+          :class="['px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 inline-flex items-center gap-1.5',
             activeNavKey === item.key
-              ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400'
-              : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60']">
-          {{ currentLang === 'en' ? item.label : item.labelKh }}
+              ? (item.key === 'plans'
+                  ? 'bg-amber-500 text-white shadow-sm'
+                  : 'bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400')
+              : (item.key === 'plans'
+                  ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100'
+                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/60')]">
+          <svg v-if="item.key === 'plans'" class="w-3.5 h-3.5 text-amber-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          </svg>
+          <span>{{ currentLang === 'en' ? item.label : item.labelKh }}</span>
         </button>
       </div>
     </div>

@@ -1,35 +1,35 @@
 <template>
-    <Navbar :is-dark="isDark" :current-lang="currentLang" :active-submenu="activeSubmenu"
-        @toggle-sidebar-left="sidebarLeftOpen = !sidebarLeftOpen" @toggle-dark="toggleDark"
-        @menu-click="setActiveSubmenu" @set-lang="setLang" />
+  <Navbar :is-dark="isDark" :current-lang="currentLang" :active-submenu="activeSubmenu"
+    @toggle-sidebar-left="sidebarLeftOpen = !sidebarLeftOpen" @toggle-dark="toggleDark" @menu-click="setActiveSubmenu"
+    @set-lang="setLang" />
 
-    <SubNavbar :visible="Boolean(route.query.category)" :category-id="route.query.category"
-      :sidebar-open="sidebarLeftOpen" :collapsed="sidebarCollapsed"
-      @visibility-change="subNavbarVisible = $event" />
+  <SubNavbar :visible="Boolean(route.query.category)" :category-id="route.query.category"
+    :sidebar-open="sidebarLeftOpen" :collapsed="sidebarCollapsed" @visibility-change="subNavbarVisible = $event" />
 
-    <SidebarLeft :sidebar-left-open="sidebarLeftOpen" :current-lang="currentLang" :active-submenu="activeSubmenu"
-        :collapsed="sidebarCollapsed" :is-mobile="isMobile"
-        @toggle="sidebarLeftOpen = !sidebarLeftOpen" @close="sidebarLeftOpen = true"
-        @menu-click="setActiveSubmenu" @toggle-collapsed="sidebarCollapsed = !sidebarCollapsed" />
+  <SidebarLeft :sidebar-left-open="sidebarLeftOpen" :current-lang="currentLang" :active-submenu="activeSubmenu"
+    :collapsed="sidebarCollapsed" :is-mobile="isMobile" @toggle="sidebarLeftOpen = !sidebarLeftOpen"
+    @close="sidebarLeftOpen = true" @menu-click="setActiveSubmenu"
+    @toggle-collapsed="sidebarCollapsed = !sidebarCollapsed" />
 
-    <Sidebar :sidebar-open="sidebarOpen" :is-mobile="isMobile" :current-lang="currentLang" @close="sidebarOpen = false"
-        @toggle="sidebarOpen = !sidebarOpen" />
+  <Sidebar :sidebar-open="sidebarOpen" :is-mobile="isMobile" :current-lang="currentLang" @close="sidebarOpen = false"
+    @toggle="sidebarOpen = !sidebarOpen" />
 
-        <main :class="['transition-all duration-300 bg-gray-50 dark:bg-gray-950 flex flex-col min-h-screen',
-          sidebarLeftOpen ? (sidebarCollapsed ? 'lg:pl-16' : 'lg:pl-72') : 'lg:pl-0',
-        sidebarOpen ? 'lg:pr-72' : 'lg:pr-0']">
-        <div :class="['flex-1 pb-12 px-4 lg:px-8 min-h-[calc(100vh-64px)]', subNavbarVisible ? 'pt-40 lg:pt-32' : 'pt-28 lg:pt-20']">
-            <router-view />
-        </div>
+  <main :class="['transition-all duration-300 bg-gray-50 dark:bg-gray-950 flex flex-col min-h-screen',
+    sidebarLeftOpen ? (sidebarCollapsed ? 'lg:pl-16' : 'lg:pl-72') : 'lg:pl-0',
+    sidebarOpen ? 'lg:pr-72' : 'lg:pr-0']">
+    <div
+      :class="['flex-1 pb-12 px-4 lg:px-8 min-h-[calc(100vh-64px)]', subNavbarVisible ? 'pt-40 lg:pt-32' : 'pt-28 lg:pt-20']">
+      <router-view />
+    </div>
 
-        <Footer :current-lang="currentLang" />
-    </main>
+    <Footer :current-lang="currentLang" />
+  </main>
 
-    <Teleport to="body">
-      <Toast />
-      <BackToTop />
-      <PwaInstallBanner />
-    </Teleport>
+  <Teleport to="body">
+    <Toast />
+    <BackToTop />
+    <PwaInstallBanner />
+  </Teleport>
 </template>
 
 <script setup>
@@ -62,61 +62,61 @@ const { info, success, error, warning, remove } = useToast()
 provide('currentLang', currentLang)
 
 const checkMobile = () => {
-    const mobile = window.innerWidth < 1024
-    if (mobile && !isMobile.value) {
-        sidebarLeftOpen.value = false
-        sidebarCollapsed.value = false
-    }
-    isMobile.value = mobile
+  const mobile = window.innerWidth < 1024
+  if (mobile && !isMobile.value) {
+    sidebarLeftOpen.value = false
+    sidebarCollapsed.value = false
+  }
+  isMobile.value = mobile
 }
 
 const toggleDark = () => {
-    isDark.value = !isDark.value
-    if (isDark.value) {
-        document.documentElement.classList.add('dark')
-    } else {
-        document.documentElement.classList.remove('dark')
-    }
+  isDark.value = !isDark.value
+  if (isDark.value) {
+    document.documentElement.classList.add('dark')
+  } else {
+    document.documentElement.classList.remove('dark')
+  }
 }
 
 const setLang = (lang) => {
-    currentLang.value = lang
+  currentLang.value = lang
 }
 
 const setActiveSubmenu = (menu) => {
-   activeSubmenu.value = menu
-    if (menu === 'ai-chat') {
-        sidebarOpen.value = true
-        sidebarLeftOpen.value = false
-    } else if (menu === 'home' || menu === 'documents' || menu === 'settings' || menu === 'help') {
-        sidebarLeftOpen.value = !isMobile.value
-        if (menu === 'documents') {
-            sidebarCollapsed.value = false
-        }
-        sidebarOpen.value = false
-    } else {
-        sidebarLeftOpen.value = false
-        sidebarOpen.value = false
+  activeSubmenu.value = menu
+  if (menu === 'ai-chat') {
+    sidebarOpen.value = true
+    sidebarLeftOpen.value = false
+  } else if (menu === 'home' || menu === 'documents' || menu === 'settings' || menu === 'help') {
+    sidebarLeftOpen.value = !isMobile.value
+    if (menu === 'documents') {
+      sidebarCollapsed.value = false
     }
+    sidebarOpen.value = false
+  } else {
+    sidebarLeftOpen.value = false
+    sidebarOpen.value = false
+  }
 }
 
 onMounted(() => {
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    activePage.value = route.name
-    if (route.name === 'home-page' || route.name === 'home-about-page') {
-      activeSubmenu.value = 'home'
-    } else if (route.name === 'settings-page' || route.name?.startsWith('settings-')) {
-      activeSubmenu.value = 'settings'
-    } else if (route.name === 'help-page' || route.name?.startsWith('help-')) {
-      activeSubmenu.value = 'help'
-    } else if (route.name === 'documents-page' || route.path.endsWith('-documents')) {
-      activeSubmenu.value = 'documents'
-    }
+  checkMobile()
+  window.addEventListener('resize', checkMobile)
+  activePage.value = route.name
+  if (route.name === 'home-page' || route.name === 'home-about-page') {
+    activeSubmenu.value = 'home'
+  } else if (route.name === 'settings-page' || route.name?.startsWith('settings-')) {
+    activeSubmenu.value = 'settings'
+  } else if (route.name === 'help-page' || route.name?.startsWith('help-')) {
+    activeSubmenu.value = 'help'
+  } else if (route.name === 'documents-page' || route.path.endsWith('-documents')) {
+    activeSubmenu.value = 'documents'
+  }
 })
 
 onUnmounted(() => {
-    window.removeEventListener('resize', checkMobile)
+  window.removeEventListener('resize', checkMobile)
 })
 
 const seo = useSeo()

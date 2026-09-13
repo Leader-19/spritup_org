@@ -1,6 +1,7 @@
 // router/index.js
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuth } from "../stores/auth.js"
+import { ADMIN_WEB_URL } from "../config/env.js"
 
 const routes = [
   {
@@ -23,6 +24,23 @@ const routes = [
     path: "/register",
     name: "register-page",
     component: () => import("../views/auth/RegisterPage.vue"),
+    meta: { requiresGuest: true },
+  },
+  {
+    path: "/auth/google/callback",
+    name: "google-callback",
+    component: () => import("../views/auth/GoogleCallback.vue"),
+  },
+  {
+    path: "/forgot-password",
+    name: "forgot-password-page",
+    component: () => import("../views/auth/ForgotPasswordPage.vue"),
+    meta: { requiresGuest: true },
+  },
+  {
+    path: "/reset-password",
+    name: "reset-password-page",
+    component: () => import("../views/auth/ResetPasswordPage.vue"),
     meta: { requiresGuest: true },
   },
   {
@@ -211,50 +229,12 @@ const routes = [
     component: () => import("../views/help/HelpPage.vue"),
   },
   {
-    path: "/admin/users",
-    redirect: "/admin/admin-users",
-  },
-  {
-    path: "/admin/admin-users",
-    name: "admin-created-users",
-    component: () => import("../views/admin/AdminUsers.vue"),
-    meta: { requiresAuth: true, requiresAdmin: true, registrationSource: 'admin', pageTitle: 'Admin-Created Users' },
-  },
-  {
-    path: "/admin/frontend-users",
-    name: "frontend-registered-users",
-    component: () => import("../views/admin/AdminUsers.vue"),
-    meta: { requiresAuth: true, requiresAdmin: true, registrationSource: 'frontend', pageTitle: 'Frontend Registered Users' },
-  },
-  {
-    path: "/admin/users/:id",
-    name: "admin-user-detail",
-    component: () => import("../views/admin/AdminUserDetail.vue"),
-    meta: { requiresAuth: true, requiresAdmin: true },
-  },
-  {
-    path: "/admin/users/:id/categories",
-    name: "admin-user-categories",
-    component: () => import("../views/admin/AdminUserCategories.vue"),
-    meta: { requiresAuth: true, requiresAdmin: true },
-  },
-  {
-    path: "/admin/plans",
-    name: "admin-plans",
-    component: () => import("../views/admin/AdminPlans.vue"),
-    meta: { requiresAuth: true, requiresAdmin: true },
-  },
-  {
-    path: "/admin/payments",
-    name: "admin-payments",
-    component: () => import("../views/admin/AdminPayments.vue"),
-    meta: { requiresAuth: true, requiresAdmin: true },
-  },
-  {
-    path: "/admin/categories",
-    name: "admin-categories",
-    component: () => import("../views/admin/AdminCategories.vue"),
-    meta: { requiresAuth: true, requiresAdmin: true },
+    path: "/admin/:pathMatch(.*)*",
+    name: "backend-admin",
+    beforeEnter: () => {
+      window.location.assign(ADMIN_WEB_URL)
+      return false
+    },
   },
   {
     path: "/:pathMatch(.*)*",
