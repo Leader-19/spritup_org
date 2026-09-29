@@ -1,5 +1,5 @@
 <template>
-  <div class="px-4 md:px-6 lg:px-10 py-8 max-w-8xl mx-auto">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Header -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
       <div>
@@ -12,23 +12,23 @@
       </div>
       <div class="flex items-center gap-2">
         <button v-if="selectedIds.size > 0" @click="bulkDelete"
-          class="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors">
+          class="inline-flex items-center gap-1.5 px-3 py-2 rounded-[5px] bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
           </svg>
           {{ currentLang === 'en' ? `Delete (${selectedIds.size})` : `លុប (${selectedIds.size})` }}
         </button>
         <button v-if="selectedIds.size > 0" @click="clearSelection"
-          class="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+          class="inline-flex items-center gap-1.5 px-3 py-2 rounded-[5px] bg-gray-100 dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
           {{ currentLang === 'en' ? 'Cancel' : 'បោះបង់' }}
         </button>
         <button @click="viewMode = viewMode === 'grid' ? 'list' : 'grid'"
-          class="px-3 py-2.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+          class="px-3 py-2 rounded-[5px] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
           {{ viewMode === 'grid' ? (currentLang === 'en' ? 'List View' : 'ទិដ្ឋភាពបញ្ជី') : (currentLang === 'en' ? 'Card View' : 'ទិដ្ឋភាពកាត') }}
         </button>
         <router-link to="/documents"
-          class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-600 text-white text-sm font-medium hover:bg-brand-700 transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          class="inline-flex items-center gap-1.5 px-3 py-2 rounded-[5px] bg-brand-600 text-white text-xs font-medium hover:bg-brand-700 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
           </svg>
           {{ currentLang === 'en' ? 'Browse Documents' : 'រកមើលឯកសារ' }}
@@ -117,7 +117,7 @@
         {{ currentLang === 'en' ? 'Save documents to your library for quick access later.' : 'រក្សាទុកឯកសារទៅក្នុងបណ្ណាល័យសម្រាប់ចូលប្រើប្រាស់រហ័ស។' }}
       </p>
       <router-link to="/documents"
-        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 text-white text-sm font-medium hover:bg-brand-700 transition-colors">
+        class="inline-flex items-center gap-1.5 px-3 py-2 rounded-[5px] bg-brand-600 text-white text-sm font-medium hover:bg-brand-700 transition-colors">
         {{ currentLang === 'en' ? 'Browse Documents' : 'រកមើលឯកសារ' }}
       </router-link>
     </div>

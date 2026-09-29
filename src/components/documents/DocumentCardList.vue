@@ -1,9 +1,9 @@
 <template>
-    <div class="space-y-3.5">
+    <div class="mt-6 space-y-3.5">
         <div v-for="doc in documents" :key="doc.id" @click="$emit('view', doc)"
-            class="group flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-2xl bg-white dark:bg-gray-800/95 border border-gray-200/80 dark:border-gray-700/80 shadow-sm hover:shadow-lg hover:border-brand-500/40 dark:hover:border-brand-500/40 transition-all duration-200 cursor-pointer">
+            class="group flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-[5px] bg-white dark:bg-gray-800/95 border border-gray-200/80 dark:border-gray-700/80 shadow-sm hover:shadow-lg hover:border-brand-500/40 dark:hover:border-brand-500/40 transition-all duration-200 cursor-pointer">
             <div
-                class="w-full sm:w-44 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex-shrink-0 overflow-hidden relative border border-gray-200/50 dark:border-gray-700/50">
+                class="w-full sm:w-44 rounded-[5px] bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex-shrink-0 overflow-hidden relative border border-gray-200/50 dark:border-gray-700/50">
                 <img v-if="doc.image" :src="docImage(doc)" :alt="doc.doc_name"
                     class="block w-full h-auto" />
                 <div v-else class="flex flex-col items-center justify-center text-gray-400 gap-1.5 p-3 text-center">
@@ -25,7 +25,7 @@
             <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 mb-1.5 flex-wrap">
                     <span v-if="doc.categoryTitle"
-                        class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300 border border-brand-200/60 dark:border-brand-800/60">
+                        class="px-2.5 py-0.5 rounded-[5px] text-[11px] font-semibold bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300 border border-brand-200/60 dark:border-brand-800/60">
                         {{ doc.categoryTitle }}
                     </span>
                     <span v-if="doc.doc_code" class="text-xs font-mono text-gray-500 dark:text-gray-400">{{ doc.doc_code
@@ -53,7 +53,7 @@
 
             <div class="flex sm:flex-col items-center gap-2 self-end sm:self-center flex-shrink-0">
                 <button v-if="isAuthenticated" @click.stop="$emit('toggle-library', doc)"
-                    :class="['p-2 rounded-xl border transition-colors',
+                    :class="['p-2 rounded-[5px] border transition-colors',
                         libraryIds.has(doc.id)
                             ? 'bg-brand-50 border-brand-300 text-brand-600 dark:bg-brand-950/50 dark:border-brand-800 dark:text-brand-400'
                             : 'border-gray-200 dark:border-gray-700 text-gray-400 hover:text-brand-600 dark:text-gray-500 dark:hover:text-brand-400']">
@@ -65,14 +65,14 @@
                 </button>
 
                 <span v-if="isAuthenticated"
-                    class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold shadow-sm transition-colors whitespace-nowrap">
+                    class="inline-flex items-center gap-1.5 px-4 py-2 rounded-[5px] bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold shadow-sm transition-colors whitespace-nowrap">
                     <span>{{ currentLang === 'en' ? 'Read' : 'អាន' }}</span>
                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                     </svg>
                 </span>
                 <span v-else
-                    class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold shadow-sm transition-colors whitespace-nowrap">
+                    class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-[5px] bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold shadow-sm transition-colors whitespace-nowrap">
                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />

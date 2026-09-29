@@ -1,5 +1,5 @@
 <template>
-  <div class="px-4 md:px-6 lg:px-10 py-8 max-w-8xl mx-auto">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="mb-8">
       <h1 class="font-display font-bold text-3xl text-gray-900 dark:text-white">
         {{ currentLang === 'en' ? 'My Certificates' : 'សញ្ញាបត្ររបស់ខ្ញុំ' }}

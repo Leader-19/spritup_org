@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900 py-12 px-4">
-    <div class="max-w-8xl mx-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
       <!-- Header -->
       <div class="text-center mb-12">
@@ -13,8 +13,8 @@
           </h1>
         </div>
         <p class="text-lg text-gray-600 dark:text-gray-400 max-w-md mx-auto">
-          {{ currentLang === 'en' 
-            ? 'Every contribution helps us keep this platform free, updated, and growing.' 
+          {{ currentLang === 'en'
+            ? 'Every contribution helps us keep this platform free, updated, and growing.'
             : 'រាល់ការរួមចំណែករបស់អ្នកជួយយើងរក្សាវេទិកានេះឥតគិតថ្លៃ ទាន់សម័យ និងកំពុងរីកចម្រើន។' }}
         </p>
       </div>
@@ -37,7 +37,7 @@
             </p>
           </div>
 
-          <button 
+          <button
             @click="selectTier(5)"
             class="mt-10 w-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-medium py-3.5 rounded-2xl transition">
             {{ currentLang === 'en' ? 'Donate $5' : 'ជូន 5$' }}
@@ -64,7 +64,7 @@
             </p>
           </div>
 
-          <button 
+          <button
             @click="selectTier(15)"
             class="mt-10 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-2xl transition shadow-lg shadow-blue-500/30">
             {{ currentLang === 'en' ? 'Donate $15' : 'ជូន 15$' }}
@@ -86,7 +86,7 @@
             </p>
           </div>
 
-          <button 
+          <button
             @click="selectTier(50)"
             class="mt-10 w-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-medium py-3.5 rounded-2xl transition">
             {{ currentLang === 'en' ? 'Donate $50' : 'ជូន 50$' }}
@@ -101,10 +101,10 @@
           <h3 class="font-semibold text-lg mb-4">
             {{ currentLang === 'en' ? 'Custom Amount' : 'ចំនួនផ្ទាល់ខ្លួន' }}
           </h3>
-          
+
           <div class="flex items-center justify-center gap-3">
             <span class="text-3xl font-bold text-gray-400">$</span>
-            <input 
+            <input
               v-model="amount"
               type="number"
               placeholder="25"
@@ -112,7 +112,7 @@
             >
           </div>
 
-          <button 
+          <button
             @click="handleDonate"
             :disabled="!amount || amount <= 0"
             class="mt-8 w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-4 rounded-2xl transition disabled:opacity-50">
@@ -144,8 +144,8 @@ const handleDonate = () => {
   }
 
   // Here you can integrate payment gateway later
-  alert(currentLang.value === 'en' 
-    ? `Thank you so much for donating $${amount.value}! ❤️` 
+  alert(currentLang.value === 'en'
+    ? `Thank you so much for donating $${amount.value}! ❤️`
     : `អរគុណអ្នកខ្លាំងណាស់សម្រាប់ការជូន $${amount.value}! ❤️`
   )
 }

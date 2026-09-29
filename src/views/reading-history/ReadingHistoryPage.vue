@@ -1,5 +1,5 @@
 <template>
-  <div class="px-4 md:px-6 lg:px-10 py-8 max-w-8xl mx-auto">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="mb-8">
       <h1 class="font-display font-bold text-3xl text-gray-900 dark:text-white">
         {{ currentLang === 'en' ? 'Reading History' : 'ប្រវត្តិនៃការអាន' }}
@@ -37,7 +37,7 @@
         {{ currentLang === 'en' ? 'Start reading documents to track your progress.' : 'ចាប់ផ្តើមអានឯកសារដើម្បីតាមដានការរីកចម្រើន។' }}
       </p>
       <router-link to="/documents"
-        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 text-white text-sm font-medium hover:bg-brand-700 transition-colors">
+        class="inline-flex items-center gap-1.5 px-3 py-2 rounded-[5px] bg-brand-600 text-white text-sm font-medium hover:bg-brand-700 transition-colors">
         {{ currentLang === 'en' ? 'Browse Documents' : 'រកមើលឯកសារ' }}
       </router-link>
     </div>

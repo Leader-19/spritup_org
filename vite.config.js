@@ -183,12 +183,12 @@ export default defineConfig({
     proxy: {
       // Proxy /storage requests to Laravel backend to avoid CORS
       '/storage': {
-        target: 'http://127.0.0.1:8000',
+        target: 'http://127.0.0.1:8001',
         changeOrigin: true,
       },
       // Proxy /api requests to Laravel backend
       '/api': {
-        target: 'http://127.0.0.1:8000',
+        target: 'http://127.0.0.1:8001',
         changeOrigin: true,
       },
     },

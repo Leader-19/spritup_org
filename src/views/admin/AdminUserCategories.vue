@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
-    <div class="max-w-8xl mx-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center gap-2 mb-8">
         <router-link :to="`/admin/users/${userId}`" class="text-blue-600 hover:text-blue-700 text-sm font-medium">← Back to User</router-link>
       </div>

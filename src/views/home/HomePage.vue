@@ -1,6 +1,6 @@
 <template>
   <div class="hero-bg min-h-[calc(100vh-4rem)]">
-    <section class="px-4 md:px-6 lg:px-10 pt-12 md:pt-16 pb-8 md:pb-12 max-w-8xl mx-auto">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 md:pb-12">
       <HomePageHeroSection :current-lang="currentLang" />
     </section>
   </div>

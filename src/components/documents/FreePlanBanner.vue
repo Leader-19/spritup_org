@@ -1,7 +1,7 @@
 <template>
-  <div class="mb-6 rounded-2xl border border-blue-200 dark:border-blue-800/60 bg-gradient-to-r from-blue-50/90 via-indigo-50/40 to-blue-100/50 dark:from-blue-950/40 dark:via-indigo-950/20 dark:to-blue-900/20 p-4 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+  <div class="mt-6 mb-6 rounded-[5px] border border-blue-200 dark:border-blue-800/60 bg-gradient-to-r from-blue-50/90 via-indigo-50/40 to-blue-100/50 dark:from-blue-950/40 dark:via-indigo-950/20 dark:to-blue-900/20 p-4 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
     <div class="flex items-center gap-3">
-      <div class="w-9 h-9 rounded-xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0">
+      <div class="w-9 h-9 rounded-[5px] bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0">
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
@@ -22,7 +22,7 @@
     </div>
     <router-link
       to="/subscription-plans"
-      class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-semibold shadow-sm transition whitespace-nowrap"
+      class="inline-flex items-center gap-1.5 px-4 py-2 rounded-[5px] bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-semibold shadow-sm transition whitespace-nowrap"
     >
       <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />

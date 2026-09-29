@@ -1,10 +1,10 @@
 <template>
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+  <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
     <div
       v-for="doc in documents"
       :key="doc.id"
       @click="$emit('view', doc)"
-      class="group rounded-2xl bg-white dark:bg-gray-800/95 border border-gray-200/80 dark:border-gray-700/80 shadow-sm hover:shadow-xl hover:border-brand-500/40 dark:hover:border-brand-500/40 transition-all duration-300 overflow-hidden flex flex-col cursor-pointer hover:-translate-y-1"
+      class="group rounded-[5px] bg-white dark:bg-gray-800/95 border border-gray-200/80 dark:border-gray-700/80 shadow-sm hover:shadow-xl hover:border-brand-500/40 dark:hover:border-brand-500/40 transition-all duration-300 overflow-hidden flex flex-col cursor-pointer hover:-translate-y-1"
     >
       <div class="relative w-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex-shrink-0">
         <img
@@ -14,7 +14,7 @@
           class="block w-full h-auto"
         />
         <div v-else class="flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 gap-2 p-4 text-center">
-          <div class="w-12 h-12 rounded-2xl bg-gray-200 dark:bg-gray-700/80 flex items-center justify-center">
+          <div class="w-12 h-12 rounded-[5px] bg-gray-200 dark:bg-gray-700/80 flex items-center justify-center">
             <svg class="w-6 h-6 text-brand-600 dark:text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
@@ -26,7 +26,7 @@
 
         <span
           v-if="doc.categoryTitle"
-          class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-lg backdrop-blur-md bg-white/90 dark:bg-gray-900/90 border border-white/40 dark:border-gray-700/50 text-[11px] font-semibold text-brand-600 dark:text-brand-400 shadow-sm line-clamp-1 max-w-[170px]"
+          class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-[5px] backdrop-blur-md bg-white/90 dark:bg-gray-900/90 border border-white/40 dark:border-gray-700/50 text-[11px] font-semibold text-brand-600 dark:text-brand-400 shadow-sm line-clamp-1 max-w-[170px]"
         >
           {{ doc.categoryTitle }}
         </span>
@@ -34,7 +34,7 @@
         <button
           v-if="isAuthenticated"
           @click.stop="$emit('toggle-library', doc)"
-          :class="['absolute top-2.5 right-2.5 p-2 rounded-xl backdrop-blur-md transition-all shadow-sm',
+          :class="['absolute top-2.5 right-2.5 p-2 rounded-[5px] backdrop-blur-md transition-all shadow-sm',
             libraryIds.has(doc.id)
               ? 'bg-brand-600 text-white shadow-brand-500/30'
               : 'bg-white/90 dark:bg-gray-900/90 text-gray-500 hover:text-brand-600 dark:text-gray-400 dark:hover:text-brand-400']"

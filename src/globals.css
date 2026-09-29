@@ -2,26 +2,62 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Amazon Ember';
+  src: url('./fonts/AmazonEmber-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Amazon Ember';
+  src: url('./fonts/AmazonEmber-SemiBold.woff2') format('woff2');
+  font-weight: 500 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Amazon Ember';
+  src: url('./fonts/AmazonEmber-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/* Amazon Ember covers Latin text; Kantumruy Pro covers the Khmer glyphs
+   Amazon Ember lacks, and unlike Siemreap it ships real medium/semibold/bold
+   weights so font-medium / font-semibold text doesn't get silently faked
+   back to regular. Applied site-wide (not per-component) so every page —
+   not just the ones we've explicitly restyled — gets the same clean look
+   in both English and Khmer. */
 body {
-  font-family: 'Siemreap', 'DM Sans', sans-serif;
+  font-family: 'Amazon Ember', 'Kantumruy Pro', 'Siemreap', 'DM Sans', sans-serif;
   @apply transition-colors duration-300;
 }
 
+/* The site-wide focus-visible outline below doesn't exist in the marketing
+   header this navbar matches — drop it here so clicking into search or
+   tabbing to nav controls doesn't show a border the reference design lacks. */
+.navbar-glass :focus-visible {
+  outline: none;
+}
+
 h1, h2, h3, h4, h5, .font-display {
-  font-family: 'Siemreap', 'Syne', sans-serif;
+  font-family: 'Amazon Ember', 'Kantumruy Pro', 'Siemreap', 'Syne', sans-serif;
 }
 
 /* Focus visible */
 :focus-visible {
   outline: 2px solid #6366f1;
   outline-offset: 2px;
-  border-radius: 4px;
 }
 
 button:focus-visible,
@@ -38,18 +74,15 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Scrollbar */
+/* Scrollbar hidden site-wide — page stays scrollable, the bar itself is invisible */
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
 ::-webkit-scrollbar {
-  width: 5px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #6366f1;
-  border-radius: 99px;
+  width: 0;
+  height: 0;
 }
 
 /* Sidebar transition */

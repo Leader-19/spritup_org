@@ -1,24 +1,16 @@
 <template>
-  <Navbar :is-dark="isDark" :current-lang="currentLang" :active-submenu="activeSubmenu"
-    @toggle-sidebar-left="sidebarLeftOpen = !sidebarLeftOpen" @toggle-dark="toggleDark" @menu-click="setActiveSubmenu"
+  <Navbar :is-dark="isDark" :current-lang="currentLang" @toggle-dark="toggleDark" @menu-click="setActiveSubmenu"
     @set-lang="setLang" />
 
   <SubNavbar :visible="Boolean(route.query.category)" :category-id="route.query.category"
-    :sidebar-open="sidebarLeftOpen" :collapsed="sidebarCollapsed" @visibility-change="subNavbarVisible = $event" />
-
-  <SidebarLeft :sidebar-left-open="sidebarLeftOpen" :current-lang="currentLang" :active-submenu="activeSubmenu"
-    :collapsed="sidebarCollapsed" :is-mobile="isMobile" @toggle="sidebarLeftOpen = !sidebarLeftOpen"
-    @close="sidebarLeftOpen = true" @menu-click="setActiveSubmenu"
-    @toggle-collapsed="sidebarCollapsed = !sidebarCollapsed" />
+    @visibility-change="subNavbarVisible = $event" />
 
   <Sidebar :sidebar-open="sidebarOpen" :is-mobile="isMobile" :current-lang="currentLang" @close="sidebarOpen = false"
     @toggle="sidebarOpen = !sidebarOpen" />
 
-  <main :class="['transition-all duration-300 bg-gray-50 dark:bg-gray-950 flex flex-col min-h-screen',
-    sidebarLeftOpen ? (sidebarCollapsed ? 'lg:pl-16' : 'lg:pl-72') : 'lg:pl-0',
-    sidebarOpen ? 'lg:pr-72' : 'lg:pr-0']">
+  <main class="bg-gray-50 dark:bg-gray-950 flex flex-col min-h-screen">
     <div
-      :class="['flex-1 pb-12 px-4 lg:px-8 min-h-[calc(100vh-64px)]', subNavbarVisible ? 'pt-40 lg:pt-32' : 'pt-28 lg:pt-20']">
+      :class="['flex-1 pb-12 min-h-[calc(100vh-64px)]', subNavbarVisible ? 'pt-36 lg:pt-28' : 'pt-14 lg:pt-16']">
       <router-view />
     </div>
 
@@ -39,21 +31,17 @@ import { useSeo } from '../composables/useSeo'
 import { useToast } from '../composables/useToast'
 import Navbar from './Navbar.vue'
 import Sidebar from './Sidebar.vue'
-import SidebarLeft from './SidebarLeft.vue'
 import Footer from './Footer.vue'
 import SubNavbar from './SubNavbar.vue'
 import Toast from '../components/Toast.vue'
 import BackToTop from '../components/BackToTop.vue'
 import PwaInstallBanner from '../components/PwaInstallBanner.vue'
 
-const sidebarLeftOpen = ref(true)
 const sidebarOpen = ref(false)
 const isDark = ref(false)
 const currentLang = ref('kh')
 const isMobile = ref(false)
-const activePage = ref('home-page')
 const activeSubmenu = ref('home')
-const sidebarCollapsed = ref(false)
 const subNavbarVisible = ref(false)
 const route = useRoute()
 
@@ -62,12 +50,7 @@ const { info, success, error, warning, remove } = useToast()
 provide('currentLang', currentLang)
 
 const checkMobile = () => {
-  const mobile = window.innerWidth < 1024
-  if (mobile && !isMobile.value) {
-    sidebarLeftOpen.value = false
-    sidebarCollapsed.value = false
-  }
-  isMobile.value = mobile
+  isMobile.value = window.innerWidth < 1024
 }
 
 const toggleDark = () => {
@@ -85,34 +68,12 @@ const setLang = (lang) => {
 
 const setActiveSubmenu = (menu) => {
   activeSubmenu.value = menu
-  if (menu === 'ai-chat') {
-    sidebarOpen.value = true
-    sidebarLeftOpen.value = false
-  } else if (menu === 'home' || menu === 'documents' || menu === 'settings' || menu === 'help') {
-    sidebarLeftOpen.value = !isMobile.value
-    if (menu === 'documents') {
-      sidebarCollapsed.value = false
-    }
-    sidebarOpen.value = false
-  } else {
-    sidebarLeftOpen.value = false
-    sidebarOpen.value = false
-  }
+  sidebarOpen.value = menu === 'ai-chat'
 }
 
 onMounted(() => {
   checkMobile()
   window.addEventListener('resize', checkMobile)
-  activePage.value = route.name
-  if (route.name === 'home-page' || route.name === 'home-about-page') {
-    activeSubmenu.value = 'home'
-  } else if (route.name === 'settings-page' || route.name?.startsWith('settings-')) {
-    activeSubmenu.value = 'settings'
-  } else if (route.name === 'help-page' || route.name?.startsWith('help-')) {
-    activeSubmenu.value = 'help'
-  } else if (route.name === 'documents-page' || route.path.endsWith('-documents')) {
-    activeSubmenu.value = 'documents'
-  }
 })
 
 onUnmounted(() => {
@@ -306,26 +267,6 @@ watch(
   (newName) => {
     if (newName) {
       applySeo(newName)
-    }
-    if (newName === 'home-page' || newName === 'home-about-page') {
-      activeSubmenu.value = 'home'
-    } else if (newName === 'settings-page' || newName?.startsWith('settings-')) {
-      activeSubmenu.value = 'settings'
-    } else if (newName === 'help-page' || newName?.startsWith('help-')) {
-      activeSubmenu.value = 'help'
-    } else if (newName === 'documents-page' || route.path.endsWith('-documents')) {
-      activeSubmenu.value = 'documents'
-    }
-  }
-)
-
-watch(
-  () => route.path,
-  (path) => {
-    if (path === '/documents' || path.endsWith('-documents')) {
-      activeSubmenu.value = 'documents'
-      if (!isMobile.value) sidebarLeftOpen.value = true
-      sidebarCollapsed.value = false
     }
   },
   { immediate: true }

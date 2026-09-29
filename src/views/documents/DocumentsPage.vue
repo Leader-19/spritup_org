@@ -1,5 +1,5 @@
 <template>
-  <div class="px-4 md:px-6 lg:px-10 py-6 max-w-8xl mx-auto">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
     <DocumentsHeader :current-lang="currentLang" :loading="loading" :count="filteredDocuments.length"
       :search-query="searchQuery" :current-category="currentCategoryObj" :get-category-label="getCategoryLabel"
       @update:search-query="searchQuery = $event" @search="handleSearch" @clear-search="clearSearch"

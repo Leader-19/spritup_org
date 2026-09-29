@@ -1,52 +1,42 @@
 <template>
-  <transition name="fade">
-    <div v-if="sidebarOpen && isMobile" class="fixed inset-0 z-30 overlay" @click="$emit('close')">
-    </div>
-  </transition>
-
-  <aside :class="['sidebar-glass fixed right-0 top-28 lg:top-16 bottom-0 z-30 w-72 overflow-y-auto transition-transform duration-300',
-    sidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0',
-    !sidebarOpen && 'lg:w-0 lg:overflow-hidden']"
-    style="transition: transform 0.3s cubic-bezier(.4,0,.2,1), width 0.3s;">
-
-    <div class="p-4 space-y-6">
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
-          {{ sidebarTitle }}
-        </h3>
-        <button @click="$emit('toggle')"
-          class="p-1.5 rounded-lg hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-colors text-gray-600 dark:text-gray-300">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-      </div>
-
+  <!-- Floating popup card -->
+  <Transition name="chat-popup">
+    <div v-if="sidebarOpen"
+      class="fixed bottom-24 right-4 sm:right-6 z-40 w-[calc(100vw-2rem)] sm:w-96 h-[28rem] max-h-[70vh] rounded-[5px] border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-2xl overflow-hidden flex flex-col">
       <ChatWidget :current-lang="currentLang" />
     </div>
-  </aside>
+  </Transition>
 
-  <button v-if="!sidebarOpen" @click="$emit('toggle')"
-    class="hidden lg:flex fixed right-0 top-1/2 -translate-y-1/2 z-20 p-2 rounded-l-lg bg-white/90 dark:bg-gray-900/90 shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-colors text-gray-600 dark:text-gray-300">
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-    </svg>
+  <!-- Persistent floating trigger button, bottom-right on every screen -->
+  <button @click="$emit('toggle')"
+    class="fixed bottom-6 right-4 sm:right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-brand-600 text-white shadow-lg hover:bg-brand-700 transition-colors"
+    :aria-label="currentLang === 'en' ? 'Open AI Assistant' : 'បើកជំនួយ AI'">
+    <X v-if="sidebarOpen" :size="24" />
+    <BotMessageSquare v-else :size="24" />
   </button>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { BotMessageSquare, X } from 'lucide-vue-next'
 import ChatWidget from '../components/ai-assistants/ChatWidget.vue'
 
-const props = defineProps({
+defineProps({
   sidebarOpen: Boolean,
   isMobile: Boolean,
   currentLang: String,
 })
 
 defineEmits(['close', 'toggle'])
-
-const sidebarTitle = computed(() => {
-  return props.currentLang === 'en' ? 'AI Assistant' : 'ជំនួយ AI'
-})
 </script>
+
+<style scoped>
+.chat-popup-enter-active,
+.chat-popup-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.chat-popup-enter-from,
+.chat-popup-leave-to {
+  opacity: 0;
+  transform: translateY(12px) scale(0.97);
+}
+</style>

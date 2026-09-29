@@ -1,11 +1,11 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-10 px-4">
-    <div class="max-w-8xl mx-auto space-y-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       <h1 class="text-3xl font-bold text-gray-800 dark:text-white">
         {{ currentLang === 'en' ? 'Profile Settings' : 'ការកំណត់ប្រវត្តិរូប' }}
       </h1>
 
-      <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow">
+      <div class="bg-white dark:bg-gray-800 rounded-[5px] p-6 shadow">
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
           {{ currentLang === 'en' ? 'Profile Photo' : 'រូបថតផ្ទាល់ខ្លួន' }}
         </h2>
@@ -34,47 +34,47 @@
         <div v-if="avatarSuccess" class="mt-3 text-sm text-green-600 dark:text-green-400">{{ avatarSuccess }}</div>
       </div>
 
-      <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow">
+      <div class="bg-white dark:bg-gray-800 rounded-[5px] p-6 shadow">
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
           {{ currentLang === 'en' ? 'Personal Information' : 'ព័ត៌មានផ្ទាល់ខ្លួន' }}
         </h2>
         <form @submit.prevent="handleProfileUpdate" class="space-y-5">
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ currentLang === 'en' ? 'Full name' : 'ឈ្មោះពេញ' }}</label>
-            <input v-model="name" type="text" required class="w-full px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-400 focus:border-transparent outline-none transition" />
+            <input v-model="name" type="text" required class="w-full px-4 py-2.5 rounded-[5px] bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white outline-none focus-visible:outline-none transition" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ currentLang === 'en' ? 'Email' : 'អ៊ីមែល' }}</label>
-            <input v-model="email" type="email" required class="w-full px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-400 focus:border-transparent outline-none transition" />
+            <input v-model="email" type="email" required class="w-full px-4 py-2.5 rounded-[5px] bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white outline-none focus-visible:outline-none transition" />
           </div>
-          <div v-if="profileError" class="p-3 rounded-xl bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-sm text-red-600 dark:text-red-400">{{ profileError }}</div>
-          <div v-if="profileSuccess" class="p-3 rounded-xl bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 text-sm text-green-600 dark:text-green-400">{{ profileSuccess }}</div>
-          <button type="submit" :disabled="profileLoading" class="px-6 py-2.5 rounded-xl bg-brand-600 text-white font-medium hover:bg-brand-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors">
+          <div v-if="profileError" class="p-3 rounded-[5px] bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-sm text-red-600 dark:text-red-400">{{ profileError }}</div>
+          <div v-if="profileSuccess" class="p-3 rounded-[5px] bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 text-sm text-green-600 dark:text-green-400">{{ profileSuccess }}</div>
+          <button type="submit" :disabled="profileLoading" class="px-6 py-2.5 rounded-[5px] bg-brand-600 text-white font-medium hover:bg-brand-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors">
             {{ profileLoading ? (currentLang === 'en' ? 'Saving...' : 'កំពុងរក្សាទុក...') : (currentLang === 'en' ? 'Save Changes' : 'រក្សាទុកការផ្លាស់ប្តូរ') }}
           </button>
         </form>
       </div>
 
-      <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow">
+      <div class="bg-white dark:bg-gray-800 rounded-[5px] p-6 shadow">
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
           {{ currentLang === 'en' ? 'Change Password' : 'ប្តូរពាក្យសម្ងាត់' }}
         </h2>
         <form @submit.prevent="handlePasswordUpdate" class="space-y-5">
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ currentLang === 'en' ? 'Current password' : 'ពាក្យសម្ងាត់បច្ចុប្បន្ន' }}</label>
-            <input v-model="currentPassword" type="password" required class="w-full px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-400 focus:border-transparent outline-none transition" />
+            <input v-model="currentPassword" type="password" required class="w-full px-4 py-2.5 rounded-[5px] bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white outline-none focus-visible:outline-none transition" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ currentLang === 'en' ? 'New password' : 'ពាក្យសម្ងាត់ថ្មី' }}</label>
-            <input v-model="newPassword" type="password" required minlength="8" class="w-full px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-400 focus:border-transparent outline-none transition" />
+            <input v-model="newPassword" type="password" required minlength="8" class="w-full px-4 py-2.5 rounded-[5px] bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white outline-none focus-visible:outline-none transition" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ currentLang === 'en' ? 'Confirm new password' : 'បញ្ជាក់ពាក្យសម្ងាត់ថ្មី' }}</label>
-            <input v-model="newPasswordConfirmation" type="password" required class="w-full px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-400 focus:border-transparent outline-none transition" />
+            <input v-model="newPasswordConfirmation" type="password" required class="w-full px-4 py-2.5 rounded-[5px] bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white outline-none focus-visible:outline-none transition" />
           </div>
-          <div v-if="passwordError" class="p-3 rounded-xl bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-sm text-red-600 dark:text-red-400">{{ passwordError }}</div>
-          <div v-if="passwordSuccess" class="p-3 rounded-xl bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 text-sm text-green-600 dark:text-green-400">{{ passwordSuccess }}</div>
-          <button type="submit" :disabled="passwordLoading" class="px-6 py-2.5 rounded-xl bg-brand-600 text-white font-medium hover:bg-brand-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors">
+          <div v-if="passwordError" class="p-3 rounded-[5px] bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-sm text-red-600 dark:text-red-400">{{ passwordError }}</div>
+          <div v-if="passwordSuccess" class="p-3 rounded-[5px] bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 text-sm text-green-600 dark:text-green-400">{{ passwordSuccess }}</div>
+          <button type="submit" :disabled="passwordLoading" class="px-6 py-2.5 rounded-[5px] bg-brand-600 text-white font-medium hover:bg-brand-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors">
             {{ passwordLoading ? (currentLang === 'en' ? 'Updating...' : 'កំពុងធ្វើបច្ចុប្បន្នភាព...') : (currentLang === 'en' ? 'Update Password' : 'ធ្វើបច្ចុប្បន្នភាពពាក្យសម្ងាត់') }}
           </button>
         </form>

@@ -3,11 +3,11 @@
     <Transition name="auth-modal">
       <div
         v-if="show"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-slate-950/60 backdrop-blur-sm"
+        class="fixed inset-0 z-[80] flex items-center justify-center p-4 sm:p-6 bg-slate-950/60 backdrop-blur-sm"
         @click.self="close"
       >
         <div
-          class="relative w-full max-w-md my-auto rounded-3xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-2xl overflow-hidden p-6 sm:p-7 transition-all"
+          class="relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-[5px] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-2xl p-6 sm:p-7 transition-all"
           role="dialog"
           aria-modal="true"
         >
@@ -15,21 +15,19 @@
           <button
             type="button"
             @click="close"
-            class="absolute top-4 right-4 p-2 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-800 transition-colors"
+            class="absolute top-3 right-3 p-1.5 rounded-[5px] text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-800 transition-colors"
             :aria-label="currentLang === 'en' ? 'Close dialog' : 'បិទផ្ទាំង'"
           >
-            <svg class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
 
           <!-- Header with Logo -->
           <div class="text-center mb-5">
-            <img
-              src="/logo.jpg"
-              alt="SPRITUP"
-              class="size-12 rounded-2xl object-contain mx-auto mb-3 shadow-md border border-slate-100 dark:border-slate-700"
-            />
+            <div class="flex justify-center mb-3">
+              <BrandLogo />
+            </div>
             <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
               {{ activeTab === 'login'
                 ? (currentLang === 'en' ? 'Welcome back to SPRITUP' : 'សូមស្វាគមន៍មកកាន់ SPRITUP')
@@ -43,12 +41,12 @@
           </div>
 
           <!-- Tab Switcher -->
-          <div class="grid grid-cols-2 p-1 mb-5 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-semibold">
+          <div class="grid grid-cols-2 p-1 mb-5 rounded-[5px] bg-slate-100 dark:bg-slate-800 text-xs font-semibold">
             <button
               type="button"
               @click="activeTab = 'login'"
               :class="[
-                'py-2 rounded-lg transition-all',
+                'py-2 rounded-[5px] transition-all',
                 activeTab === 'login'
                   ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
@@ -60,7 +58,7 @@
               type="button"
               @click="activeTab = 'register'"
               :class="[
-                'py-2 rounded-lg transition-all',
+                'py-2 rounded-[5px] transition-all',
                 activeTab === 'register'
                   ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
@@ -97,6 +95,7 @@
 import { ref, inject, watch, onMounted, onUnmounted } from 'vue'
 import LoginPage from '../../views/auth/LoginPage.vue'
 import RegisterPage from '../../views/auth/RegisterPage.vue'
+import BrandLogo from '../navbar/BrandLogo.vue'
 
 const props = defineProps({
   show: {

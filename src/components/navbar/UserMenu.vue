@@ -11,27 +11,25 @@
         </span>
       </div>
       <span class="hidden sm:inline text-sm font-medium text-gray-700 dark:text-gray-300 truncate max-w-[120px]">{{ auth.user?.name }}</span>
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-      </svg>
+      <ChevronDown class="w-3 h-3 text-gray-500" :stroke-width="2.5" />
     </button>
-    <div :class="['absolute right-0 top-full mt-2 w-52 rounded-xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden z-50 bg-white dark:bg-gray-900',
+    <div :class="['absolute right-0 top-full mt-2 w-52 rounded-[5px] shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden z-50 bg-white dark:bg-gray-900',
       open ? 'lang-visible' : 'lang-hidden']">
       <router-link to="/settings/profile" @click="open = false" class="block px-4 py-3 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors">
-        <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ auth.user?.name }}</p>
+        <div class="flex items-center gap-2">
+          <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ auth.user?.name }}</p>
+          <span v-if="auth.isAdmin" class="flex-shrink-0 px-1.5 py-0.5 rounded-[3px] text-[10px] font-medium bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300">Admin</span>
+          <span v-else class="flex-shrink-0 px-1.5 py-0.5 rounded-[3px] text-[10px] font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">Normal</span>
+        </div>
         <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ auth.user?.email }}</p>
-        <span v-if="auth.isAdmin" class="inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300">Admin</span>
-        <span v-else class="inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">Normal</span>
       </router-link>
 
-      <div class="border-t border-gray-100 dark:border-gray-800 px-4 py-2.5">
-        <label for="navbar-avatar-upload"
-          class="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/60 rounded-lg cursor-pointer transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-          <span>{{ currentLang === 'en' ? 'Upload Photo' : 'ផ្ទុករូបថត' }}</span>
-        </label>
-        <input id="navbar-avatar-upload" type="file" accept="image/*" class="hidden" @change="handleAvatarChange" />
-      </div>
+      <label for="navbar-avatar-upload"
+        class="border-t border-gray-100 dark:border-gray-800 flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/60 cursor-pointer transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+        <span>{{ currentLang === 'en' ? 'Upload Photo' : 'ផ្ទុករូបថត' }}</span>
+      </label>
+      <input id="navbar-avatar-upload" type="file" accept="image/*" class="hidden" @change="handleAvatarChange" />
 
       <router-link to="/library" @click="open = false" class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
@@ -63,6 +61,7 @@
 
 <script setup>
 import { ref, watch, onMounted } from 'vue'
+import { ChevronDown } from 'lucide-vue-next'
 import { useAuth } from '../../stores/auth.js'
 import { useToast } from '../../composables/useToast.js'
 import { useLibrary } from '../../composables/useLibrary.js'

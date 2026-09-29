@@ -1,59 +1,60 @@
 <template>
-  <div :class="['flex items-center justify-center', modal ? 'w-full' : 'min-h-screen bg-slate-50 dark:bg-slate-950 lg:grid lg:grid-cols-2']">
-    <!-- Left Hero Banner (hidden in modal) -->
-    <aside v-if="!modal" class="relative hidden h-full min-h-screen overflow-hidden bg-gradient-to-br from-blue-700 via-indigo-700 to-violet-900 p-12 text-white lg:flex lg:flex-col justify-between">
-      <div class="absolute inset-0 opacity-25 [background-image:radial-gradient(circle_at_20%_20%,white_0,transparent_25%),radial-gradient(circle_at_80%_75%,white_0,transparent_30%)]"></div>
-      <div class="absolute -bottom-24 -left-24 size-96 rounded-full bg-blue-500/20 blur-3xl pointer-events-none"></div>
-      <div class="absolute -top-24 -right-24 size-96 rounded-full bg-purple-500/20 blur-3xl pointer-events-none"></div>
+  <div :class="['auth-page flex items-center justify-center', modal ? 'w-full' : 'h-screen overflow-hidden bg-zinc-50 dark:bg-zinc-950 lg:grid lg:grid-cols-2']">
+    <!-- Left Panel (hidden in modal) -->
+    <aside v-if="!modal" class="relative hidden h-full min-h-screen flex-col justify-between overflow-hidden p-10 lg:flex">
+      <img
+        src="/images/book-removebg-preview.png"
+        alt=""
+        class="pointer-events-none absolute -left-8 -top-8 w-64 max-w-none select-none"
+      />
 
-      <router-link to="/" class="relative z-10 flex items-center gap-3 text-xl font-bold tracking-tight">
-        <img src="/logo.jpg" alt="SPRITUP" class="size-11 rounded-xl object-contain bg-white p-1 shadow-lg shadow-indigo-950/30" />
-        <span>SPRITUP</span>
+      <router-link
+        to="/"
+        class="relative z-10 flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 bg-white text-zinc-600 transition-colors hover:text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:text-white"
+      >
+        <ArrowLeft :size="18" />
       </router-link>
 
-      <div class="relative z-10 my-auto max-w-lg space-y-6">
-        <div class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider backdrop-blur-md">
-          <svg class="size-3.5 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
-          <span>{{ currentLang === 'en' ? 'Join SPRITUP' : 'ចូលរួមជាមួយ SPRITUP' }}</span>
+      <div class="relative z-10">
+        <div class="flex items-center gap-3">
+          <BrandLogo />
+          <span class="rounded-full border border-zinc-200 bg-white px-2.5 py-1 text-xs font-medium text-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400">
+            {{ currentLang === 'en' ? 'Join SPRITUP' : 'ចូលរួមជាមួយ SPRITUP' }}
+          </span>
         </div>
-        <h2 class="text-4xl font-extrabold leading-tight tracking-tight text-white">
-          {{ currentLang === 'en' ? 'Start your learning journey today.' : 'ចាប់ផ្តើមដំណើរការសិក្សារបស់អ្នកថ្ងៃនេះ។' }}
-        </h2>
-        <p class="text-base leading-relaxed text-blue-100/90">
+        <p class="mt-4 max-w-sm text-sm text-zinc-500 dark:text-zinc-400">
           {{ currentLang === 'en' ? 'Create a free account to read legal summaries, test yourself with law quizzes, and save your progress.' : 'បង្កើតគណនីឥតគិតថ្លៃដើម្បីអានសង្ខេបច្បាប់ ធ្វើតេស្តសាកល្បង និងរក្សាទុកវឌ្ឍនភាពរបស់អ្នក។' }}
         </p>
 
-        <div class="space-y-3 pt-2">
-          <div class="flex items-center gap-3 text-sm text-blue-100">
-            <div class="flex size-7 items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm">
-              <svg class="size-4 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-            </div>
-            <span>{{ currentLang === 'en' ? 'Instant access to legal documents' : 'ចូលមើលឯកសារច្បាប់បានភ្លាមៗ' }}</span>
-          </div>
-          <div class="flex items-center gap-3 text-sm text-blue-100">
-            <div class="flex size-7 items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm">
-              <svg class="size-4 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-            </div>
-            <span>{{ currentLang === 'en' ? 'Interactive knowledge quizzes & scores' : 'លំហាត់តេស្តចំណេះដឹង និងការវាយតម្លៃពិន្ទុ' }}</span>
-          </div>
+        <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-zinc-400 dark:text-zinc-500">
+          <span>© {{ new Date().getFullYear() }} SPRITUP. All rights reserved.</span>
+          <router-link to="/help" class="hover:text-zinc-700 dark:hover:text-zinc-300">
+            {{ currentLang === 'en' ? 'Help' : 'ជំនួយ' }}
+          </router-link>
+          <router-link to="/contact" class="hover:text-zinc-700 dark:hover:text-zinc-300">
+            {{ currentLang === 'en' ? 'Contact' : 'ទំនាក់ទំនង' }}
+          </router-link>
         </div>
       </div>
-
-      <p class="relative z-10 text-xs text-blue-200/80">
-        © {{ new Date().getFullYear() }} SPRITUP. All rights reserved.
-      </p>
     </aside>
 
     <!-- Right Form Section -->
-    <div :class="['flex w-full items-center justify-center', modal ? 'p-0' : 'p-6 sm:p-10']">
-      <div :class="['w-full', modal ? 'max-w-none' : 'max-w-md']">
-        <div :class="['rounded-2xl border border-slate-100 bg-white p-7 sm:p-8 shadow-xl shadow-slate-200/50 dark:border-slate-800 dark:bg-slate-900 dark:shadow-none', modal ? 'border-none shadow-none p-0 sm:p-0' : '']">
-          <div class="text-center mb-6" v-if="!modal">
-            <img src="/logo.jpg" alt="SPRITUP Center" class="size-14 rounded-2xl object-contain mx-auto mb-3 shadow-md border border-slate-100 dark:border-slate-700" />
-            <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+    <div :class="['flex w-full items-center justify-center', modal ? 'p-0' : 'h-full overflow-y-auto p-6 sm:p-10']">
+      <div :class="['w-full', modal ? 'max-w-none' : 'max-w-sm']">
+        <div>
+          <router-link
+            v-if="!modal"
+            to="/"
+            class="mb-8 flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 bg-white text-zinc-600 lg:hidden dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400"
+          >
+            <ArrowLeft :size="18" />
+          </router-link>
+
+          <div class="mb-6" v-if="!modal">
+            <h1 class="font-display text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
               {{ currentLang === 'en' ? 'Create your account' : 'បង្កើតគណនីថ្មី' }}
             </h1>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
               {{ currentLang === 'en' ? 'Join the SPRITUP learning community' : 'ចូលរួមជាមួយសហគមន៍សិក្សា SPRITUP' }}
             </p>
           </div>
@@ -61,7 +62,7 @@
           <!-- Google Sign-In Button -->
           <a
             :href="googleLoginUrl"
-            class="inline-flex h-11 w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:text-slate-900 hover:shadow active:scale-[0.99] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-750 dark:hover:text-white"
+            class="flex w-full items-center justify-center gap-3 rounded-[5px] border border-zinc-300 bg-white py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:border-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:border-zinc-500"
           >
             <svg class="size-5 shrink-0" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M21.35 12.23c0-.71-.06-1.39-.18-2.05H12v3.87h5.24a4.48 4.48 0 0 1-1.94 2.94v2.51h3.14c1.84-1.7 2.91-4.2 2.91-7.27Z"/>
@@ -73,79 +74,63 @@
           </a>
 
           <!-- Divider -->
-          <div class="relative flex items-center justify-center my-5">
-            <div class="absolute inset-0 flex items-center">
-              <div class="w-full border-t border-slate-200 dark:border-slate-700"></div>
-            </div>
-            <div class="relative bg-white px-3 text-xs uppercase font-medium tracking-wider text-slate-400 dark:bg-slate-900 dark:text-slate-500">
-              {{ currentLang === 'en' ? 'or register with email' : 'ឬចុះឈ្មោះតាមអ៊ីមែល' }}
-            </div>
+          <div class="my-6 flex items-center gap-3 text-xs text-zinc-400">
+            <div class="h-px flex-1 bg-zinc-200 dark:bg-zinc-700" />
+            {{ currentLang === 'en' ? 'or register with email' : 'ឬចុះឈ្មោះតាមអ៊ីមែល' }}
+            <div class="h-px flex-1 bg-zinc-200 dark:bg-zinc-700" />
           </div>
 
           <form @submit.prevent="handleRegister" class="space-y-4">
             <div>
-              <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label class="text-xs font-medium text-zinc-600 dark:text-zinc-400">
                 {{ currentLang === 'en' ? 'Full name' : 'ឈ្មោះពេញ' }}
               </label>
-              <div class="relative">
-                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">
-                  <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                </span>
-                <input
-                  v-model="name"
-                  type="text"
-                  required
-                  autocomplete="name"
-                  class="w-full h-11 pl-10 pr-4 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-800 outline-none transition"
-                  placeholder="John Doe"
-                />
-              </div>
+              <input
+                v-model="name"
+                type="text"
+                required
+                autocomplete="name"
+                class="mt-1 w-full rounded-[5px] border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-zinc-900 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-white dark:focus:border-zinc-400"
+                placeholder="John Doe"
+              />
             </div>
 
             <div>
-              <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label class="text-xs font-medium text-zinc-600 dark:text-zinc-400">
                 {{ currentLang === 'en' ? 'Email address' : 'អាសយដ្ឋានអ៊ីមែល' }}
               </label>
-              <div class="relative">
-                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">
-                  <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/></svg>
-                </span>
-                <input
-                  v-model="email"
-                  type="email"
-                  required
-                  autocomplete="email"
-                  class="w-full h-11 pl-10 pr-4 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-800 outline-none transition"
-                  placeholder="name@example.com"
-                />
-              </div>
+              <input
+                v-model="email"
+                type="email"
+                required
+                autocomplete="email"
+                class="mt-1 w-full rounded-[5px] border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-zinc-900 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-white dark:focus:border-zinc-400"
+                placeholder="name@example.com"
+              />
             </div>
 
             <div>
-              <div class="flex items-center justify-between mb-1.5">
-                <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-medium text-zinc-600 dark:text-zinc-400">
                   {{ currentLang === 'en' ? 'Password' : 'ពាក្យសម្ងាត់' }}
                 </label>
-                <span v-if="password && password.length < 8" class="text-xs text-amber-600 font-medium">
+                <span v-if="password && password.length < 8" class="text-xs font-medium text-amber-600">
                   {{ currentLang === 'en' ? 'Min. 8 characters' : 'យ៉ាងតិច ៨ តួអក្សរ' }}
                 </span>
               </div>
-              <div class="relative">
-                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">
-                  <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                </span>
+              <div class="relative mt-1">
                 <input
                   v-model="password"
                   :type="showPassword ? 'text' : 'password'"
                   required
                   minlength="8"
                   autocomplete="new-password"
-                  class="w-full h-11 pl-10 pr-14 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-800 outline-none transition"
+                  class="w-full rounded-[5px] border border-zinc-300 bg-white px-3 py-2.5 pr-14 text-sm text-zinc-900 focus:border-zinc-900 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-white dark:focus:border-zinc-400"
                   :placeholder="currentLang === 'en' ? 'Min. 8 characters' : 'យ៉ាងតិច ៨ តួអក្សរ'"
                 />
                 <button
                   type="button"
-                  class="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 p-1"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
                   :aria-label="showPassword ? 'Hide password' : 'Show password'"
                   @click="showPassword = !showPassword"
                 >
@@ -155,35 +140,31 @@
             </div>
 
             <div>
-              <div class="flex items-center justify-between mb-1.5">
-                <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-medium text-zinc-600 dark:text-zinc-400">
                   {{ currentLang === 'en' ? 'Confirm password' : 'បញ្ជាក់ពាក្យសម្ងាត់' }}
                 </label>
-                <div v-if="password_confirmation" class="text-xs font-medium">
-                  <span v-if="passwordsMatch" class="text-emerald-600 flex items-center gap-1">
-                    <svg class="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <span v-if="password_confirmation" class="text-xs font-medium">
+                  <span v-if="passwordsMatch" class="text-emerald-600">
                     {{ currentLang === 'en' ? 'Matches' : 'ត្រូវគ្នា' }}
                   </span>
                   <span v-else class="text-amber-600">
                     {{ currentLang === 'en' ? 'Does not match' : 'មិនទាន់ត្រូវគ្នា' }}
                   </span>
-                </div>
-              </div>
-              <div class="relative">
-                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">
-                  <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                 </span>
+              </div>
+              <div class="relative mt-1">
                 <input
                   v-model="password_confirmation"
                   :type="showPasswordConfirmation ? 'text' : 'password'"
                   required
                   autocomplete="new-password"
-                  class="w-full h-11 pl-10 pr-14 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-800 outline-none transition"
+                  class="w-full rounded-[5px] border border-zinc-300 bg-white px-3 py-2.5 pr-14 text-sm text-zinc-900 focus:border-zinc-900 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-white dark:focus:border-zinc-400"
                   :placeholder="currentLang === 'en' ? 'Repeat password' : 'បញ្ចូលពាក្យសម្ងាត់ម្តងទៀត'"
                 />
                 <button
                   type="button"
-                  class="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 p-1"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
                   :aria-label="showPasswordConfirmation ? 'Hide password confirmation' : 'Show password confirmation'"
                   @click="showPasswordConfirmation = !showPasswordConfirmation"
                 >
@@ -192,7 +173,7 @@
               </div>
             </div>
 
-            <div v-if="error" class="p-3.5 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-sm text-red-600 dark:text-red-400 flex items-start gap-2">
+            <div v-if="error" class="p-3.5 rounded-[5px] bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-sm text-red-600 dark:text-red-400 flex items-start gap-2">
               <svg class="size-4 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               <span>{{ error }}</span>
             </div>
@@ -200,32 +181,43 @@
             <button
               type="submit"
               :disabled="loading"
-              class="w-full h-11 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white text-sm font-semibold shadow-md shadow-blue-500/20 hover:from-blue-700 hover:via-indigo-700 hover:to-violet-700 active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+              class="flex w-full items-center justify-center gap-2 rounded-[5px] bg-zinc-900 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:opacity-60 disabled:cursor-not-allowed dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200"
             >
-              <svg v-if="loading" class="animate-spin size-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+              <svg v-if="loading" class="animate-spin size-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
               <span>{{ loading ? (currentLang === 'en' ? 'Creating account...' : 'កំពុងបង្កើតគណនី...') : (currentLang === 'en' ? 'Create Account' : 'បង្កើតគណនីថ្មី') }}</span>
             </button>
           </form>
 
           <!-- Footer toggle / link -->
-          <div class="text-center text-sm text-slate-500 dark:text-slate-400 mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <p class="mt-6 text-center text-sm text-zinc-500 dark:text-zinc-400">
             {{ currentLang === 'en' ? 'Already have an account?' : 'មានគណនីរួចហើយ?' }}
             <button
               v-if="modal"
               type="button"
               @click="$emit('switch-to-login')"
-              class="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-semibold ml-1 inline"
+              class="ml-1 inline font-semibold text-zinc-900 underline underline-offset-2 hover:text-zinc-600 dark:text-white dark:hover:text-zinc-300"
             >
               {{ currentLang === 'en' ? 'Sign in' : 'ចូលគណនី' }}
             </button>
             <router-link
               v-else
               to="/login"
-              class="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-semibold ml-1 inline"
+              class="ml-1 inline font-semibold text-zinc-900 underline underline-offset-2 hover:text-zinc-600 dark:text-white dark:hover:text-zinc-300"
             >
               {{ currentLang === 'en' ? 'Sign in' : 'ចូលគណនី' }}
             </router-link>
-          </div>
+          </p>
+
+          <p v-if="!modal" class="mt-6 text-xs text-zinc-400 dark:text-zinc-500">
+            {{ currentLang === 'en' ? 'By continuing, you acknowledge that you understand and agree to the' : 'ដោយបន្ត អ្នកទទួលស្គាល់ថាអ្នកយល់ និងយល់ព្រមតាម' }}
+            <span class="underline hover:text-zinc-700 dark:hover:text-zinc-300">
+              {{ currentLang === 'en' ? 'Terms & Conditions' : 'លក្ខខណ្ឌប្រើប្រាស់' }}
+            </span>
+            {{ currentLang === 'en' ? 'and' : 'និង' }}
+            <span class="underline hover:text-zinc-700 dark:hover:text-zinc-300">
+              {{ currentLang === 'en' ? 'Privacy Policy' : 'គោលការណ៍ភាពឯកជន' }}
+            </span>.
+          </p>
         </div>
       </div>
     </div>
@@ -235,10 +227,12 @@
 <script setup>
 import { ref, computed, inject } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { ArrowLeft } from 'lucide-vue-next'
 import apiClient from '../../utils/apiClient.js'
 import { useAuth } from '../../stores/auth.js'
 import { useToast } from '../../composables/useToast.js'
 import { API_URL } from '../../config/env.js'
+import BrandLogo from '../../components/navbar/BrandLogo.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -286,7 +280,7 @@ const handleRegister = async () => {
       password_confirmation: password_confirmation.value,
     })
     const data = response.data
-    
+
     // Now with our backend fix, response returns token and user
     if (data?.token && data?.user) {
       setAuth({

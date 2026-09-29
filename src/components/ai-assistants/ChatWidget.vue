@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-full">
+  <div class="chat-widget flex flex-col h-full">
     <!-- Chat Header -->
     <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
       <div class="flex items-center gap-3">
@@ -48,7 +48,7 @@
             @change="handleImageUpload" />
           <button @click="triggerFileInput"
             :disabled="!auth.isAuthenticated"
-            class="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            class="w-8 h-8 rounded-[5px] bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
             :title="currentLang === 'en' ? 'Upload image' : 'អាប់ឡូដរូបភាព'">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500 dark:text-gray-400"
               fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -58,9 +58,9 @@
           </button>
           <input v-model="chatInput" @keyup.enter="sendMessage"
             :placeholder="currentLang === 'en' ? 'Ask...' : 'សួរ...'"
-            class="flex-1 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-xs text-gray-700 dark:text-gray-300 placeholder-gray-400 outline-none focus:ring-2 focus:ring-brand-400/40 transition" />
+            class="flex-1 px-3 py-2 rounded-[5px] bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-xs text-gray-700 dark:text-gray-300 placeholder-gray-400 outline-none focus-visible:outline-none" />
           <button @click="sendMessage" :disabled="!chatInput.trim() || aiTyping"
-            class="w-8 h-8 rounded-lg bg-brand-600 disabled:opacity-50 flex items-center justify-center">
+            class="w-8 h-8 rounded-[5px] bg-brand-600 hover:bg-brand-700 disabled:opacity-50 flex items-center justify-center transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
             </svg>

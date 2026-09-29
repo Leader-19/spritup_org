@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 px-4">
-    <div class="text-center max-w-8xl mx-auto">
+    <div class="text-center max-w-7xl mx-auto">
       <div class="mx-auto w-24 h-24 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-6">
         <span class="text-4xl font-extrabold text-slate-300 dark:text-slate-600">404</span>
       </div>

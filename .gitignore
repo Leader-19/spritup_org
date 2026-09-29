@@ -4,31 +4,48 @@ package-lock.json
 yarn.lock
 pnpm-lock.yaml
 
-# Production
+# Production build
 dist/
 build/
+coverage/
 
 # Environment variables
 .env
 .env.local
 .env.*.local
+.env.production
 
-# IDE
+# Editor / IDE
 .vscode/
 .idea/
+.fleet/
+.zed/
 *.swp
 *.swo
 *~
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Logs
 *.log
+npm-debug.log*
 
-# Vite
+# Vite / build tooling
 .vite/
-
-# Misc
 .cache/
 .turbo/
+.eslintcache
 *.pem
+
+# Deployment
+.vercel/
+
+# AI assistant / editor tooling — local session state, never shared
+.claude/
+.cursor/
+.windsurf/
 
 # v0 sandbox internal files
 __v0_runtime_loader.js
@@ -36,4 +53,3 @@ __v0_devtools.tsx
 __v0_jsx-dev-runtime.ts
 .snowflake/
 .v0-trash/
-.vercel/

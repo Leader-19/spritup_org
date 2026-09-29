@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-10 px-4">
-    <div class="max-w-8xl mx-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-10">
         <h1 class="text-3xl font-bold text-gray-800 dark:text-white">
           {{ currentLang === 'en' ? 'Contact Us' : 'ទំនាក់ទំនងយើង' }}

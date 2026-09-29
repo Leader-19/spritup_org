@@ -1,5 +1,5 @@
 <template>
-  <div class="px-4 md:px-6 lg:px-10 py-8 max-w-8xl mx-auto">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <router-link to="/certificates"
       class="inline-flex items-center gap-1 text-sm text-brand-600 hover:text-brand-700 mb-5">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

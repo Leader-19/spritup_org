@@ -1,34 +1,28 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4">
-    <div class="max-w-8xl mx-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Header -->
       <div class="text-center mb-8">
-        <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
-          Choose Your Plan
+        <h1 class="text-3xl font-semibold text-gray-900 dark:text-white">
+          Choose your plan
         </h1>
-        <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-          Select the perfect plan for your needs. Upgrade or downgrade at any time.
-        </p>
       </div>
 
       <!-- Billing Cycle Toggle -->
       <div class="mb-10 flex justify-center">
-        <div class="inline-flex items-center rounded-full bg-gray-100 p-1 dark:bg-gray-800">
-          <button @click="billingCycle = 'monthly'" class="rounded-full px-5 py-2 text-sm font-semibold transition-all"
+        <div class="inline-flex items-center rounded-[5px] border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-1">
+          <button @click="billingCycle = 'monthly'" class="rounded-[5px] px-4 py-1.5 text-sm font-medium transition-all"
             :class="billingCycle === 'monthly'
-              ? 'bg-white text-gray-900 shadow-sm dark:bg-gray-700 dark:text-white'
+              ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-white'
               : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'">
-            Monthly
+            Pay monthly
           </button>
           <button @click="billingCycle = 'yearly'"
-            class="relative rounded-full px-5 py-2 text-sm font-semibold transition-all" :class="billingCycle === 'yearly'
-              ? 'bg-white text-gray-900 shadow-sm dark:bg-gray-700 dark:text-white'
+            class="flex items-center gap-1.5 rounded-[5px] px-4 py-1.5 text-sm font-medium transition-all" :class="billingCycle === 'yearly'
+              ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-white'
               : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'">
-            Yearly
-            <span
-              class="ml-1.5 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300">
-              Save 20%
-            </span>
+            Pay yearly
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
           </button>
         </div>
       </div>
@@ -52,7 +46,7 @@
       </div>
 
       <!-- Plans grid -->
-      <div v-else class="grid gap-8 lg:grid-cols-3">
+      <div v-else class="grid gap-6 lg:grid-cols-3 items-stretch">
         <PlanCard v-for="plan in plans" :key="plan.id" :plan="plan" :loading="loading" :billing-cycle="billingCycle"
           @select="selectPlan" />
       </div>
