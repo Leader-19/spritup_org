@@ -32,6 +32,16 @@
   padding: 0;
 }
 
+/*
+Edge/IE inject their own password-reveal icon inside type="password" inputs
+via ::-ms-reveal, which sits in the same spot as our custom show/hide
+toggle button and renders on top of it. Suppress the native one everywhere.
+*/
+input[type='password']::-ms-reveal,
+input[type='password']::-ms-clear {
+  display: none;
+}
+
 /* Amazon Ember covers Latin text; Kantumruy Pro covers the Khmer glyphs
    Amazon Ember lacks, and unlike Siemreap it ships real medium/semibold/bold
    weights so font-medium / font-semibold text doesn't get silently faked
