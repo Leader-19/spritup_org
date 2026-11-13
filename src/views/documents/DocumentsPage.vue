@@ -36,7 +36,7 @@
       :total="filteredDocuments.length" :visible-pages="visiblePages" @go-to-page="goToPage" />
 
     <DocumentViewer :open="viewerOpen" :doc="viewingDoc" :content="documentContent" :file-ext="fileExt"
-      :file-url="fileUrl" :is-html-content="isHtmlContent" :is-authenticated="auth.isAuthenticated"
+      :file-url="fileBlobUrl" :is-html-content="isHtmlContent" :is-authenticated="auth.isAuthenticated"
       :library-ids="libraryIds" :current-lang="currentLang" @close="closeViewer" @toggle-library="toggleLibrary" />
 
     <UserAuthModal :show="showAuthModal" :current-lang="currentLang" :initial-tab="authModalTab"
@@ -143,10 +143,14 @@ const toggleLibrary = async (doc) => {
 
 const fileExt = computed(() => viewingDoc.value?.doc_upload?.split('.').pop()?.toLowerCase())
 const isHtmlContent = computed(() => documentContent.value && documentContent.value.includes('<'))
-const fileUrl = computed(() => {
-  if (!viewingDoc.value?.doc_upload) return ''
-  return `${API_URL}/storage/${viewingDoc.value.doc_upload}`
-})
+const fileBlobUrl = ref('')
+
+const revokeFileBlobUrl = () => {
+  if (fileBlobUrl.value) {
+    URL.revokeObjectURL(fileBlobUrl.value)
+    fileBlobUrl.value = ''
+  }
+}
 
 const allDocuments = computed(() => {
   const docs = []
@@ -288,10 +292,14 @@ const viewDocument = async (doc) => {
       : 'សូមចុះឈ្មោះ ឬចូលគណនីដើម្បីអានឯកសារនេះ')
     return
   }
+  revokeFileBlobUrl()
   viewingDoc.value = doc
   viewerOpen.value = true
   documentContent.value = ''
-  if (fileExt.value === 'docx') {
+
+  const ext = doc.doc_upload?.split('.').pop()?.toLowerCase()
+
+  if (ext === 'docx') {
     try {
       const response = await apiClient.get(`/documents/${doc.id}/content`)
       documentContent.value = response.data.content || ''
@@ -301,10 +309,21 @@ const viewDocument = async (doc) => {
         ? 'Content extraction failed: ' + err.message
         : 'រកមិនអាចទាញយកមាតិកានេះ: ' + err.message
     }
+  } else if (ext === 'pdf' || ['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(ext)) {
+    try {
+      const response = await apiClient.get(`/documents/${doc.id}/file`, { responseType: 'blob' })
+      fileBlobUrl.value = URL.createObjectURL(response.data)
+    } catch (err) {
+      if (err.response?.status === 401) showAuthModal.value = true
+      documentContent.value = currentLang.value === 'en'
+        ? 'Failed to load document: ' + err.message
+        : 'បរាជ័យក្នុងការផ្ទុកឯកសារ: ' + err.message
+    }
   }
 }
 
 const closeViewer = () => {
+  revokeFileBlobUrl()
   viewerOpen.value = false
   viewingDoc.value = null
   documentContent.value = ''
@@ -374,6 +393,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown)
+  revokeFileBlobUrl()
 })
 
 watch(() => route.query.category, (val) => {
