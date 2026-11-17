@@ -41,7 +41,8 @@
     <!-- Right Form Section -->
     <div :class="['flex w-full items-center justify-center', modal ? 'p-0' : 'h-full overflow-y-auto p-6 sm:p-10']">
       <div :class="['w-full', modal ? 'max-w-none' : 'max-w-sm']">
-        <div>
+        <!-- STEP: registration form -->
+        <div v-if="step === 'form'">
           <router-link
             v-if="!modal"
             to="/"
@@ -219,15 +220,90 @@
             </span>.
           </p>
         </div>
+
+        <!-- STEP: OTP code verification card -->
+        <div v-else class="w-full">
+          <div class="rounded-[5px] border border-zinc-200 bg-white p-6 shadow-sm sm:p-8 dark:border-zinc-800 dark:bg-zinc-900">
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
+              <MailCheck :size="22" class="text-zinc-900 dark:text-white" />
+            </div>
+
+            <h1 class="mt-4 text-center font-display text-xl font-bold tracking-tight text-zinc-900 dark:text-white">
+              {{ currentLang === 'en' ? 'Verify your email' : 'ផ្ទៀងផ្ទាត់អ៊ីមែលរបស់អ្នក' }}
+            </h1>
+            <p class="mt-2 text-center text-sm text-zinc-500 dark:text-zinc-400">
+              {{ currentLang === 'en' ? 'Enter the 6-digit code we sent to' : 'បញ្ចូលលេខកូដ ៦ ខ្ទង់ដែលយើងបានផ្ញើទៅ' }}
+              <span class="font-medium text-zinc-700 dark:text-zinc-200">{{ email }}</span>
+            </p>
+
+            <div class="mt-6 flex justify-center gap-2" @paste="handleOtpPaste">
+              <input
+                v-for="(digit, index) in otpDigits"
+                :key="index"
+                :ref="(el) => (otpInputRefs[index] = el)"
+                v-model="otpDigits[index]"
+                type="text"
+                inputmode="numeric"
+                maxlength="1"
+                class="h-12 w-10 rounded-[5px] border border-zinc-300 bg-white text-center text-lg font-semibold text-zinc-900 focus:border-zinc-900 focus:outline-none sm:h-14 sm:w-12 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:focus:border-zinc-400"
+                @input="handleOtpInput(index, $event)"
+                @keydown="handleOtpKeydown(index, $event)"
+              />
+            </div>
+
+            <div v-if="otpError" class="mt-4 flex items-start gap-2 rounded-[5px] border border-red-200 bg-red-50 p-3 text-sm text-red-600 dark:border-red-800 dark:bg-red-950/40 dark:text-red-400">
+              <svg class="size-4 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span>{{ otpError }}</span>
+            </div>
+
+            <p class="mt-4 text-center text-xs text-zinc-400 dark:text-zinc-500">
+              <span v-if="expiresIn > 0">
+                {{ currentLang === 'en' ? 'Code expires in' : 'លេខកូដនឹងផុតកំណត់ក្នុង' }}
+                <span class="font-semibold text-zinc-600 dark:text-zinc-300">{{ expiresLabel }}</span>
+              </span>
+              <span v-else class="font-medium text-amber-600">
+                {{ currentLang === 'en' ? 'This code has expired. Please request a new one.' : 'លេខកូដនេះបានផុតកំណត់។ សូមស្នើសុំលេខកូដថ្មី។' }}
+              </span>
+            </p>
+
+            <button
+              type="button"
+              :disabled="verifying || otpCode.length !== 6"
+              class="mt-5 flex w-full items-center justify-center gap-2 rounded-[5px] bg-zinc-900 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:opacity-60 disabled:cursor-not-allowed dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200"
+              @click="verifyCode"
+            >
+              <svg v-if="verifying" class="animate-spin size-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+              <span>{{ verifying ? (currentLang === 'en' ? 'Verifying...' : 'កំពុងផ្ទៀងផ្ទាត់...') : (currentLang === 'en' ? 'Verify & Continue' : 'ផ្ទៀងផ្ទាត់ និងបន្ត') }}</span>
+            </button>
+
+            <div class="mt-4 flex items-center justify-between text-sm">
+              <button
+                type="button"
+                class="font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
+                @click="backToForm"
+              >
+                {{ currentLang === 'en' ? '← Change email' : '← ប្តូរអ៊ីមែល' }}
+              </button>
+              <button
+                type="button"
+                :disabled="resending"
+                class="font-semibold text-zinc-900 underline underline-offset-2 hover:text-zinc-600 disabled:opacity-60 dark:text-white dark:hover:text-zinc-300"
+                @click="resendCode"
+              >
+                {{ resending ? (currentLang === 'en' ? 'Sending...' : 'កំពុងផ្ញើ...') : (currentLang === 'en' ? 'Resend code' : 'ផ្ញើលេខកូដម្តងទៀត') }}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, inject } from 'vue'
+import { ref, computed, inject, nextTick, onBeforeUnmount } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { ArrowLeft } from 'lucide-vue-next'
+import { ArrowLeft, MailCheck } from 'lucide-vue-next'
 import apiClient from '../../utils/apiClient.js'
 import { useAuth } from '../../stores/auth.js'
 import { useToast } from '../../composables/useToast.js'
@@ -259,10 +335,43 @@ const loading = ref(false)
 const error = ref('')
 const googleLoginUrl = `${API_URL}/auth/google/redirect?source=frontend`
 
+const step = ref('form')
+const registrationToken = ref('')
+const otpDigits = ref(['', '', '', '', '', ''])
+const otpInputRefs = ref([])
+const otpError = ref('')
+const verifying = ref(false)
+const resending = ref(false)
+const expiresIn = ref(0)
+let countdownTimer = null
+
 const passwordsMatch = computed(() => {
   if (!password.value || !password_confirmation.value) return false
   return password.value === password_confirmation.value
 })
+
+const otpCode = computed(() => otpDigits.value.join(''))
+
+const expiresLabel = computed(() => {
+  const minutes = Math.floor(expiresIn.value / 60)
+  const seconds = expiresIn.value % 60
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`
+})
+
+function startCountdown(seconds) {
+  clearInterval(countdownTimer)
+  expiresIn.value = seconds
+  countdownTimer = setInterval(() => {
+    if (expiresIn.value <= 1) {
+      expiresIn.value = 0
+      clearInterval(countdownTimer)
+      return
+    }
+    expiresIn.value -= 1
+  }, 1000)
+}
+
+onBeforeUnmount(() => clearInterval(countdownTimer))
 
 const handleRegister = async () => {
   if (password.value !== password_confirmation.value) {
@@ -281,28 +390,13 @@ const handleRegister = async () => {
     })
     const data = response.data
 
-    // Now with our backend fix, response returns token and user
-    if (data?.token && data?.user) {
-      setAuth({
-        token: data.token,
-        user: data.user,
-      })
-      const auth = useAuth()
-      await auth.fetchUserCategories()
-      toastSuccess(currentLang.value === 'en' ? 'Account created successfully!' : 'បង្កើតគណនីបានជោគជ័យ!')
-      emit('success')
-      if (!props.modal) {
-        router.push(route.query.redirect || '/')
-      }
-    } else {
-      // Fallback: registered successfully, redirect to login
-      toastSuccess(currentLang.value === 'en' ? 'Registration successful! Please sign in.' : 'ការចុះឈ្មោះជោគជ័យ! សូមចូលគណនី។')
-      if (props.modal) {
-        emit('switch-to-login')
-      } else {
-        router.push('/login')
-      }
-    }
+    registrationToken.value = data.registration_token
+    otpDigits.value = ['', '', '', '', '', '']
+    otpError.value = ''
+    startCountdown(data.expires_in || 180)
+    step.value = 'otp'
+    await nextTick()
+    otpInputRefs.value[0]?.focus()
   } catch (err) {
     console.error('Registration error:', err)
     error.value = err.response?.data?.message || (currentLang.value === 'en' ? 'Registration failed. Please try again.' : 'ការចុះឈ្មោះបរាជ័យ។ សូមព្យាយាមម្តងទៀត។')
@@ -313,5 +407,96 @@ const handleRegister = async () => {
   } finally {
     loading.value = false
   }
+}
+
+function handleOtpInput(index, event) {
+  const raw = event.target.value.replace(/\D/g, '')
+  otpDigits.value[index] = raw.slice(-1)
+  if (raw && index < otpDigits.value.length - 1) {
+    otpInputRefs.value[index + 1]?.focus()
+  }
+}
+
+function handleOtpKeydown(index, event) {
+  if (event.key === 'Backspace' && !otpDigits.value[index] && index > 0) {
+    otpInputRefs.value[index - 1]?.focus()
+  }
+}
+
+function handleOtpPaste(event) {
+  const pasted = (event.clipboardData?.getData('text') || '').replace(/\D/g, '').slice(0, 6)
+  if (!pasted) return
+  event.preventDefault()
+  const digits = pasted.split('')
+  for (let i = 0; i < otpDigits.value.length; i++) {
+    otpDigits.value[i] = digits[i] || ''
+  }
+  const nextEmpty = Math.min(digits.length, otpDigits.value.length - 1)
+  otpInputRefs.value[nextEmpty]?.focus()
+}
+
+const verifyCode = async () => {
+  if (otpCode.value.length !== 6) return
+
+  verifying.value = true
+  otpError.value = ''
+  try {
+    const response = await apiClient.post('/register/verify', {
+      registration_token: registrationToken.value,
+      code: otpCode.value,
+    })
+    const data = response.data
+
+    setAuth({ token: data.token, user: data.user })
+    const auth = useAuth()
+    await auth.fetchUserCategories()
+    toastSuccess(currentLang.value === 'en' ? 'Account created successfully!' : 'បង្កើតគណនីបានជោគជ័យ!')
+    clearInterval(countdownTimer)
+    emit('success')
+    if (!props.modal) {
+      router.push(route.query.redirect || '/')
+    }
+  } catch (err) {
+    console.error('Verification error:', err)
+    otpError.value = err.response?.data?.message || (currentLang.value === 'en' ? 'Verification failed. Please try again.' : 'ការផ្ទៀងផ្ទាត់បរាជ័យ។ សូមព្យាយាមម្តងទៀត។')
+    if (err.response?.data?.errors) {
+      const firstError = Object.values(err.response.data.errors)[0]
+      otpError.value = Array.isArray(firstError) ? firstError[0] : firstError
+    }
+  } finally {
+    verifying.value = false
+  }
+}
+
+const resendCode = async () => {
+  resending.value = true
+  otpError.value = ''
+  try {
+    const response = await apiClient.post('/register', {
+      name: name.value,
+      email: email.value,
+      password: password.value,
+      password_confirmation: password_confirmation.value,
+    })
+    const data = response.data
+
+    registrationToken.value = data.registration_token
+    otpDigits.value = ['', '', '', '', '', '']
+    startCountdown(data.expires_in || 180)
+    toastSuccess(currentLang.value === 'en' ? 'A new code has been sent.' : 'លេខកូដថ្មីត្រូវបានផ្ញើ។')
+    await nextTick()
+    otpInputRefs.value[0]?.focus()
+  } catch (err) {
+    console.error('Resend code error:', err)
+    otpError.value = err.response?.data?.message || (currentLang.value === 'en' ? 'Could not resend the code. Please try again.' : 'មិនអាចផ្ញើលេខកូដម្តងទៀតបានទេ។ សូមព្យាយាមម្តងទៀត។')
+  } finally {
+    resending.value = false
+  }
+}
+
+function backToForm() {
+  clearInterval(countdownTimer)
+  step.value = 'form'
+  otpError.value = ''
 }
 </script>
