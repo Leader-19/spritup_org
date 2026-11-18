@@ -12,9 +12,9 @@
       </div>
       <span class="hidden sm:inline-flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300">
         <span class="truncate max-w-[120px]">{{ auth.user?.name }}</span>
-        <VerifiedBadge v-if="auth.user?.is_verified" :size="14" />
-        <UnverifiedBadge v-else-if="auth.user" :size="14" />
         <GoogleBadge v-if="auth.user?.is_google" :size="14" />
+        <VerifiedBadge v-else-if="auth.user?.is_verified" :size="14" />
+        <UnverifiedBadge v-else-if="auth.user" :size="14" />
       </span>
       <ChevronDown class="w-3 h-3 text-gray-500" :stroke-width="2.5" />
     </button>
@@ -23,9 +23,9 @@
       <router-link to="/settings/profile" @click="open = false" class="block px-4 py-3 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors">
         <div class="flex items-center gap-2">
           <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ auth.user?.name }}</p>
-          <VerifiedBadge v-if="auth.user?.is_verified" :size="14" />
-          <UnverifiedBadge v-else-if="auth.user" :size="14" />
           <GoogleBadge v-if="auth.user?.is_google" :size="14" />
+          <VerifiedBadge v-else-if="auth.user?.is_verified" :size="14" />
+          <UnverifiedBadge v-else-if="auth.user" :size="14" />
           <span v-if="auth.isAdmin" class="flex-shrink-0 px-1.5 py-0.5 rounded-[3px] text-[10px] font-medium bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300">Admin</span>
           <span v-else class="flex-shrink-0 px-1.5 py-0.5 rounded-[3px] text-[10px] font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">Normal</span>
         </div>

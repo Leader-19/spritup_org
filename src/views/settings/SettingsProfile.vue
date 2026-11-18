@@ -42,9 +42,9 @@
           <div>
             <label class="flex items-center gap-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               {{ currentLang === 'en' ? 'Full name' : 'ឈ្មោះពេញ' }}
-              <VerifiedBadge v-if="auth.user?.is_verified" :size="14" />
-              <UnverifiedBadge v-else-if="auth.user" :size="14" />
               <GoogleBadge v-if="auth.user?.is_google" :size="14" />
+              <VerifiedBadge v-else-if="auth.user?.is_verified" :size="14" />
+              <UnverifiedBadge v-else-if="auth.user" :size="14" />
             </label>
             <input v-model="name" type="text" required class="w-full px-4 py-2.5 rounded-[5px] bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white outline-none focus-visible:outline-none transition" />
           </div>
