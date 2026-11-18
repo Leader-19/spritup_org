@@ -32,6 +32,17 @@
         <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ auth.user?.email }}</p>
       </router-link>
 
+      <button
+        v-if="auth.user && !auth.user.is_verified"
+        type="button"
+        :disabled="resendingVerification"
+        class="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 border-b border-gray-100 dark:border-gray-800 transition-colors disabled:opacity-60"
+        @click="handleResendVerification"
+      >
+        <UnverifiedBadge :size="16" />
+        <span>{{ resendingVerification ? (currentLang === 'en' ? 'Sending...' : 'កំពុងផ្ញើ...') : (currentLang === 'en' ? 'Resend verification email' : 'ផ្ញើអ៊ីមែលផ្ទៀងផ្ទាត់ម្តងទៀត') }}</span>
+      </button>
+
       <label for="navbar-avatar-upload"
         class="border-t border-gray-100 dark:border-gray-800 flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/60 cursor-pointer transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
@@ -74,6 +85,7 @@ import { useAuth } from '../../stores/auth.js'
 import { useToast } from '../../composables/useToast.js'
 import { useLibrary } from '../../composables/useLibrary.js'
 import { ADMIN_WEB_URL } from '../../config/env.js'
+import apiClient from '../../utils/apiClient.js'
 import VerifiedBadge from '../VerifiedBadge.vue'
 import UnverifiedBadge from '../UnverifiedBadge.vue'
 import GoogleBadge from '../GoogleBadge.vue'
@@ -96,7 +108,23 @@ const open = ref(false)
 const avatarUploading = ref(false)
 const previousCount = ref(null)
 const badgePulse = ref(false)
+const resendingVerification = ref(false)
 let isInitialLoad = true
+
+const handleResendVerification = async () => {
+  if (!auth.user?.email || resendingVerification.value) return
+
+  resendingVerification.value = true
+  const lang = props.currentLang || 'en'
+  try {
+    await apiClient.post('/email/resend-verification', { email: auth.user.email })
+    toastSuccess(lang === 'en' ? 'Verification email sent. Please check your inbox.' : 'បានផ្ញើអ៊ីមែលផ្ទៀងផ្ទាត់។ សូមពិនិត្យមើលប្រអប់សំបុត្ររបស់អ្នក។')
+  } catch (err) {
+    toastError(err.response?.data?.message || (lang === 'en' ? 'Could not send the verification email. Please try again.' : 'មិនអាចផ្ញើអ៊ីមែលផ្ទៀងផ្ទាត់បានទេ។ សូមព្យាយាមម្តងទៀត។'))
+  } finally {
+    resendingVerification.value = false
+  }
+}
 
 const handleAvatarChange = async (event) => {
   const file = event.target.files[0]
