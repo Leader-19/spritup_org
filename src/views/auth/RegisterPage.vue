@@ -311,6 +311,10 @@ import { API_URL } from '../../config/env.js'
 import BrandLogo from '../../components/navbar/BrandLogo.vue'
 import VerifiedBadge from '../../components/VerifiedBadge.vue'
 
+// Mirrors the backend's REGISTRATION_CODE_TTL_MINUTES (3 min) - only used if
+// the API response is ever missing expires_in, which shouldn't happen.
+const DEFAULT_OTP_EXPIRY_SECONDS = 180
+
 const router = useRouter()
 const route = useRoute()
 const { setAuth } = useAuth()
@@ -394,7 +398,7 @@ const handleRegister = async () => {
     registrationToken.value = data.registration_token
     otpDigits.value = ['', '', '', '', '', '']
     otpError.value = ''
-    startCountdown(data.expires_in || 180)
+    startCountdown(data.expires_in || DEFAULT_OTP_EXPIRY_SECONDS)
     step.value = 'otp'
     await nextTick()
     otpInputRefs.value[0]?.focus()
@@ -483,7 +487,7 @@ const resendCode = async () => {
 
     registrationToken.value = data.registration_token
     otpDigits.value = ['', '', '', '', '', '']
-    startCountdown(data.expires_in || 180)
+    startCountdown(data.expires_in || DEFAULT_OTP_EXPIRY_SECONDS)
     toastSuccess(currentLang.value === 'en' ? 'A new code has been sent.' : 'លេខកូដថ្មីត្រូវបានផ្ញើ។')
     await nextTick()
     otpInputRefs.value[0]?.focus()
