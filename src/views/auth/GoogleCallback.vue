@@ -5,11 +5,9 @@
       <div v-if="!errorMessage" class="space-y-5">
         <div class="relative mx-auto size-20 flex items-center justify-center">
           <div class="absolute inset-0 rounded-2xl bg-blue-500/10 dark:bg-blue-500/20 animate-ping"></div>
-          <img
-            src="/logo.jpg"
-            alt="SPRITUP"
-            class="relative size-16 rounded-2xl object-contain bg-white p-1 shadow-md border border-slate-100 dark:border-slate-700"
-          />
+          <div class="relative size-16 rounded-2xl bg-white dark:bg-slate-900 p-3 shadow-md border border-slate-100 dark:border-slate-700 flex items-center justify-center">
+            <BrandLogo icon-only />
+          </div>
         </div>
 
         <div class="space-y-2">
@@ -64,6 +62,7 @@ import { ref, inject, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuth } from '../../stores/auth.js'
 import { useToast } from '../../composables/useToast.js'
+import BrandLogo from '../../components/navbar/BrandLogo.vue'
 
 const route = useRoute()
 const router = useRouter()

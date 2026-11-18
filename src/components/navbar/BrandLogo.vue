@@ -6,6 +6,10 @@ defineProps({
     type: Boolean,
     default: false,
   },
+  iconOnly: {
+    type: Boolean,
+    default: false,
+  },
 })
 </script>
 
@@ -22,6 +26,6 @@ defineProps({
         <path :d="LOGO_PATH" fill="#ffffff" fill-rule="evenodd" />
       </svg>
     </template>
-    <span class="hidden sm:inline text-lg font-bold tracking-tight">Spritup Center</span>
+    <span v-if="!iconOnly" class="hidden sm:inline text-lg font-bold tracking-tight">Spritup Center</span>
   </div>
 </template>
