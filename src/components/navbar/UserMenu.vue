@@ -10,7 +10,10 @@
           {{ libraryCount > 99 ? '99+' : libraryCount }}
         </span>
       </div>
-      <span class="hidden sm:inline text-sm font-medium text-gray-700 dark:text-gray-300 truncate max-w-[120px]">{{ auth.user?.name }}</span>
+      <span class="hidden sm:inline-flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+        <span class="truncate max-w-[120px]">{{ auth.user?.name }}</span>
+        <VerifiedBadge v-if="auth.user?.is_verified" :size="14" />
+      </span>
       <ChevronDown class="w-3 h-3 text-gray-500" :stroke-width="2.5" />
     </button>
     <div :class="['absolute right-0 top-full mt-2 w-52 rounded-[5px] shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden z-50 bg-white dark:bg-gray-900',
@@ -18,6 +21,7 @@
       <router-link to="/settings/profile" @click="open = false" class="block px-4 py-3 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors">
         <div class="flex items-center gap-2">
           <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ auth.user?.name }}</p>
+          <VerifiedBadge v-if="auth.user?.is_verified" :size="14" />
           <span v-if="auth.isAdmin" class="flex-shrink-0 px-1.5 py-0.5 rounded-[3px] text-[10px] font-medium bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300">Admin</span>
           <span v-else class="flex-shrink-0 px-1.5 py-0.5 rounded-[3px] text-[10px] font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">Normal</span>
         </div>
@@ -66,6 +70,7 @@ import { useAuth } from '../../stores/auth.js'
 import { useToast } from '../../composables/useToast.js'
 import { useLibrary } from '../../composables/useLibrary.js'
 import { ADMIN_WEB_URL } from '../../config/env.js'
+import VerifiedBadge from '../VerifiedBadge.vue'
 
 const props = defineProps({
   currentLang: {

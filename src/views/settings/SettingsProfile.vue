@@ -40,7 +40,10 @@
         </h2>
         <form @submit.prevent="handleProfileUpdate" class="space-y-5">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ currentLang === 'en' ? 'Full name' : 'ឈ្មោះពេញ' }}</label>
+            <label class="flex items-center gap-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              {{ currentLang === 'en' ? 'Full name' : 'ឈ្មោះពេញ' }}
+              <VerifiedBadge v-if="auth.user?.is_verified" :size="14" />
+            </label>
             <input v-model="name" type="text" required class="w-full px-4 py-2.5 rounded-[5px] bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white outline-none focus-visible:outline-none transition" />
           </div>
           <div>
@@ -87,6 +90,7 @@
 import { ref, inject, watch } from 'vue'
 import apiClient from '../../utils/apiClient.js'
 import { useAuth } from '../../stores/auth.js'
+import VerifiedBadge from '../../components/VerifiedBadge.vue'
 
 const currentLang = inject('currentLang')
 const auth = useAuth()
