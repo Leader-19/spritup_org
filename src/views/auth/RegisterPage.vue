@@ -225,7 +225,7 @@
         <div v-else class="w-full">
           <div class="rounded-[5px] border border-zinc-200 bg-white p-6 shadow-sm sm:p-8 dark:border-zinc-800 dark:bg-zinc-900">
             <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
-              <MailCheck :size="22" class="text-zinc-900 dark:text-white" />
+              <VerifiedBadge :size="26" />
             </div>
 
             <h1 class="mt-4 text-center font-display text-xl font-bold tracking-tight text-zinc-900 dark:text-white">
@@ -303,12 +303,13 @@
 <script setup>
 import { ref, computed, inject, nextTick, onBeforeUnmount } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { ArrowLeft, MailCheck } from 'lucide-vue-next'
+import { ArrowLeft } from 'lucide-vue-next'
 import apiClient from '../../utils/apiClient.js'
 import { useAuth } from '../../stores/auth.js'
 import { useToast } from '../../composables/useToast.js'
 import { API_URL } from '../../config/env.js'
 import BrandLogo from '../../components/navbar/BrandLogo.vue'
+import VerifiedBadge from '../../components/VerifiedBadge.vue'
 
 const router = useRouter()
 const route = useRoute()
