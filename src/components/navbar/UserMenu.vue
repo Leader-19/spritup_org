@@ -13,6 +13,7 @@
       <span class="hidden sm:inline-flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300">
         <span class="truncate max-w-[120px]">{{ auth.user?.name }}</span>
         <VerifiedBadge v-if="auth.user?.is_verified" :size="14" />
+        <GoogleBadge v-if="auth.user?.is_google" :size="14" />
       </span>
       <ChevronDown class="w-3 h-3 text-gray-500" :stroke-width="2.5" />
     </button>
@@ -22,6 +23,7 @@
         <div class="flex items-center gap-2">
           <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ auth.user?.name }}</p>
           <VerifiedBadge v-if="auth.user?.is_verified" :size="14" />
+          <GoogleBadge v-if="auth.user?.is_google" :size="14" />
           <span v-if="auth.isAdmin" class="flex-shrink-0 px-1.5 py-0.5 rounded-[3px] text-[10px] font-medium bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300">Admin</span>
           <span v-else class="flex-shrink-0 px-1.5 py-0.5 rounded-[3px] text-[10px] font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">Normal</span>
         </div>
@@ -71,6 +73,7 @@ import { useToast } from '../../composables/useToast.js'
 import { useLibrary } from '../../composables/useLibrary.js'
 import { ADMIN_WEB_URL } from '../../config/env.js'
 import VerifiedBadge from '../VerifiedBadge.vue'
+import GoogleBadge from '../GoogleBadge.vue'
 
 const props = defineProps({
   currentLang: {
