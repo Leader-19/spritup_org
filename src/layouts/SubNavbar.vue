@@ -26,8 +26,7 @@
 <script setup>
 import { ref, computed, onMounted, watch, inject } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import axios from 'axios'
-import { API_BASE } from '../config/env.js'
+import apiClient from '../utils/apiClient.js'
 import { normalizeCategories } from '../utils/api.js'
 
 const props = defineProps({
@@ -103,10 +102,9 @@ const selectCategory = (categoryId) => {
 
 const fetchCategories = async () => {
   try {
-    const response = await axios.get(`${API_BASE}/documents`)
+    const response = await apiClient.get('/categories')
     const payload = response.data || {}
-    const categoryData = payload.categories || payload.data?.categories || payload.data
-    categories.value = normalizeCategories(categoryData)
+    categories.value = normalizeCategories(payload.categories)
   } catch (error) {
     console.error('Error fetching categories:', error)
   }
